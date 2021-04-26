@@ -37,6 +37,9 @@ export default {
 uni-page-head {
     display: none;
 }
+uni-toast {
+    z-index: 10078 !important;
+}
 // #endif
 
 </style>
