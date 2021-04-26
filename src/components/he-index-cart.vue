@@ -1,5 +1,5 @@
 <template>
-    <he-cart :show.sync="isShopping" :goods="goods" shopping-type="cart"></he-cart>
+    <he-cart :show.sync="isShopping" :goods="goods"></he-cart>
 </template>
 
 <script>

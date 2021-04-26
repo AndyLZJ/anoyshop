@@ -92,7 +92,7 @@ export default {
         // #ifdef H5
         bindPhone: function () {
             if (this.mobile) {
-                this.isBind = true;
+                // this.isBind = true;
             } else {
                 this.navigateTo('/pages/user/bind-phone');
             }

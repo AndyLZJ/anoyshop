@@ -6,7 +6,14 @@
                 <text class="he-text">实付金额</text>
                 <text class="he-price">¥{{payAmount | floatPrice}}</text>
             </view>
+            <!-- #ifdef MP-WEIXIN -->
             <button class="cu-btn he-submit-btn" v-if="getBasicSetting.run_status === 1" :disabled="disabled" @click.stop.once="submit">提交订单</button>
+            <!-- #endif -->
+            <!-- #ifdef H5 -->
+            <he-open-subscribe @open-subscribe-success="submit" :template-id="subTemplateId" v-if="getBasicSetting.run_status === 1">
+                <button class="cu-btn he-submit-btn" :disabled="disabled">提交订单</button>
+            </he-open-subscribe>
+            <!-- #endif -->
             <button class="cu-btn he-disabled" v-else-if="getBasicSetting.run_status === 0">
                 已打烊
             </button>
@@ -15,8 +22,13 @@
 </template>
 
 <script>
+import heOpenSubscribe from "../../../components/he-open-subscribe.vue";
+
 export default {
     name: "submit-button",
+    components: {
+        heOpenSubscribe
+    },
     props: {
         goodsNumberAmount: {
             type: Number
@@ -28,10 +40,30 @@ export default {
             type: Boolean
         }
     },
+    computed: {
+        subTemplateId: function () {
+            return [this.$store.getters['setting/subscribe'].order_pay, this.$store.getters['setting/subscribe'].order_send]
+        }
+    },
     methods: {
         submit: function () {
+            let _this = this;
             if (this.disabled) return;
-            this.$emit('submit');
+            // #ifdef MP-WEIXIN
+            wx.requestSubscribeMessage({
+                tmplIds: [this.$store.getters['setting/subscribe'].order_pay, this.$store.getters['setting/subscribe'].order_send],
+                success: function () {
+                },
+                fail: function (e) {
+                },
+                complete: function () {
+                    _this.$emit('submit');
+                }
+            });
+            // #endif
+            // #ifdef H5
+            _this.$emit('submit');
+            // #endif
         }
     }
 }

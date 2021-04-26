@@ -318,7 +318,7 @@ export default {
                         url: '/pages/user/login'
                     });
                 }
-                console.error(err);
+                _this.$h.toast(err.data.message);
             });
         },
         buy: function () {
@@ -423,8 +423,7 @@ export default {
 .he-cart__footer {
     height: 141px;
     margin: 0 32px;
-    border-top: 1px solid #E5E5E5;
-
+    overflow: hidden;
     .he-footer__btn .cu-btn[disabled] {
         background-color: #cccccc !important;
         opacity: 1;
@@ -612,9 +611,9 @@ export default {
 
 .he-number {
     height: 64px;
-    padding: 0 32px;
-    margin-bottom: 52px;
-
+    margin:0 32px 52px 32px;
+    padding-top:32px;
+    border-top: 1px solid #E5E5E5;
     .he-text {
         font-size: 24px;
         font-family: PingFang SC;

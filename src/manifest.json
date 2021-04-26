@@ -1,6 +1,6 @@
 {
 	"name": "",
-	"appid": "wxa1567415919a0f26",
+	"appid": "",
 	"description": "",
 	"versionName": "1.0.0",
 	"versionCode": "100",
@@ -81,10 +81,10 @@
         "usingComponents" : true
     },
     "h5": {
-        "publicPath": "/h5/",
+        "publicPath": "/assets/wechat",
         "router": {
-            "base": "/h5/",
-            "mode": "history"
+            "base": "/",
+            "mode": "hash"
         },
         "optimization": {
             "treeShaking": {

@@ -25,18 +25,8 @@
 export default {
     name: "submit-address",
     props: {
-        value: {
-            type: Object
-        }
-    },
-    computed: {
         consigneeInfo: {
-            get: function() {
-                return this.value;
-            },
-            set: function(val) {
-                this.$emit('input', val);
-            }
+            type: Object
         }
     },
     methods: {
@@ -44,20 +34,7 @@ export default {
             let url = '/pages/user/shipping-address?submit=1';
             if (this.consigneeInfo) url += '&id=' + this.consigneeInfo.id;
             uni.navigateTo({url});
-        },
-        getDetail: function() {
-            let _this = this;
-            this.$heshop.address('get', {
-                behavior: 'default'
-            }).then(function(res) {
-                if (res) _this.consigneeInfo = res;
-            }).catch(function(err) {
-                console.error(err);
-            });
         }
-    },
-    mounted() {
-        this.getDetail();
     }
 }
 </script>

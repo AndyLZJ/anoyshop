@@ -1,37 +1,51 @@
 <template>
     <view class="pages fitment-pages" :style="{
         'background':background
-    }">
+    }" v-if="!is_skip">
         <!-- #ifndef H5 -->
-        <he-navbar :is-back="false" title-bold title-size="32" :title="fixed ? '' : title"  :background="{background: '#fff'}">
-            <view class="he-search flex align-center" v-if="fixed" :style="{height: menuButtonInfo.height + 'px'}" @click="navigateToDetail">
+        <he-navbar :is-back="false" title-bold title-size="32" :title="fixed ? '' : title"
+                   :background="{background: '#fff'}">
+            <view class="he-search flex align-center" v-if="fixed" :style="{height: menuButtonInfo.height + 'px'}"
+                  @click="navigateToDetail">
                 <text class="iconfont iconsearchbar_search"></text>
                 <text class="he-search-text">请输入关键字搜索</text>
             </view>
         </he-navbar>
+        <view :style="[topHeight]"></view>
         <!-- #endif -->
         <!-- #ifdef H5 -->
-        <he-navbar  :is-back="false" title-bold title-size="32" :background="{background: '#fff'}">
-            <view class="he-search flex align-center" @click="navigateToDetail" v-if="fixed">
+        <he-navbar v-if="fixed" :is-back="false" title-bold title-size="32" :background="{background: '#fff'}">
+            <view class="he-search flex align-center" @click="navigateToDetail">
                 <text class="iconfont iconsearchbar_search"></text>
                 <text class="he-search-text">请输入关键字搜索</text>
             </view>
         </he-navbar>
         <!-- #endif -->
-        <view :style="[topHeight]"></view>
         <view v-for="(item,index) in page" :key="index">
-            <component v-if="item.name === 'rubik'" :id="item.name +'_' + index" is="rubik" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            <component v-else-if="item.name === 'title'" :id="item.name +'_' + index" is="titles" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            <component v-else-if="item.name === 'navigation'" :id="item.name +'_' + index" is="navigation" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            <component v-else-if="item.name === 'video'" :id="item.name +'_' + index" is="videos" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            <component v-else-if="item.name === 'separate'" :id="item.name +'_' + index" is="separate" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            <component v-else-if="item.name === 'banner'" :id="item.name +'_' + index" is="banner" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            <component v-else-if="item.name === 'search'" id="search" is="search" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            <component v-else-if="item.name === 'goods'" :id="item.name +'_' + index" is="goods" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            <component v-else-if="item.name === 'blank'" :id="item.name +'_' + index" is="blank" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            <component v-else-if="item.name === 'tabs'" :background="background" :page-index="index" :id="item.name +'_' + index" is="tabs" :facade="item.facade" :content="item.content" :data-index="index"></component>
+            <component v-if="item.name === 'rubik'" :id="item.name +'_' + index" is="rubik" :facade="item.facade"
+                       :content="item.content" :data-index="index"></component>
+            <component v-else-if="item.name === 'title'" :id="item.name +'_' + index" is="titles" :facade="item.facade"
+                       :content="item.content" :data-index="index"></component>
+            <component v-else-if="item.name === 'navigation'" :id="item.name +'_' + index" is="navigation"
+                       :facade="item.facade" :content="item.content" :data-index="index"></component>
+            <component v-else-if="item.name === 'video'" :id="item.name +'_' + index" is="videos" :facade="item.facade"
+                       :content="item.content" :data-index="index"></component>
+            <component v-else-if="item.name === 'separate'" :id="item.name +'_' + index" is="separate"
+                       :facade="item.facade" :content="item.content" :data-index="index"></component>
+            <component v-else-if="item.name === 'banner'" :id="item.name +'_' + index" is="banner" :facade="item.facade"
+                       :content="item.content" :data-index="index"></component>
+            <component v-else-if="item.name === 'search'" id="search" is="search" :facade="item.facade"
+                       :content="item.content" :data-index="index"></component>
+            <component v-else-if="item.name === 'goods'" :id="item.name +'_' + index" is="goods" :facade="item.facade"
+                       :content="item.content" :data-index="index"></component>
+            <component v-else-if="item.name === 'blank'" :id="item.name +'_' + index" is="blank" :facade="item.facade"
+                       :content="item.content" :data-index="index"></component>
+            <component v-else-if="item.name === 'tabs'" :background="background" :page-index="index"
+                       :id="item.name +'_' + index" is="tabs" :facade="item.facade" :content="item.content"
+                       :data-index="index"></component>
             <!-- #ifndef H5 -->
-            <component v-else-if="item.name === 'wechat'" :id="item.name +'_' + index" is="wechat" :facade="item.facade" :content="item.content" :data-index="index"></component>
+            <component v-else-if="item.name === 'wechat'" :id="item.name +'_' + index" is="wechat" :facade="item.facade"
+                       :content="item.content" :data-index="index"></component>
             <!--#endif-->
         </view>
     </view>
@@ -57,7 +71,7 @@ import advertising from '../fitment/advertising/advertising.vue';
 import wechat from '../fitment/wechat/wechat.vue';
 // #endif
 import heNavbar from "../../components/he-navbar.vue";
-import { mapGetters } from "vuex";
+import {mapGetters} from "vuex";
 
 export default {
     components: {
@@ -79,6 +93,7 @@ export default {
     },
     data() {
         return {
+            is_skip: false,
             background: "#F7F7F7",
             page: [],
             empty: {
@@ -97,6 +112,30 @@ export default {
             menuButtonInfo: menuButtonInfo
         };
     },
+    // #ifdef H5
+    beforeCreate() {
+        let _this = this;
+        this.is_skip = true;
+        let q = this.$h.getQueryVariable("_skip");
+        if (q) {
+            let code = this.$h.getQueryVariable("code");
+            if (code) {
+                if (this.$store.state.apply.is_login) {
+                    this.is_skip = false;
+                } else {
+                    this.$store.dispatch('user/weChatLogin', {code}).then(function () {
+                        _this.is_skip = false;
+                        window.location.href = _this.$pageURL;
+                    }).catch(function () {
+                        _this.is_skip = false;
+                    });
+                }
+            }
+        } else {
+            this.is_skip = false;
+        }
+    },
+    // #endif
     computed: {
         ...mapGetters({
             searchTop: 'components/getSearchTop',
@@ -105,7 +144,7 @@ export default {
             navbarHeight: 'setting/getNavBarHeight',
             statusBarHeight: 'setting/statusBarHeight',
         }),
-        topHeight: function() {
+        topHeight: function () {
             return {
                 height: `${this.statusBarHeight + this.navbarHeight}px`,
                 // #ifdef H5
@@ -140,7 +179,7 @@ export default {
                     // #endif
                     this.background = value.background;
                     this.page = JSON.parse(value.content);
-                    const num = this.page.findIndex(function(item) {
+                    const num = this.page.findIndex(function (item) {
                         return item.name === 'search';
                     });
                     this.$store.commit('components/setSearchIndex', num);
@@ -162,7 +201,7 @@ export default {
                 this.background = data.background;
                 if (!(value && (this.$heshop.MD5(value) == this.$heshop.MD5(data)))) {
                     this.page = JSON.parse(data.content);
-                    const num = this.page.findIndex(function(item) {
+                    const num = this.page.findIndex(function (item) {
                         return item.name === 'search';
                     });
                     this.$store.commit('components/setSearchIndex', num);
@@ -221,13 +260,14 @@ export default {
     background: #FFFFFF;
     border: 2px solid #E5E5E5;
     border-radius: 32px;
-    margin:0 20px;
+    margin: 0 20px;
     width: 100%;
     padding-left: 24px;
     // #ifdef H5
     height: 63px;
     // #endif
 }
+
 .he-search-text {
     display: inline-block;
     font-size: 26px;
@@ -236,6 +276,7 @@ export default {
     color: #999999;
     margin-left: 12px;
 }
+
 .iconsearchbar_search {
     font-size: 24px;
 }

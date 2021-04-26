@@ -16,11 +16,11 @@
                 <text class="he-label flex-sub">付款时间</text>
                 <text class="he-value">{{payTime | timeFormat('yyyy-mm-dd hh:MM:ss')}}</text>
             </view>
-            <view class="he-item  flex justify-between align-center" v-if="status >= 202">
+            <view class="he-item  flex justify-between align-center" v-if="status >= 202 && sendTime">
                 <text class="he-label flex-sub">发货时间</text>
                 <text class="he-value">{{sendTime | timeFormat('yyyy-mm-dd hh:MM:ss')}}</text>
             </view>
-            <view class="he-item  flex justify-between align-center" v-if="status >= 203">
+            <view class="he-item  flex justify-between align-center" v-if="status >= 203 && receivedTime">
                 <text class="he-label flex-sub">收货时间</text>
                 <text class="he-value">{{receivedTime | timeFormat('yyyy-mm-dd hh:MM:ss')}}</text>
             </view>

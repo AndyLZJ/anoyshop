@@ -10,7 +10,7 @@
             ></detail-top>
             <view class="he-detail">
                 <view class="he-order-detail">
-                    <detail-logistics v-if="detail.status >= 202" :mobile="detail.buyer.mobile" :freight-obj="freight"
+                    <detail-logistics v-if="detail.status >= 202 && detail.freight" :mobile="detail.buyer.mobile" :freight-obj="freight"
                                       :freight="detail.freight"></detail-logistics>
                     <detail-receipt :consignee-info="detail.buyer"></detail-receipt>
                     <detail-product-info :goods="detail.goods" :status="detail.status"></detail-product-info>
@@ -103,7 +103,7 @@ export default {
             let _this = this;
             this.$heshop.order('get', id).then(function (res) {
                 _this.detail = res;
-                if (res.status >= 202 && res.freight.type === 1) {
+                if (res.status >= 202 && res.freight && res.freight.type === 1) {
                     _this.loading = true;
                     let {freight_sn, mobile, logistics_company} = res.freight;
                     _this.$heshop.express('post', {
@@ -128,14 +128,10 @@ export default {
                 _this.loading = false;
             }).catch(function (err) {
                 console.error(err);
-                _this.$toError();
             });
         }
     },
     onLoad(options) {
-        // #ifdef H5
-        this.$wechat.init();
-        // #endif
         options.id ? this.getDetail(parseInt(options.id)) : this.$toError();
     },
     onShow() {

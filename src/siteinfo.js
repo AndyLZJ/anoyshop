@@ -1,9 +1,9 @@
-module.exports  = {
-    "uniacid": "3",
+module.exports = {
+    "uniacid": "4",
     "acid": "3",
     "multiid": "0",
-    "version": "2",
-    "AppURL": "https://open.heshop.vip",
-    "siteroot":"",
+    "version": "1.0.0",
+    "AppURL": "",
+    "siteroot": "",
     "design_method": "3"
 }

@@ -25,10 +25,13 @@ export default {
         heProductsFeatured,
         heCopyright
     },
-    onLoad(options) {
+    onLoad() {
         // #ifdef H5
-        this.weChatLogin(options);
-        // #endif
+         let userInfo = uni.getStorageInfoSync('userInfo');
+         if (userInfo && userInfo.mobile) {
+            _this.$store.state.apply.userInfo.mobile = userInfo.mobile;
+         }
+         // #endif
     },
     computed: {
         ...mapGetters({
@@ -38,7 +41,6 @@ export default {
     methods: {
         ...mapActions({
             getOrderTotal: "user/getOrderTotal",
-            weChatLogin: "user/weChatLogin",
         })
     },
     onShow() {

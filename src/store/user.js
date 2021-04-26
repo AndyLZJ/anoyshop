@@ -24,36 +24,37 @@ const user = {
         }
     },
     getters: {
-        userInfo: function(state) {
+        userInfo: function (state) {
             return state.userInfo;
         },
-        orderTotal: function(state) {
+        orderTotal: function (state) {
             return state.orderTotal;
         },
-        getAddress: function(state) {
+        getAddress: function (state) {
             return state.shippingAddress;
         }
     },
     actions: {
-        decryptUserInfo: function({ dispatch, commit }) {
+        decryptUserInfo: function ({dispatch, commit}) {
             let $heshop = this._vm.$heshop;
+            let $pageURL = this._vm.$pageURL;
             // #ifndef H5
             uni.login({
                 provider: 'weixin',
-                success: function(loginRes) {
+                success: function (loginRes) {
                     uni.getUserInfo({
-                        success: function(res) {
+                        success: function (res) {
                             $heshop.login("post", "weapp", {
                                 code: loginRes.code,
                                 iv: res.iv,
                                 encryptedData: res.encryptedData
-                            }).then(function(res) {
+                            }).then(function (res) {
                                 dispatch('visit');
-                                commit('apply/login', res, { root: true });
+                                commit('apply/login', res, {root: true});
                                 uni.navigateBack({
                                     delta: 1
                                 });
-                            }).catch(function(error) {
+                            }).catch(function (error) {
                                 console.error(error);
                             });
                         }
@@ -62,126 +63,144 @@ const user = {
             });
             // #endif
             // #ifdef H5
-            let origin = window.location.origin;
+            let page = getCurrentPages()[getCurrentPages().length - 2];
+            let route = '/pages/user/index';
+            if (page) {
+                route = '/' + page.route;
+                let query = '?'
+                for (let key in page.options) {
+                    query += `${key}=${page.options[key]}&`
+                }
+                query = query.slice(0, query.length - 1);
+                route = route + query;
+            }
+            let url = $pageURL + '&_skip=' + route;
             $heshop.login("post", {
                 type: 'wechat',
                 include: 'login_url',
-                url: origin + '/h5/pages/user/index',
+                url: url,
                 scope: 'snsapi_userinfo'
-            }).then(function(res) {
+            }).then(function (res) {
                 document.location.replace(res.url);
-            }).catch(function(error) {
+            }).catch(function (error) {
                 console.error(error);
             });
             // #endif
         },
-        getUserProfile: function({ dispatch, commit }) {
+        getUserProfile: function ({dispatch, commit}) {
             let $heshop = this._vm.$heshop;
             uni.login({
                 provider: 'weixin',
-                success: function() {
+                success: function () {
 
                 }
             });
             uni.getUserProfile({
                 lang: "zh_CN",
                 desc: '授权',
-                success: function(res) {
+                success: function (res) {
                     uni.login({
                         provider: 'weixin',
-                        success: function(loginRes) {
+                        success: function (loginRes) {
                             $heshop.login("post", "weapp", {
                                 code: loginRes.code,
                                 iv: res.iv,
                                 encryptedData: res.encryptedData
-                            }).then(function(res) {
+                            }).then(function (res) {
                                 dispatch('visit');
-                                commit('apply/login', res, { root: true });
+                                commit('apply/login', res, {root: true});
                                 uni.navigateBack({
                                     delta: 1
                                 });
-                            }).catch(function(error) {
+                            }).catch(function (error) {
                                 console.error(error);
                             });
                         }
                     });
                 },
-                fail: function(res) {
+                fail: function (res) {
                     console.log(res);
                 }
             });
         },
-        visit: function() {
+        visit: function () {
             if (uni.getStorageSync('token')) {
                 let $heshop = this._vm.$heshop;
                 $heshop.users('get', {
                     behavior: 'visit'
-                }).then(function() {}).catch(function(err) {
+                }).then(function () {
+                }).catch(function (err) {
                     console.error(err);
                 });
             }
         },
-        getOrderTotal: function({ commit }) {
+        getOrderTotal: function ({commit}) {
             let $heshop = this._vm.$heshop;
             $heshop.order('get', {
                 behavior: 'tabcount'
-            }).then(function(res) {
+            }).then(function (res) {
                 commit('orderTotal', res);
-            }).catch(function(err) {
+            }).catch(function (err) {
                 console.error(err);
             });
         },
         // #ifdef H5
-        weChatLogin: function({ commit, dispatch }, options) {
+        weChatLogin: function ({commit, dispatch}, options) {
             if (!options.code) return;
             let $heshop = this._vm.$heshop;
-            $heshop.login('post', {
-                type: "wechat",
-                include: "login"
-            }, {
-                code: options.code
-            }).then(function(res) {
-                commit('apply/login', res, { root: true });
-                dispatch('visit');
-            }).catch(function(err) {
-                console.error(err);
-            });
+            return new Promise(function (resolve, reject) {
+                $heshop.login('post', {
+                    type: "wechat",
+                    include: "login"
+                }, {
+                    code: options.code
+                }).then(function (res) {
+                    commit('apply/login', res, {root: true});
+                    dispatch('visit');
+                    resolve();
+                }).catch(function (err) {
+                    console.error(err);
+                    reject();
+                });
+            })
+            
         },
         // #endif
-        getAddress: function({ commit, state }) {
+        getAddress: function ({commit, state}) {
             let $heshop = this._vm.$heshop;
             let $h = this._vm.$h;
             if ($h.test.isEmpty(state.shippingAddress)) {
-                $heshop.address('get').then(function(res) {
+                $heshop.address('get').then(function (res) {
                     let data = res;
-                    data.forEach(function(item) {
+                    data.forEach(function (item) {
                         item.is_select = false;
                     });
                     commit('shippingAddress', data);
-                }).catch(function(err) {
+                }).catch(function (err) {
                     console.error(err);
                 });
             }
         },
         // #ifndef H5
-        authLogin: function() {
+        authLogin: function () {
             uni.checkSession({
-                success: function(res) {
+                success: function (res) {
                     console.log(res);
                 },
-                fail: function() {
+                fail: function () {
                     uni.login({
                         provider: 'weixin',
                         scopes: 'auth_base',
-                        success: function(res) {
+                        success: function (res) {
                             console.log(res);
                         },
-                        fail: function(err) {
+                        fail: function (err) {
                             console.log(err);
                         }
                     });
                 },
-                complete: function() {}
+                complete: function () {
+                }
             });
         }
         // #endif

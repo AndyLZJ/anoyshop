@@ -1,4 +1,4 @@
-import mixin from './mixin/mixin.js'
+import mixin from './mixin/mixin.js';
 
 import timeFormat from "./function/timeFormat.js";
 import test from "./function/test.js";
@@ -11,7 +11,9 @@ import srcToBase64 from "./function/srcToBase64";
 import MPageNavigate from "./function/MPageNavigate";
 // #ifdef H5
 import setTabBarItem from "./function/setTabBarItem";
+import getQueryVariable from "./function/getQueryVariable";
 // #endif
+import $parent from "./function/$parent.js";
 const $h = {
     timeFormat: timeFormat,
     floatPrice,
@@ -22,8 +24,10 @@ const $h = {
     toast,
     srcToBase64,
     MPageNavigate,
+    $parent,
     // #ifdef H5
-    setTabBarItem
+    setTabBarItem,
+    getQueryVariable
     // #endif
 }
 

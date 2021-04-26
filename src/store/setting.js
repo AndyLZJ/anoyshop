@@ -8,7 +8,8 @@ const setting = {
         tab_bar: {
             data: []
         },
-        addressJson: []
+        addressJson: [],
+        subscribe: []
     },
     mutations: {
         setting(state, data) {
@@ -31,6 +32,9 @@ const setting = {
         },
         addressJson: function (state, data) {
             state.addressJson = data;
+        },
+        subscribe: function (state, data) {
+            state.subscribe = data;
         }
     },
     getters: {
@@ -74,6 +78,9 @@ const setting = {
         },
         isProductsFeatured: function (state) {
             return state.setting.setting_collection.goods_setting.recommend_showpage.goodsinfo.value;
+        },
+        subscribe: function (state) {
+            return state.subscribe;
         }
     },
     actions: {
@@ -160,6 +167,12 @@ const setting = {
                     console.error(err);
                 });
             }
+        },
+        subscribe: function ({commit}) {
+            let $heshop = this._vm.$heshop;
+            $heshop.subscribe('get').then(function (response) {
+                commit('subscribe', response);
+            });
         }
     }
 };

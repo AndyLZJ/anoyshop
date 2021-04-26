@@ -1,6 +1,6 @@
 <template>
     <view class="he-page-content" :class="isLoading ? 'flex justify-center align-center' : ''" :data-theme="theme">
-        <view class="he-touch" v-if="isTouch"  @touchmove.stop.prevent="() => {}"></view>
+        <view class="he-touch" v-if="isTouch" @touchmove.stop.prevent="() => {}"></view>
         <detail-skeleton v-if="isLoading"></detail-skeleton>
         <template v-else-if="!isLoading && !emptyStatus">
             <he-navbar :is-back="true" :background="barBackground">
@@ -213,10 +213,6 @@ export default {
                 scrollTop: top + 10,
                 duration: 200
             });
-            // H5的执行顺序跟小程序不一样 所以必须在
-            // setTimeout(() => {
-            //     _this.isScroll = false;
-            // }, 800);
         },
         // #endif
         // #ifndef H5
@@ -235,6 +231,14 @@ export default {
     },
     onLoad(options) {
         this.isTouch = true;
+        // #ifdef H5
+        uni.setNavigationBarTitle({
+            title: '商品详情',
+            success: function () {
+                
+            }
+        });
+        // #endif
         // #ifdef MP-WEIXIN
         uni.showShareMenu({
             withShareTicket: true

@@ -6,10 +6,12 @@ export default {
             let _this = this;
             // #ifdef H5
             _this.$h.setTabBarItem();
+            _this.$wechat.init();
             // #endif
             // 获取设备设置
             this.$store.dispatch('setting/getSys');
             this.$store.dispatch('setting/getTabBar');
+            this.$store.dispatch('setting/subscribe');
         });
     },
     onShow: function () {

@@ -102,7 +102,14 @@ export default {
         index: {
             type: [Number, String],
             default: ''
-        }
+        },
+        // 文件大小限制，单位为byte
+        maxSize: {
+            type: [String, Number],
+            default: function () {
+                return 2097152;
+            }
+        },
     },
     data() {
         return {
@@ -177,8 +184,8 @@ export default {
                     _this.$emit('on-success', data, index, _this.lists, _this.index);
                     _this.uploadFile(index + 1);
                 }).catch(function(err) {
+                    _this.uploading = false;
                     _this.uploadError(index, err);
-                    _this.$toError();
                 });
             });
         },

@@ -7,6 +7,9 @@
             }
         },
         {
+            "path": "pages/index/demo"
+        },
+        {
             "path": "pages/user/index",
             "style": {
                 "navigationStyle": "custom"
@@ -68,7 +71,12 @@
         {
             "path": "pages/goods/detail",
             "style": {
-                "navigationStyle": "custom"
+                "h5": {
+                    "navigationBarTitleText": "商品详情"
+                },
+                "mp-weixin": {
+                    "navigationStyle": "custom"
+                }
             }
         },
         {
@@ -99,6 +107,12 @@
             "path": "pages/other/error",
             "style": {
                 "navigationStyle": "custom"
+            }
+        },
+        {
+            "path": "pages/other/logisticsCompany",
+            "style": {
+                "navigationBarTitleText": "选择物流公司"
             }
         },
         {

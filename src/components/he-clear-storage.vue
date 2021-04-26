@@ -59,6 +59,7 @@ export default {
             for (let key in this.$storageKey) {
                 uni.removeStorageSync(key);
             }
+            // uni.clearStorage();
             _this.$store.dispatch('setting/getSetting');
             _this.$store.dispatch('goods/emptyShareGoods');
             _this.$store.dispatch('setting/getTheme');

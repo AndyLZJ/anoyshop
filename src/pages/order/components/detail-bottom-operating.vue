@@ -1,18 +1,30 @@
 <template>
     <view class="detail-bottom-operating safe-area-inset-bottom" :data-theme="theme">
         <view class="he-buttons" :class="newStatus === 100 ? 'flex align-center justify-between' : 'fr'">
-           <button class="cu-btn he-btn" v-if="newStatus >= 203  && isEvaluate === 0" @click="navigateTo('/pages/order/evaluation?id=' + orderId)">评价晒单</button>
-           <button class="cu-btn he-btn" v-if="newStatus === 202" @click="receipt = true;">确认收货</button>
+            <button class="cu-btn he-btn" v-if="newStatus >= 203  && isEvaluate === 0"
+                    @click="navigateTo('/pages/order/evaluation?id=' + orderId)">评价晒单
+            </button>
+            <button class="cu-btn he-btn" v-if="newStatus === 202" @click="receipt = true;">确认收货</button>
             <template v-if="newStatus === 100">
                 <view class="he-pay-price flex align-center">
                     <text class="he-label">实付金额</text>
-                    <text class="he-value">¥{{payAmount}}</text>
+                    <text class="he-value">¥{{ payAmount }}</text>
                 </view>
-                <button class="cu-btn he-btn he-buy" @click="onPay()" v-if="getBasicSetting.run_status === 1">立即支付</button>
+                <!-- #ifdef MP-WEIXIN -->
+                <button class="cu-btn he-btn he-buy" @click="onPay()" v-if="getBasicSetting.run_status === 1">立即支付
+                </button>
+                <!-- #endif -->
+                <!-- #ifdef H5 -->
+                <he-open-subscribe @open-subscribe-success="onPay" :template-id="tmplIds" v-if="getBasicSetting.run_status === 1">
+                    <button class="cu-btn he-btn he-buy">立即支付
+                    </button>
+                </he-open-subscribe>
+                <!-- #endif -->
                 <button class="cu-btn  he-disabled" v-else>已打样</button>
             </template>
         </view>
-        <he-empty-popup :empty-style="{height: '146rpx', lineHeight: '146rpx'}" v-model="receipt" title="确认收到货了吗？" @confirm="receiptConfirm"></he-empty-popup>
+        <he-empty-popup :empty-style="{height: '146rpx', lineHeight: '146rpx'}" v-model="receipt" title="确认收到货了吗？"
+                        @confirm="receiptConfirm"></he-empty-popup>
         <after-receipt v-model="isAfterReceipt" :order-id="orderId"></after-receipt>
     </view>
 </template>
@@ -20,12 +32,14 @@
 <script>
 import heEmptyPopup from "@/components/he-empty-popup.vue";
 import afterReceipt from "./after-receipt.vue";
+import heOpenSubscribe from "../../../components/he-open-subscribe.vue";
 
 export default {
     name: "detail-bottom-operating",
     components: {
         heEmptyPopup,
-        afterReceipt
+        afterReceipt,
+        heOpenSubscribe
     },
     props: {
         status: Number,
@@ -43,20 +57,60 @@ export default {
     },
     computed: {
         newStatus: {
-            get: function() {
+            get: function () {
                 return this.status;
             },
-            set: function(val) {
+            set: function (val) {
                 this.$emit('update:status', val);
             }
+        },
+        tmplIds: function () {
+            return [this.$store.getters['setting/subscribe'].order_pay, this.$store.getters['setting/subscribe'].order_send]
         }
     },
     methods: {
-        onPay: function(){
+        onPay: function () {
+            let _this = this;
+            // #ifdef MP_WEIXIN
+            wx.requestSubscribeMessage({
+                tmplIds: _this.tmplIds,
+                success: function () {
+                },
+                fail: function (e) {
+                },
+                complete: function () {
+                    _this.submit()
+                }
+            });
+            // #endif
+            // #ifdef H5
+            this.submit();
+            // #endif
+        },
+        // 收货订单操作
+        receiptConfirm: function () {
+            let _this = this;
+            this.$heshop.order('put', {
+                id: this.orderId,
+                behavior: 'received'
+            }).then(function () {
+                _this.newStatus = 203;
+                _this.isAfterReceipt = true;
+            }).catch(function (err) {
+                console.error(err);
+                _this.$toError();
+            });
+        },
+        navigateTo: function (url) {
+            uni.navigateTo({
+                url: url
+            });
+        },
+        submit: function () {
             let _this = this;
             this.$heshop.pay({
-                order_sn:this.orderSn
-            }).then(function(data){
+                order_sn: this.orderSn
+            }).then(function (data) {
                 // #ifdef MP_WEIXIN
                 _this.newStatus = 201;
                 uni.navigateTo({
@@ -70,48 +124,29 @@ export default {
                     paySign: data.paySign,
                     signType: data.signType,
                     timestamp: data.timeStamp,
-                    success: function() {
+                    success: function () {
                         _this.newStatus = 201;
                         uni.navigateTo({
                             url: '/pages/order/successful?order_id=' + _this.orderId
                         });
                     },
-                    fail: function() {
+                    fail: function () {
                         _this.$toError();
                     },
-                    cancel: function() {
+                    cancel: function () {
                     }
                 });
                 // #endif
-            }).catch(function(err){
+            }).catch(function (err) {
                 if (err.status === 403) {
                     _this.$h.toast(err.data.message);
                     _this.$store.dispatch('setting/resetting');
-                    setTimeout(function() {
+                    setTimeout(function () {
                         uni.navigateBack({
                             delta: 1
                         });
-                    },1000);
+                    }, 1000);
                 }
-            });
-        },
-        // 收货订单操作
-        receiptConfirm: function() {
-            let _this = this;
-            this.$heshop.order('put', {
-                id: this.orderId,
-                behavior: 'received'
-            }).then(function() {
-                _this.newStatus = 203;
-                _this.isAfterReceipt = true;
-            }).catch(function(err) {
-                console.error(err);
-                _this.$toError();
-            });
-        },
-        navigateTo: function(url) {
-            uni.navigateTo({
-                url: url
             });
         }
     }
@@ -127,10 +162,12 @@ export default {
     z-index: 1;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.05);
 }
+
 .he-buttons {
     padding: 20px;
     height: 96px;
 }
+
 .he-btn {
     background: #FFFFFF;
     border-width: 1px;
@@ -143,24 +180,28 @@ export default {
     height: 56px;
     @include font_color('font_color');
 }
+
 .he-buy {
-    //@include background_color('background_color');
     color: #FFFFFF;
 }
+
 .he-pay-price {
     font-family: PingFang SC;
 }
+
 .he-label {
     font-size: 24px;
     font-weight: 500;
     color: #222222;
 }
+
 .he-value {
     font-size: 30px;
     font-weight: bold;
     @include font_color('font_color');
     margin-left: 7px;
 }
+
 .he-disabled {
     width: 142px;
     height: 56px;

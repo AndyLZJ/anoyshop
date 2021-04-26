@@ -1,6 +1,6 @@
 <template>
     <view class="he-page-content">
-        <submit-address v-model="consigneeInfo"></submit-address>
+        <submit-address :consignee-info="consigneeInfo"></submit-address>
         <submit-product :goods-data="detail.goods_data"></submit-product>
         <submit-price :goods-amount="detail.goods_amount" :freight-amount="detail.freight_amount"></submit-price>
         <submit-comments :note="note"></submit-comments>
@@ -52,6 +52,34 @@ export default {
         }
     },
     methods: {
+        getAddress: function () {
+            let _this = this;
+            return new Promise(function (resolve, reject) {
+                // 获取默认地址
+                _this.$heshop.address('get', {
+                    behavior: 'default'
+                }).then(function (res) {
+                    if (res) {
+                        _this.consigneeInfo = res;
+                        resolve();
+                    } else {
+                        // 获取地址列表
+                        _this.$heshop.address('get').then(function (res) {
+                            if (!_this.$h.test.isEmpty(res)) {
+                                _this.consigneeInfo = res[0];
+                            }
+                            resolve();
+                        }).catch(function () {
+                            reject();
+                        });
+                    }
+                    ;
+                }).catch(function (err) {
+                    console.error(err);
+                    reject();
+                });
+            });
+        },
         getPreview: function () {
             let _this = this;
             this.$heshop.order('post', {
@@ -139,21 +167,24 @@ export default {
             });
         }
     },
-    onLoad(options) {
+    async onLoad(options) {
         // #ifdef H5
         this.$wechat.init();
         // #endif
         this.goodsData = JSON.parse(options.data);
-        this.getPreview();
+        await this.getAddress();
+        await this.getPreview();
     },
     onShow() {
         let address_submit = this.getStorageSync(this.$storageKey.address_submit);
         let comments_submit = this.getStorageSync(this.$storageKey.comments_submit);
+        // 选择地址
         if (address_submit) {
             this.consigneeInfo = address_submit;
             this.getPreview();
             uni.removeStorageSync(this.$storageKey.address_submit);
         }
+        // 留言
         if (comments_submit) {
             this.note = comments_submit;
             uni.removeStorageSync(this.$storageKey.comments_submit);
@@ -162,7 +193,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .he-button-height {
     height: 112px;
 }

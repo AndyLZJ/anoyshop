@@ -168,14 +168,19 @@ export default {
             this[key][index].is_select = !this[key][index].is_select;
         },
         setNumber: function (obj, key) {
-            this[key][obj.index].goods_number = obj.value;
+            let _this = this;
             this.$heshop.cart('put', this[key][obj.index].id, {
                 goods_number: obj.value,
                 goods_param: this[key][obj.index].goods_param
             }).then(function () {
+                _this[key][obj.index].goods_number = obj.value;
             }).catch(function (err) {
                 console.error(err);
-                _this.$toError();
+                if (err.status == 403) {
+                    _this.$h.toast(err.data.message);
+                } else {
+                    _this.$toError();
+                }
             });
         },
         setParam: function (item) {
@@ -185,7 +190,7 @@ export default {
                 goods_number: item.goods_number
             }).then(function (res) {
                 for (let i = 0; i < _this[_this.key].length; i++) {
-                    if (_this[_this.key][i].id === res.id) {
+                    if (_this[_this.key][i].goods_id === parseInt(res.goods_id) && _this[_this.key][i].goods_param === res.goods_param) {
                         _this[_this.key][i].show_goods_param = res.show_goods_param;
                         _this[_this.key][i].goods_param = res.goods_param;
                         _this[_this.key][i].goods_number = res.goods_number;
@@ -200,7 +205,11 @@ export default {
                 }
             }).catch(function (err) {
                 console.error(err);
-                _this.$toError();
+                if (err.status == 403) {
+                    _this.$h.toast(err.data.message);
+                } else {
+                    _this.$toError();
+                }
             });
         },
         openShopping: function (item, key) {

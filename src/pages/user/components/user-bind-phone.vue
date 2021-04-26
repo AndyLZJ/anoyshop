@@ -31,7 +31,7 @@ export default {
     },
     methods: {
         navigateTo: function() {
-            this.navigateTo('/platforms/h5/user/bind-phone');
+            this.navigateTo('/pages/user/bind-phone');
         },
         unBind: function () {
 
@@ -43,7 +43,6 @@ export default {
 <style scoped>
 .user-bind-phone {
     background-color: RGBA(245, 245, 245, 1);
-    padding-top: 16px;
 }
 .he-bind__item {
     height: 104px;
@@ -55,6 +54,8 @@ export default {
 }
 .he-bind__item:first-child {
     border-bottom: 1px solid #E5E5E5;
+    padding-top: 16px;
+    height: 120px;
 }
 .he-bind__item:last-child {
     margin-top: 16px;

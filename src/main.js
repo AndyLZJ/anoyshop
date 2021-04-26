@@ -11,7 +11,7 @@ import utils from "./utils/index.js";
 import zIndex from "./utils/zIndex";
 import storageKey from "./utils/storageKey.js";
 import leIcon from './colorui/components/le-icon.vue'
-
+import resourceUrl from "./libs/function/resourceUrl";
 
 import heImage from "./components/he-image.vue";
 
@@ -37,15 +37,18 @@ Vue.config.productionTip = false;
 
 App.mpType = 'app';
 
-const AppURL = siteinfo.siteroot.replace("/app/index.php", '') + "/addons/cloud_wedding/site.php?r=";
+const AppURL = siteinfo.siteroot ? resourceUrl("entry/wxapp/yii", siteinfo) : siteinfo.AppURL;
 
 let AppType = "weapp";
 // #ifdef H5
 AppType = "wechat";
+
+Vue.prototype.$pageURL = siteinfo.siteroot ? resourceUrl("entry/wxapp/index", siteinfo, true) : siteinfo.AppURL;
+
 // #endif
 
 Vue.prototype.$heshop = Heshop.connect({
-    AppURL: siteinfo.AppURL,
+    AppURL: AppURL,
     AppName: "leadmall",
     AppType: AppType,
     AppID: "98c08c25f8136d590c",
@@ -58,6 +61,7 @@ Vue.prototype.$storageKey = storageKey;
 
 // #ifdef H5
 Vue.prototype.$wechat = WeChat;
+Vue.config.ignoredElements.push("wx-open-subscribe");
 // #endif
 
 const app = new Vue({
@@ -73,7 +77,10 @@ const app = new Vue({
             "/pages/categories/index",
             "/pages/goods/list",
             "/pages/goods/evaluation",
-            "/pages/goods/search-list"
+            "/pages/goods/search-list",
+            "/pages/index/demo",
+            "/pages/user/bind-phone",
+            "/pages/other/logisticsCompany",
         ],
         loginPage: "/pages/user/login"
     }),

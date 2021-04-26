@@ -35,7 +35,7 @@ function init(callback) {
                 nonceStr: e.noncestr,
                 signature: e.signature,
                 jsApiList: apiList,
-                openTagList: []
+                openTagList: ['wx-open-subscribe']
             };
             jWeixin.config(config);
             jWeixin.error(err => {
@@ -65,8 +65,7 @@ function chooseWXPay({timestamp, nonceStr, packAge, signType, paySign, success, 
         cancel: function (res) {
             cancel && cancel(res);
         },
-        complete: function (err) {
-            alert(JSON.stringify(err));
+        complete: function () {
         }
     });
 }
@@ -83,7 +82,7 @@ function showMenuItems() {
             menuList: [
                 "menuItem:share:appMessage"
             ]
-        })
+        });
     });
 }
 
@@ -96,7 +95,7 @@ function onMenuShareAppMessage({title = '', desc = ' ', link = '', imgUrl = ''})
             imgUrl: imgUrl, // 分享图标
             type: 'link'// 如果type是music或video，则要提供数据链接，默认为空
         });
-    })
+    });
 }
 
 export default {

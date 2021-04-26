@@ -11,25 +11,41 @@
         <apply-detail-operating v-model="data" :goods="goods"></apply-detail-operating>
         <apply-detail-description v-model="data.user_note"></apply-detail-description>
         <apply-detail-upload-certificate :list.sync="data.images"></apply-detail-upload-certificate>
+        <!-- #ifdef MP-WEIXIN -->
         <button class="cu-btn he-submit-btn" :disabled="isSubmit" @click="submit">提交</button>
+        <!-- #endif -->
+        <!-- #ifdef H5 -->
+        <he-open-subscribe @open-subscribe-success="submit" :template-id="tmplIds">
+            <button class="cu-btn he-submit-btn" :disabled="isSubmit">提交</button>
+        </he-open-subscribe>
+        <!-- #endif -->
     </view>
 </template>
 <script>
 import applyDetailOperating from "./components/applyDetail-operating.vue";
 import applyDetailDescription from "./components/applyDetail-description.vue";
 import applyDetailUploadCertificate from "./components/applyDetail-upload-certificate.vue";
+import heOpenSubscribe from "../../components/he-open-subscribe.vue";
 
 export default {
     name: "apply-after-sales-detail",
     computed: {
         isSubmit: function () {
             return this.data.type !== 2 && !this.data.return_reason;
+        },
+        tmplIds: function () {
+            let tmplIds = [this.$store.getters['setting/subscribe'].order_sale_verify]
+            if (this.data.type !== 2) {
+                tmplIds.push(this.$store.getters['setting/subscribe'].order_refund_tpl)
+            }
+            return tmplIds;
         }
     },
     components: {
         applyDetailOperating,
         applyDetailDescription,
-        applyDetailUploadCertificate
+        applyDetailUploadCertificate,
+        heOpenSubscribe
     },
     data() {
         return {
@@ -65,12 +81,31 @@ export default {
     methods: {
         submit: function () {
             let _this = this;
+            // #ifdef MP_WEIXIN
+            wx.requestSubscribeMessage({
+                tmplIds: _this.tmplIds,
+                success: function () {
+                },
+                fail: function (e) {
+                },
+                complete: function () {
+                    _this.$heshop.orderafter('post', _this.data).then(function () {
+                        uni.redirectTo({url: '/pages/order/after-sales-records'});
+                    }).catch(function (err) {
+                        console.error(err);
+                        _this.$toError();
+                    });
+                }
+            });
+            // #endif
+            // #ifdef H5
             this.$heshop.orderafter('post', this.data).then(function () {
                 uni.redirectTo({url: '/pages/order/after-sales-records'});
             }).catch(function (err) {
                 console.error(err);
                 _this.$toError();
             });
+            // #endif
         }
     }
 }

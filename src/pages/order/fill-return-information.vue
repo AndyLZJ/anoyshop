@@ -1,10 +1,12 @@
 <template>
     <view class="he-page-content" :data-theme="theme">
         <view class="he-box">
-            <view class="he-item flex align-center">
+            <view class="he-item flex align-center" @click="navigateTo">
                 <view class="he-item__label">物流公司</view>
-                <input type="text" class="he-item__input flex-sub" maxlength="10"  v-model="user_freight_info.logistics_company"
-                       placeholder-class="he-placeholder" placeholder="请填写物流公司">
+                <view class="flex-sub flex align-center justify-between" >
+                    <view class="he-placeholder" :class="user_freight_info.logistics_company ? 'he-is-name' : ''">{{user_freight_info.logistics_company ? user_freight_info.logistics_company : '请填写物流公司'}}</view>
+                    <text class="iconfont iconbtn_arrow"></text>
+                </view>
             </view>
             <view class="he-item flex align-center">
                 <view class="he-item__label">物流单号</view>
@@ -52,6 +54,7 @@ export default {
     },
     onLoad(option) {
         this.id = option.id;
+        this.user_freight_info.logistics_company = option.name;
     },
     methods: {
         uploaded: function (v) {
@@ -75,11 +78,15 @@ export default {
                 uni.navigateBack({
                     delta: 1
                 });
-                // uni.navigateTo({url: '/pages/order/after-sales-details?id=' + _this.id});
             }).catch(function (err) {
                 console.error(err);
                 _this.$toError();
             })
+        },
+        navigateTo: function () {
+            uni.navigateTo({
+                 url: '/pages/other/logisticsCompany'
+            });
         }
     }
 }
@@ -104,6 +111,16 @@ export default {
 
 .he-item:first-child {
     border-bottom: 1px solid rgba(229, 229, 229, 1);
+    .he-placeholder {
+        margin-left: 55px;
+    }
+    .he-is-name {
+            color: #222222;
+        }
+    .iconbtn_arrow {
+        font-size: 20px;
+        color: #BEBEBE;
+    }
 }
 
 .he-item .he-item__label {

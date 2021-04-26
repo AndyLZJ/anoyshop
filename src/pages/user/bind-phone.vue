@@ -1,9 +1,5 @@
 <template>
     <view class="he-page-content" :data-theme="theme">
-        <text class="he-mobile-text" v-if="mobile">
-            更换手机后，下次登录可使用新手机号登录。
-            当前手机号：{{ mobile }}
-        </text>
         <view class="he-box">
             <view class="he-item flex ">
                 <text class="he-item__label">手机号</text>
@@ -25,7 +21,7 @@
                 </button>
             </view>
         </view>
-        <button class="cu-btn he-submit" @click="submit">确认绑定</button>
+        <button class="cu-btn he-submit" :disabled="disabled" @click="submit">确认绑定</button>
     </view>
 </template>
 
@@ -42,7 +38,11 @@ export default {
     },
     computed: {
         mobile: function () {
-            return this.getStorageSync('userInfo').mobile;
+            return  this.$store.state.apply.userInfo.mobile;
+        },
+        disabled: function () {
+            if (!this.iphone || !this.code) return true;
+            return false;
         }
     },
     methods: {
@@ -57,8 +57,15 @@ export default {
                     code: this.code
                 }).then(function () {
                     _this.$h.toast("绑定手机号成功");
+                    _this.$store.state.apply.userInfo.mobile = _this.iphone;
+                    let userInfo = uni.getStorageInfoSync('userInfo');
+                    userInfo.mobile = _this.iphone;
+                    uni.setStorageSync('userInfo', userInfo);
+                    uni.switchTab({
+                         url: '/pages/user/index'
+                    });
                 }).catch(function (err) {
-                    console.error(err);
+                    _this.$h.toast(err.data.message);
                 });
             }
         },
@@ -78,6 +85,7 @@ export default {
                     }
                 }, 1000);
             }).catch(function (err) {
+                _this.$h.toast(err.data.message);
             });
         }
     },
@@ -118,7 +126,10 @@ export default {
     color: #FFFFFF;
     @include background_color('background_color');
 }
-
+.he-submit[disabled] {
+    background: #CCCCCC !important;
+    color: #FFFFFF;
+}
 .he-item__label {
     font-size: 26px;
     font-family: PingFang SC;

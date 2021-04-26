@@ -13,7 +13,7 @@ module.exports = {
             getBasicSetting: 'getBasicSetting',
             goodsSetting: "goodsSetting",
             theme: 'getTheme',
-            tabBar: 'getTabBar'
+            getTabBar: 'getTabBar'
         }),
         isLogin: function () {
             return this.$store.state.apply.is_login;
@@ -30,9 +30,9 @@ module.exports = {
             return theme[this.theme];
         },
         isBarGoods: function () {
-            if (!this.tabBar) return;
-            for (let i = 0; i < this.tabBar.length; i++) {
-                if (this.tabBar[i].link.path === '/pages/goods/list') {
+            if (!this.getTabBar) return;
+            for (let i = 0; i < this.getTabBar.length; i++) {
+                if (this.getTabBar[i].link.path === '/pages/goods/list') {
                     return true;
                 }
             }

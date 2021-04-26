@@ -3,8 +3,8 @@
         <view class="he-item" v-for="(item, index) in list" :key="index"
               @click="navigateTo('/pages/order/detail?id=' + item.id)">
             <view class="he-item__header flex align-center justify-between">
-                <text class="he-order__number">订单号 {{item.order_sn}}</text>
-                <text class="he-order__status">{{item.status | getStatus}}</text>
+                <text class="he-order__number">订单号 {{ item.order_sn }}</text>
+                <text class="he-order__status">{{ item.status | getStatus }}</text>
             </view>
             <view class="he-item__body flex">
                 <template v-if="item.goods.length > 1">
@@ -13,12 +13,13 @@
                             <he-image
                                 :image-style="{
                                     borderRadius: '8rpx'
-                                }" :src="good.goods_image" :width="160" :height="160" ></he-image>
-                            <view class="he-order__after" v-if="good.after_sales === 1">{{good.after | afterStatus}}</view>
+                                }" :src="good.goods_image" :width="160" :height="160"></he-image>
+                            <view class="he-order__after" v-if="good.after_sales === 1">{{ good.after | afterStatus }}
+                            </view>
                         </view>
                     </scroll-view>
                     <view class="flex-sub flex flex-direction justify-center align-center">
-                        <view class="he-order__total">共{{item.goods.length}}件</view>
+                        <view class="he-order__total">共{{ item.goods.length }}件</view>
                         <view class="flex he-view">
                             <text class="he-order__all">全部</text>
                             <view class="iconfont iconbtn_arrow"></view>
@@ -28,17 +29,19 @@
                 <template v-else>
                     <view class="he-order__image">
                         <he-image
-                              :image-style="{
+                            :image-style="{
                                 borderRadius: '8rpx'
-                            }" :src="item.goods[0].goods_image" :width="160" :height="160" ></he-image>
-                        <view class="he-order__after" v-if="item.goods[0].after_sales === 1">{{item.goods[0].after | afterStatus}}</view>
+                            }" :src="item.goods[0].goods_image" :width="160" :height="160"></he-image>
+                        <view class="he-order__after" v-if="item.goods[0].after_sales === 1">
+                            {{ item.goods[0].after | afterStatus }}
+                        </view>
                     </view>
                     <view class="flex-sub he-order__info">
-                        <view class="he-order__name he-line-1">{{item.goods[0].goods_name}}</view>
-                        <view class="he-order__attr he-line-2">{{item.goods[0].show_goods_param}}</view>
+                        <view class="he-order__name he-line-1">{{ item.goods[0].goods_name }}</view>
+                        <view class="he-order__attr he-line-2">{{ item.goods[0].show_goods_param }}</view>
                         <view class="he-goods__buy">
-                            <text class="he-goods__number">{{item.goods[0].goods_number}}</text>
-                            <text class="he-goods__price">¥{{item.goods[0].goods_price}}</text>
+                            <text class="he-goods__number">{{ item.goods[0].goods_number }}</text>
+                            <text class="he-goods__price">¥{{ item.goods[0].goods_price }}</text>
                         </view>
                     </view>
                 </template>
@@ -47,40 +50,59 @@
                 <view class="he-order__price">
                     <view class="fr">
                         <text class="he-total he-light__text">合计</text>
-                        <text class="he-price">¥{{item.pay_amount}}</text>
-                        <text class="he-light__text">(含运费¥{{item.freight_amount}})</text>
+                        <text class="he-price">¥{{ item.pay_amount }}</text>
+                        <text class="he-light__text">(含运费¥{{ item.freight_amount }})</text>
                     </view>
                 </view>
-                <view class="he-order__button" v-if="(item.status === 203 && item.is_evaluate === 0) || item.status === 202 || item.status === 100">
-                    <view class="fr">
+                <view class="he-order__button"
+                      v-if="(item.status === 203 && item.is_evaluate === 0) || item.status === 202 || item.status === 100">
+                    <view class="fr flex align-center">
                         <template v-if="item.status === 100">
                             <button class="cu-btn he-btn he-btn-0" @click.stop="setOrder(item, 'cancel')">取消订单</button>
-                            <button class="cu-btn he-btn he-btn-1" v-if="getBasicSetting.run_status === 1" @click.stop="onPay(item)">立即支付</button>
+                            <!-- #ifdef MP-WEIXIN -->
+                            <button class="cu-btn he-btn he-btn-1" v-if="getBasicSetting.run_status === 1"
+                                    @click.stop="submit(item)">立即支付
+                            </button>
+                            <!-- #endif -->
+                            <!-- #ifdef H5 -->
+                            <he-open-subscribe :digital="item" @open-subscribe-success="submit" :template-id="tmplIds" v-if="getBasicSetting.run_status === 1">
+                                <button class="cu-btn he-btn he-btn-1" >
+                                        立即支付
+                                </button>
+                            </he-open-subscribe>
+                            <!-- #endif -->
                             <button class="cu-btn he-btn he-btn-3" v-else>已打样</button>
                         </template>
-                        <button class="cu-btn he-btn he-btn-1" v-else-if="item.status === 202" @click.stop="setOrder(item, 'receipt')">确认收货</button>
+                        <button class="cu-btn he-btn he-btn-1" v-else-if="item.status === 202"
+                                @click.stop="setOrder(item, 'receipt')">确认收货
+                        </button>
                         <button class="cu-btn he-btn he-btn-1"
                                 v-else-if="item.status === 203 && item.is_evaluate === 0"
-                                @click.stop="navigateTo('/pages/order/evaluation?id=' + item.id)">评价晒单</button>
+                                @click.stop="navigateTo('/pages/order/evaluation?id=' + item.id)">评价晒单
+                        </button>
                     </view>
                 </view>
             </view>
         </view>
         <after-receipt v-model="isAfterReceipt" :order-id="setItem && setItem.id"></after-receipt>
-        <he-empty-popup :empty-style="{height: '146rpx', lineHeight: '146rpx'}" v-model="cancel" title="确认要取消这个订单吗？" :item="setItem" @confirm="cancelConfirm"></he-empty-popup>
-        <he-empty-popup :empty-style="{height: '146rpx', lineHeight: '146rpx'}" v-model="receipt" title="确认收到货了吗？" :item="setItem" @confirm="receiptConfirm"></he-empty-popup>
+        <he-empty-popup :empty-style="{height: '146rpx', lineHeight: '146rpx'}" v-model="cancel" title="确认要取消这个订单吗？"
+                        :item="setItem" @confirm="cancelConfirm"></he-empty-popup>
+        <he-empty-popup :empty-style="{height: '146rpx', lineHeight: '146rpx'}" v-model="receipt" title="确认收到货了吗？"
+                        :item="setItem" @confirm="receiptConfirm"></he-empty-popup>
     </view>
 </template>
 
 <script>
 import heEmptyPopup from "../../../components/he-empty-popup.vue";
 import afterReceipt from "./after-receipt.vue";
+import heOpenSubscribe from "../../../components/he-open-subscribe.vue";
 
 export default {
     name: "index-list",
     components: {
         heEmptyPopup,
-        afterReceipt
+        afterReceipt,
+        heOpenSubscribe
     },
     data() {
         return {
@@ -103,23 +125,44 @@ export default {
     },
     computed: {
         list: {
-            get: function() {
+            get: function () {
                 return this.value;
             },
-            set: function(val) {
+            set: function (val) {
                 this.$emit('input', val);
             }
+        },
+        tmplIds: function () {
+            return [this.$store.getters['setting/subscribe'].order_pay, this.$store.getters['setting/subscribe'].order_send]
         }
     },
     methods: {
-        navigateTo: function(url) {
+        navigateTo: function (url) {
             uni.navigateTo({url});
         },
-        onPay: function(value){
+        submit: function (value) {
+            let _this = this;
+            // #ifdef MP_WEIXIN
+            wx.requestSubscribeMessage({
+                tmplIds: _this.tmplIds,
+                success: function () {
+                },
+                fail: function (e) {
+                },
+                complete: function () {
+                    _this.onPay(value)
+                }
+            });
+            // #endif
+            // #ifdef H5
+            this.onPay(value);
+            // #endif
+        },
+        onPay: function (value) {
             let _this = this;
             this.$heshop.pay({
-                order_sn:value.order_sn
-            }).then(function(data){
+                order_sn: value.order_sn
+            }).then(function (data) {
                 // #ifdef MP_WEIXIN
                 value.status = 201;
                 uni.navigateTo({
@@ -133,58 +176,58 @@ export default {
                     paySign: data.paySign,
                     signType: data.signType,
                     timestamp: data.timeStamp,
-                    success: function() {
+                    success: function () {
                         value.status = 201;
                         uni.navigateTo({
                             url: '/pages/order/successful?order_id=' + value.id
                         });
                     },
-                    fail: function() {
+                    fail: function () {
                         _this.$toError();
                     },
-                    cancel: function() {
+                    cancel: function () {
                     }
                 });
                 // #endif
-            }).catch(function(err){
+            }).catch(function (err) {
                 if (err.status === 403) {
                     _this.$h.toast(err.data.message);
                     _this.$store.dispatch('setting/resetting');
-                    setTimeout(function() {
+                    setTimeout(function () {
                         uni.navigateBack({
                             delta: 1
                         });
-                    },1000);
+                    }, 1000);
                 }
             });
         },
-        setOrder: function(item, key) {
+        setOrder: function (item, key) {
             this[key] = true;
             this.setItem = item;
         },
         // 取消订单操作
         cancelConfirm: function (data) {
             let _this = this;
-            this.$heshop.order('put',{
+            this.$heshop.order('put', {
                 id: data.id,
                 behavior: 'cancel'
-            }).then(function() {
-               for (let i = 0; i < _this.list.length; i++) {
-                   if (_this.list[i].id === data.id) _this.list[i].status = 101;
-               }
-               _this.navigateTo('/pages/order/detail?id=' + data.id);
-            }).catch(function(err) {
+            }).then(function () {
+                for (let i = 0; i < _this.list.length; i++) {
+                    if (_this.list[i].id === data.id) _this.list[i].status = 101;
+                }
+                _this.navigateTo('/pages/order/detail?id=' + data.id);
+            }).catch(function (err) {
                 console.error(err);
                 _this.$toError();
             });
         },
         // 收货订单操作
-        receiptConfirm: function(data) {
+        receiptConfirm: function (data) {
             let _this = this;
             this.$heshop.order('put', {
                 id: data.id,
                 behavior: 'received'
-            }).then(function() {
+            }).then(function () {
                 _this.isAfterReceipt = true;
                 _this.setItem = data;
                 // 确认收货 unreceived 待收货栏 203 确认收货
@@ -197,7 +240,7 @@ export default {
                 } else {
                     data.status = 203;
                 }
-            }).catch(function(err) {
+            }).catch(function (err) {
                 console.error(err);
                 _this.$toError();
             });
@@ -225,7 +268,7 @@ export default {
                 default:
             }
         },
-        afterStatus: function(after) {
+        afterStatus: function (after) {
             if (after.status === 200) {
                 if (after.type === 0) {
                     return "已退款";
@@ -251,6 +294,7 @@ export default {
     padding: 0 20px;
     margin-top: 114px;
 }
+
 .he-item {
     width: 710px;
     background: #FFFFFF;
@@ -258,38 +302,45 @@ export default {
     padding: 15px 24px 23px 24px;
     margin-bottom: 16px;
 }
+
 .he-item__header {
     height: 55px;
     font-size: 24px;
     font-family: PingFang SC;
     font-weight: 500;
 }
+
 .he-order__number {
     color: #666666;
 }
+
 .he-order__status {
     @include font_color('font_color');
 }
+
 .he-item__body {
     padding: 16px 0;
 }
+
 .he-order__scroll {
     width: 546px;
     height: 160px;
     white-space: nowrap;
 }
+
 .he-order__image {
     display: inline-block;
     margin-right: 12px;
     width: 160px;
     height: 160px;
     position: relative;
+
     .he-order__after {
         position: absolute;
         bottom: 0;
         width: 160px;
         height: 40px;
-        border-radius:0 0 8px 8px;
+        border-radius: 0 0 8px 8px;
         @include background_color("background_color");
         line-height: 40px;
         font-size: 22px;
@@ -299,10 +350,12 @@ export default {
         text-align: center;
     }
 }
+
 .he-order__info {
     margin-left: 12px;
     width: 478px;
 }
+
 .he-order__name {
     font-size: 26px;
     font-family: PingFang SC;
@@ -311,30 +364,36 @@ export default {
     line-height: 1.3;
     margin-top: 9px;
 }
+
 .he-order__attr {
     font-size: 22px;
     color: #999999;
     margin-top: 12px;
 }
+
 .he-goods__buy {
     font-family: PingFang SC;
     font-weight: 500;
-    margin-top:13px;
+    margin-top: 13px;
 }
+
 .he-goods__number {
     font-size: 22px;
     font-family: PingFang SC;
     font-weight: 500;
     color: #999999;
 }
+
 .he-goods__number:before {
     content: "×";
 }
+
 .he-goods__price {
     font-size: 24px;
     color: #222222;
     margin-left: 22px;
 }
+
 .he-order__all {
     font-size: 24px;
     font-family: PingFang SC;
@@ -342,6 +401,7 @@ export default {
     color: #999999;
     line-height: 1.3;
 }
+
 .iconbtn_arrow {
     width: 23px;
     height: 23px;
@@ -349,6 +409,7 @@ export default {
     line-height: 1.3;
     color: RGBA(208, 208, 208, 1);
 }
+
 .he-order__total {
     font-size: 26px;
     font-family: PingFang SC;
@@ -357,33 +418,40 @@ export default {
     line-height: 1.3;
     margin-bottom: 8px;
 }
+
 .he-view {
     margin-top: 8px;
 }
+
 .he-order__price {
     height: 69px;
     line-height: 69px;
     font-size: 24px;
     font-family: PingFang SC;
 }
+
 .he-total {
     display: inline-block;
     margin-right: 4px;
 }
+
 .he-price {
     font-weight: bold;
     color: #222222;
     display: inline-block;
     margin-right: 3px;
 }
+
 .he-light__text {
     font-weight: 500;
     color: #999999;
 }
+
 .he-order__button {
     height: 74px;
     line-height: 74px;
 }
+
 .he-btn {
     height: 56px;
     background: #FFFFFF;
@@ -393,16 +461,19 @@ export default {
     font-weight: 500;
     margin-left: 16px;
 }
+
 .he-btn-0 {
     border: 1px solid #CCCCCC;
     color: #222222;
 }
+
 .he-btn-1 {
     border-style: solid;
     border-width: 1px;
     @include border_color('border_color');
     @include font_color('font_color');
 }
+
 .he-btn-3 {
     width: 142px;
     height: 56px;

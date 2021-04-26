@@ -50,7 +50,6 @@ export default {
         setTab: function (callBack) {
             let _this = this;
             this.page.current = 1;
-            // this.list = [];
             this.isNothing = false;
             this.loading = true;
             this.loadStatus = "loadmore";
@@ -102,7 +101,7 @@ export default {
         // #ifdef H5
         this.$wechat.init();
         // #endif
-        this.tabCur = options.tabCur ? options.tabCur :'all';
+        this.tabCur = options.tabCur ? options.tabCur : 'all';
         for (let i = 0; i < this.tabs.length; i++) {
             if (this.tabs[i].key === this.tabCur) {
                 this.current = i;
