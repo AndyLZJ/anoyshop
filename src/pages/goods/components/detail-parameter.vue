@@ -98,8 +98,7 @@ export default {
             }).then(function(res) {
                 _this.shipping = data[0].name + data[1].name + data[2].name+ ' ￥' + res.freight_price;
             }).catch(function(err) {
-                console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
         },
         selectAddress: function(item) {
@@ -111,8 +110,7 @@ export default {
             }).then(function(res) {
                 _this.shipping = item.province + item.city + item.district + ' ￥' + res.freight_price;
             }).catch(function(err) {
-                console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
         }
     }

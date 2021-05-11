@@ -122,7 +122,7 @@ export default {
                     // #endif
                     resolve(data);
                 }).catch(err => {
-                    this.$toError();
+                    _this.$toError(err);
                     reject(err);
                 });
             });
@@ -137,7 +137,7 @@ export default {
                 }).then(function (res) {
                     resolve(res);
                 }).catch(function (err) {
-                    this.$toError();
+                    _this.$toError(err);
                     reject(err);
                 });
             });
@@ -159,7 +159,7 @@ export default {
                 console.error(err);
             });
         } else {
-            this.$toError();
+            this.$toError(err);
         }
     },
     onReachBottom() {

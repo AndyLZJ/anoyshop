@@ -7,6 +7,7 @@ import getters from "./store/getters";
 
 import hView from "./libs/index.js";
 
+import uniCopy from "./libs/function/uniCopy.js";
 import utils from "./utils/index.js";
 import zIndex from "./utils/zIndex";
 import storageKey from "./utils/storageKey.js";
@@ -52,7 +53,40 @@ Vue.prototype.$heshop = Heshop.connect({
     AppName: "leadmall",
     AppType: AppType,
     AppID: "98c08c25f8136d590c",
-    AppSecret: "3AYpU16dZ1CY7ejqvrE39B351vanLJVD"
+    AppSecret: "3AYpU16dZ1CY7ejqvrE39B351vanLJVD",
+    ErrorFun: function(error) {
+        let status = error.response.status;
+        if ([403, 401, 422].indexOf(status) == -1) {
+            uni.showModal({
+                title: '网络错误',
+                cancelText: "复制错误",
+                confirmText: "刷新页面",
+                content: '网络开小差了,请刷新页面重试~',
+                success: function(res) {
+                    if (res.confirm) {
+                        //#ifdef H5
+                        location.reload();
+                        //#endif
+                        //#ifndef H5
+                        let _page = getCurrentPages()[getCurrentPages().length - 1];
+                        let _route = _page.route;
+                        if (_page.options) {
+                            let _q = "?";
+                            for (let _k in _page.options) {
+                                let _v = _page.options[_k];
+                                _q += _k + "=" + _v + "&";
+                            }
+                            _route = _page.route + _q;
+                        }
+                        uni.reLaunch({ url: "/" + _route });
+                        //#endif
+                    } else if (res.cancel) {
+                        uniCopy({ content: JSON.stringify(error.response.data) })
+                    }
+                }
+            });
+        }
+    }
 });
 
 Vue.prototype.$utils = utils;
@@ -73,6 +107,8 @@ const app = new Vue({
             "/pages/other/error",
             "/pages/page/index",
             "/pages/goods/detail",
+            "/pages/goods/search",
+            "/pages/goods/search-list",
             "/pages/user/index",
             "/pages/categories/index",
             "/pages/goods/list",

@@ -1,36 +1,32 @@
 <template>
-    <view class="goods" :data-theme="theme">
-        <view class="goods-layout"
-              :style="{
+    <view class="goods" :data-theme="theme" :style="{
+                backgroundColor: facade.background_color
+            }">
+        <view class="goods-layout" :style="{
                 paddingLeft: facade.padding + 'px' ,
                 paddingRight:facade.padding + 'px' ,
                 marginLeft: -facade.margin/2 + 'px' ,
                 marginRight:-facade.margin/2 + 'px' ,
-            }"
-              :class="{
+            }" :class="{
                   larger:facade.list_style==1,
                   small:facade.list_style==2,
                   list:facade.list_style==3,
                   swipe:facade.list_style==4
             }">
-            <view
-                class="goods-wrapper"
-                :class="{
+            <view class="goods-wrapper" :class="{
                     white:facade.card_style==1,
                     card:facade.card_style==2,
                     stroke:facade.card_style==3,
                     lucency:facade.card_style==4,
                     chamfer:facade.chamfer_style
-                }"
-                v-for="(item,index) in goodsData" :key="index">
+                }" v-for="(item,index) in goodsData" :key="index">
                 <view class="goods-item" :style="{
                 margin: facade.margin/2 + 'px' ,
             }" @click="navigateToDetail(item.id)" v-if="item.name !== '商品名称'">
                     <view class="goods-item-photo">
                         <view class="goods-item-image">
                             <view class="goods-item-cover">
-                                <image lazy-load style="width: 100%; height: 100%" :src="getGoodsCover(item.slideshow)"
-                                       :mode="mode"></image>
+                                <image lazy-load style="width: 100%; height: 100%" :src="getGoodsCover(item.slideshow)" :mode="mode"></image>
                             </view>
                         </view>
                     </view>
@@ -41,8 +37,7 @@
                         <view class="goods-item-info">
                             <view class="goods-item-price">
                                 <view v-if="content.is_price">
-                                    <span class="goods-item-price__tag">¥</span><span
-                                    class="goods-item-price__val">{{ item.price }}</span>
+                                    <span class="goods-item-price__tag">¥</span><span class="goods-item-price__val">{{ item.price }}</span>
                                 </view>
                             </view>
                             <view class="goods-item-button" @click.stop="cart(item)" v-if="content.is_button">
@@ -98,7 +93,7 @@ export default {
     watch: {
         content: {
             deep: true,
-            handler: function () {
+            handler: function() {
                 this.handleCheck();
             }
         }
@@ -156,7 +151,7 @@ export default {
                 _array.push(item.id);
             });
             if (_array.length > 0) {
-                this.$heshop.goods("GET", {behavior: 'fitment', goods_id: _array.toString()}).then(function (res) {
+                this.$heshop.goods("GET", { behavior: 'fitment', goods_id: _array.toString() }).then(function(res) {
                     if (res.length > 0) {
                         _this.goodsData = res;
                     }
@@ -169,22 +164,22 @@ export default {
          * 加载数据信息
          * @return {[type]} [description]
          */
-        handleGroupList({id, limit}) {
+        handleGroupList({ id, limit }) {
             if (id) {
                 let _this = this;
-                this.$heshop.search("POST", {include: 'goods'}, {
+                this.$heshop.search("POST", { include: 'goods' }, {
                     keyword: {
                         group: id,
                         tab_key: 'onsale'
                     }
-                }).page(1, limit).then(function (res) {
+                }).page(1, limit).then(function(res) {
                     _this.goodsData = res.data.length > 0 ? res.data : _this.goods;
                 }).catch(error => {
                     console.error("获取错误信息", error);
                 });
             }
         },
-        cart: function (item) {
+        cart: function(item) {
             this.goodsId = item.id
         }
     }

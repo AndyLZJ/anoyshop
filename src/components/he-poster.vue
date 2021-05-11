@@ -97,6 +97,7 @@ export default {
                 console.error(err);
                 uni.showToast({
                     title: '生成失败，请检查网络',
+                    icon: 'none',
                     duration: 3000
                 });
                 this.showModal = false;

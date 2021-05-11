@@ -62,8 +62,13 @@ module.exports = {
             });
         },
         // 报错跳转页面
-        $toError: function () {
-            uni.redirectTo({url: "/pages/other/error"});
+        $toError: function (err) {
+            let {data, status} = err;
+            if (status === 422) {
+                this.$h.toast(data[0].message)
+            } else if (status === 403) {
+                this.$h.toast(data.message);
+            }
         },
         $shareAppMessage: function (args) {
             args = args || {

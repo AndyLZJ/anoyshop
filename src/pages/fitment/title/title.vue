@@ -2,6 +2,7 @@
     <view class="title" :style="{ 
                 'padding-top': facade.margin + 'px',
                 'padding-bottom': facade.margin + 'px',
+                'background-color': facade.background_color
             }">
         <view class="title-style1" v-if="content.style == 1" :style="{color: facade.title_color}">
             <view class="title-content" @click="navigateToDetail(content.morelink)">

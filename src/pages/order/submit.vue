@@ -90,8 +90,7 @@ export default {
             }).then(function (res) {
                 _this.detail = res;
             }).catch(function (err) {
-                console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
         },
         submit: function () {
@@ -129,8 +128,8 @@ export default {
                                     url: '/pages/order/successful?order_id=' + res.order_id
                                 });
                             },
-                            fail: function () {
-                                _this.$toError();
+                            fail: function (err) {
+                                _this.$toError(err);
                             },
                             cancel: function () {
                                 uni.redirectTo({
@@ -162,7 +161,7 @@ export default {
                         });
                     }, 1000);
                 } else {
-                    _this.$toError();
+                    _this.$toError(err);
                 }
             });
         }

@@ -93,12 +93,7 @@ export default {
                         data.id = res;
                         _this.list.unshift(data);
                     }).catch(function (err) {
-                        if (err.status === 422) {
-                            _this.$h.toast(err.data[0].message);
-                        } else {
-                            _this.$toError();
-                        }
-                        console.error(err);
+                        _this.$toError(err);
                     });
                 },
                 fail: function (err) {
@@ -116,8 +111,7 @@ export default {
                 _this.$heshop.address('get').then(function (res) {
                     resolve(res);
                 }).catch(function (err) {
-                    console.error(err);
-                    _this.$toError();
+                    _this.$toError(err);
                 });
             });
         },

@@ -39,7 +39,7 @@ export default {
                 }
             }).catch(function (err) {
                 console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
         }
     }

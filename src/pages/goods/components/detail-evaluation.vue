@@ -102,8 +102,7 @@ export default {
             _this.count = res[0].all;
             _this.evaluation = res[1];
         }).catch(function(err) {
-            console.error(err);
-            this.$toError();
+            _this.$toError(err);
         });
     }
 }

@@ -182,9 +182,9 @@ export default {
                     });
                 }
                 callback();
-            }).catch(err => {
-                console.error(err);
-                this.$toError();
+            }).catch(function (err) {
+                _this.$toError(err);
+                _this.isLoading = false;
             });
         },
         shopping: function () {
@@ -233,10 +233,7 @@ export default {
         this.isTouch = true;
         // #ifdef H5
         uni.setNavigationBarTitle({
-            title: '商品详情',
-            success: function () {
-                
-            }
+            title: '商品详情'
         });
         // #endif
         // #ifdef MP-WEIXIN
@@ -255,6 +252,7 @@ export default {
             _this.isLoading = false;
             // #ifdef H5
             _this.$wechat.onMenuShareAppMessage(_this.shareData);
+            _this.$wechat.updateTimelineShareData(_this.shareData);
             setTimeout(() => {
                 let array = [_this.selectEval('#detail-evaluation'), _this.selectEval('#detail-rich')];
                 if (_this.isProductsFeatured) {
@@ -348,6 +346,6 @@ export default {
     position: fixed;
     width: 100%;
     height: 100vh;
-    z-index: 10000;
+    z-index: 1000;
 }
 </style>

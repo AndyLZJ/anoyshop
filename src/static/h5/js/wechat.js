@@ -26,7 +26,9 @@ function init(callback) {
                 "chooseWXPay",
                 "hideAllNonBaseMenuItem",
                 "showMenuItems",
-                "onMenuShareAppMessage"
+                "onMenuShareAppMessage",
+                "updateTimelineShareData",
+                "onMenuShareTimeline"
             ];
             let config = {
                 debug: false,
@@ -48,7 +50,7 @@ function init(callback) {
     }
 }
 
-function chooseWXPay({timestamp, nonceStr, packAge, signType, paySign, success, fail, cancel}) {
+function chooseWXPay({ timestamp, nonceStr, packAge, signType, paySign, success, fail, cancel }) {
     jWeixin.chooseWXPay({
         timestamp: timestamp,
         nonceStr: nonceStr,
@@ -86,7 +88,7 @@ function showMenuItems() {
     });
 }
 
-function onMenuShareAppMessage({title = '', desc = ' ', link = '', imgUrl = ''}) {
+function onMenuShareAppMessage({ title = '', desc = ' ', link = '', imgUrl = '' }) {
     init(function (jssdk) {
         jssdk.onMenuShareAppMessage({
             title: title, // 分享标题
@@ -98,12 +100,28 @@ function onMenuShareAppMessage({title = '', desc = ' ', link = '', imgUrl = ''})
     });
 }
 
+function updateTimelineShareData({ title = '', link = '', imgUrl = '' }) {
+    init(function (jssdk) {
+        jssdk.updateTimelineShareData({
+            title: title, // 分享标题
+            link: link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+            imgUrl: imgUrl, // 分享图标
+        });
+        jssdk.onMenuShareTimeline({
+            title: title, // 分享标题
+            link: link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+            imgUrl: imgUrl, // 分享图标
+        });
+    });
+}
+
 export default {
     isWechat,
     onMenuShareAppMessage,
     showMenuItems,
     hideAllNonBaseMenuItem,
     chooseWXPay,
+    updateTimelineShareData,
     init,
     call
 }

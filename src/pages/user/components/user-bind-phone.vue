@@ -31,10 +31,27 @@ export default {
     },
     methods: {
         navigateTo: function() {
-            this.navigateTo('/pages/user/bind-phone');
+            uni.navigateTo({
+                url: '/pages/user/bind-phone'
+            });
+            this.showModal = false;
         },
         unBind: function () {
-
+            let _this = this;
+            this.$heshop.users('put', {
+                behavior: "removeMobile"
+            }).then(function (response) {
+                console.log(response);
+                _this.$h.toast('解绑手机号成功');
+                _this.$store.state.apply.userInfo.mobile = '';
+                let userInfo = uni.getStorageInfoSync('userInfo');
+                userInfo.mobile = '';
+                uni.setStorageSync('userInfo', userInfo);
+                _this.showModal = false;
+            }).catch(function (error) {
+                console.log(error.data);
+                _this.showModal = false;
+            });
         }
     }
 }

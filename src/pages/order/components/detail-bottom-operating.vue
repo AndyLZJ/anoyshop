@@ -97,8 +97,7 @@ export default {
                 _this.newStatus = 203;
                 _this.isAfterReceipt = true;
             }).catch(function (err) {
-                console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
         },
         navigateTo: function (url) {
@@ -130,8 +129,8 @@ export default {
                             url: '/pages/order/successful?order_id=' + _this.orderId
                         });
                     },
-                    fail: function () {
-                        _this.$toError();
+                    fail: function (err) {
+                        _this.$toError(err);
                     },
                     cancel: function () {
                     }

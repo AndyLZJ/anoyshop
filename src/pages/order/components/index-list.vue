@@ -182,8 +182,8 @@ export default {
                             url: '/pages/order/successful?order_id=' + value.id
                         });
                     },
-                    fail: function () {
-                        _this.$toError();
+                    fail: function (err) {
+                        _this.$toError(err);
                     },
                     cancel: function () {
                     }
@@ -217,8 +217,7 @@ export default {
                 }
                 _this.navigateTo('/pages/order/detail?id=' + data.id);
             }).catch(function (err) {
-                console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
         },
         // 收货订单操作
@@ -241,8 +240,7 @@ export default {
                     data.status = 203;
                 }
             }).catch(function (err) {
-                console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
         }
     },

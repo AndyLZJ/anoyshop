@@ -130,8 +130,7 @@ export default {
                 _this.goods = Object.assign(item, res);
                 _this.isShopping = true;
             }).catch(function(err) {
-                console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
         }
     }

@@ -6,31 +6,31 @@
             <text class="fr">全部订单</text>
         </view>
         <view class="he-user-body flex">
-            <view class="basis-xs flex flex-direction align-center" @click="navigateTo('/pages/order/index?tabCur=unpaid')">
+            <view class="he-user-item flex flex-direction align-center" @click="navigateTo('/pages/order/index?tabCur=unpaid')">
                 <view class="he-status-img" :style="{backgroundImage: 'url(' +ipAddress+'/user-image-unpaid.png)'}">
                     <view v-if="orderTotal.unpaid > 0" class="he-status__num">{{orderTotal.unpaid | setNum}}</view>
                 </view>
                 <text class="he-status-text">待付款</text>
             </view>
-            <view class="basis-xs flex flex-direction align-center" @click="navigateTo('/pages/order/index?tabCur=unsent')">
+            <view class="he-user-item flex flex-direction align-center" @click="navigateTo('/pages/order/index?tabCur=unsent')">
                 <view class="he-status-img" :style="{backgroundImage: 'url(' +ipAddress+'/user-image-unship.png)'}">
                     <view class="he-status__num" v-if="orderTotal.unsent > 0">{{orderTotal.unsent | setNum}}</view>
                 </view>
                 <text class="he-status-text">待发货</text>
             </view>
-            <view class="basis-xs flex flex-direction align-center" @click="navigateTo('/pages/order/index?tabCur=unreceived')">
+            <view class="he-user-item flex flex-direction align-center" @click="navigateTo('/pages/order/index?tabCur=unreceived')">
                 <view class="he-status-img" :style="{backgroundImage: 'url(' +ipAddress+'/user-image-unreceipt.png)'}">
                     <view class="he-status__num" v-if="orderTotal.unreceived > 0">{{orderTotal.unreceived | setNum}}</view>
                 </view>
                 <text class="he-status-text">待收货</text>
             </view>
-            <view class="basis-xs flex flex-direction align-center" @click="navigateTo('/pages/order/index?tabCur=noevaluate')">
+            <view class="he-user-item flex flex-direction align-center" @click="navigateTo('/pages/order/index?tabCur=noevaluate')">
                 <view class="he-status-img" :style="{backgroundImage: 'url(' +ipAddress+'/user-image-evaluation.png)'}">
                     <view class="he-status__num" v-if="orderTotal.noevaluate > 0">{{orderTotal.noevaluate | setNum}}</view>
                 </view>
                 <text class="he-status-text">待评价</text>
             </view>
-            <view class="basis-xs flex flex-direction align-center" @click="navigateTo('/pages/order/after-sales-records')">
+            <view class="he-user-item flex flex-direction align-center" @click="navigateTo('/pages/order/after-sales-records')">
                 <view class="he-status-img" :style="{backgroundImage: 'url(' +ipAddress+'/user-image-aftersale.png)'}">
                     <view class="he-status__num" v-if="orderTotal.orderafter > 0">{{orderTotal.orderafter | setNum}}</view>
                 </view>
@@ -70,6 +70,7 @@ export default {
         background: #FFFFFF;
         border-radius: 16px;
         position: relative;
+        width: 710px;
     }
     .he-user-top {
         height: 84px;
@@ -78,6 +79,10 @@ export default {
     }
     .he-user-body {
         height: 158px;
+        width: 100%;
+    }
+    .he-user-item {
+        width: 20%;
     }
     .he-status-img {
         width: 64px;

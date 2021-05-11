@@ -117,7 +117,7 @@ export default {
     },
     onLoad(options) {
         this.keyword.group = options.group ? options.group : null;
-        this.style = options.goods_show ? options.goods_show : 3;
+        this.style = options.goods_show ? options.goods_show : 1;
         uni.setNavigationBarTitle({
             title: options.name ? options.name : '全部商品'
         })

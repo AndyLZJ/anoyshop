@@ -103,7 +103,7 @@ export default {
                 _this.isShopping = true;
             }).catch(function(err) {
                 console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
         }
     },

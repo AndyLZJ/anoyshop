@@ -92,8 +92,7 @@ export default {
                     _this.$heshop.orderafter('post', _this.data).then(function () {
                         uni.redirectTo({url: '/pages/order/after-sales-records'});
                     }).catch(function (err) {
-                        console.error(err);
-                        _this.$toError();
+                        _this.$toError(err);
                     });
                 }
             });
@@ -102,8 +101,7 @@ export default {
             this.$heshop.orderafter('post', this.data).then(function () {
                 uni.redirectTo({url: '/pages/order/after-sales-records'});
             }).catch(function (err) {
-                console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
             // #endif
         }

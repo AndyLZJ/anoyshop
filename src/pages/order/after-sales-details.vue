@@ -279,8 +279,7 @@ export default {
             this.$heshop.orderafter("post", this.detail).then(function (res) {
                 _this.detail.status = res.status;
             }).catch(function (err) {
-                console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
         },
         navigateTo: function (url) {

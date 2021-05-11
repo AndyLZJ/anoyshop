@@ -341,9 +341,7 @@ export default {
             handler(data) {
                 if (!data) return;
                 // 初始
-                // #ifdef H5
                 this.showSelect = {}
-                // #endif
                 this.number = 1;
                 let newData = JSON.parse(JSON.stringify(data));
                 for (let i = 0, iLen = newData.length; i < iLen; i++) {

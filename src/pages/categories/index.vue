@@ -90,8 +90,7 @@ export default {
                 }).on(res).get();
                 _this.item = _this.list[_this.current];
             }).catch(function(err) {
-                console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
         },
         navigateTo: function() {

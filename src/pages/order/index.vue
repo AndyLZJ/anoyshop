@@ -1,7 +1,7 @@
 <template>
     <view class="he-page-content">
         <he-tabs ref="tabs" :list="tabs" :bar-height="4"
-                 :tabs-style="{position: 'fixed', top: 0, width: '100%', zIndex: 1}" :bar-bottom="24"
+                 :tabs-style="{position: 'fixed', top: 0, width: '100%', zIndex: 2}" :bar-bottom="24"
                  :active-color="themeColor" :bold="false" bg-color="#F5F5F5"
                  :height="114" :is-scroll="false" @change="change" :current="current"></he-tabs>
         <index-list v-model="list" :tab-cur="tabCur"></index-list>
@@ -84,8 +84,7 @@ export default {
                     }
                     // #endif
                 }).catch(function (err) {
-                    console.error(err);
-                    _this.$toError();
+                    _this.$toError(err);
                 });
             });
         },

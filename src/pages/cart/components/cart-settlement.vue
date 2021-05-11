@@ -14,7 +14,7 @@
             </view>
             <button class="cu-btn he-button" @click="submit('submit')">结算</button>
         </view>
-        <button v-else class="cu-btn he-btn__delete" @click="submit('del')">删除</button>
+        <button v-else class="cu-btn he-btn__delete" @click="del('del')">删除</button>
     </view>
 </template>
 
@@ -61,6 +61,9 @@ export default {
         setAll: function () {
             this.all = !this.all;
             this.$emit('setAll', !this.all);
+        },
+        del: function (item) {
+            this.$emit(item);
         }
     }
 }

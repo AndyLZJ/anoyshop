@@ -11,6 +11,7 @@
             <component v-if="item.name == 'tabs'" is="tabs" :facade="item.facade" :content="item.content" :data-index="index"></component>
             <component v-else-if="item.name === 'rubik'" is="rubik" :facade="item.facade" :content="item.content" :data-index="index"></component>
             <component v-if="item.name == 'advertising'" is="advertising" :facade="item.facade" :content="item.content" :data-index="index"></component>
+            <component v-if="item.name == 'notice'" is="notice" :facade="item.facade" :content="item.content" :data-index="index"></component>
             <component v-if="item.name == 'separate'" is="separate" :facade="item.facade" :content="item.content" :data-index="index"></component>
         </view>
     </scroll-view>
@@ -28,6 +29,7 @@ import goods from '../fitment/goods/goods.vue';
 import advertising from '../fitment/advertising/advertising.vue';
 import tabs from '../fitment/tabs/tabs.vue';
 import rubik from "../fitment/rubik/rubik.vue";
+import notice from "../fitment/notice/notice.vue";
 
 export default {
     components: {
@@ -41,7 +43,8 @@ export default {
         navigation,
         tabs,
         titles,
-        rubik
+        rubik,
+        notice
     },
     data() {
         return {

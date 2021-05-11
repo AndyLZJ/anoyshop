@@ -127,8 +127,7 @@ export default {
                     }
                     // #endif
                 }).catch(function (err) {
-                    console.error(err);
-                    _this.$toError();
+                    _this.$toError(err);
                 });
             })
 
@@ -148,8 +147,7 @@ export default {
                 });
                 _this.$h.toast("删除订单成功");
             }).catch(function (err) {
-                console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
         },
     },

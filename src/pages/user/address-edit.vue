@@ -100,8 +100,7 @@ export default {
                     _this.form.district = res.countyName;
                 },
                 fail: function (err) {
-                    console.error(err);
-                    _this.$toError();
+                    _this.$toError(err);
                 }
             });
         },
@@ -110,8 +109,7 @@ export default {
             this.$heshop.address('get', id).then(function (res) {
                 _this.form = res;
             }).catch(function (err) {
-                console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
         },
         setArea: function (e) {
@@ -133,8 +131,7 @@ export default {
                         delta: 1
                     });
                 }).catch(function (err) {
-                    console.error(err);
-                    _this.$toError();
+                    _this.$toError(err);
                 });
             } else {
                 this.$heshop.address('post', this.form).then(function (res) {
@@ -147,11 +144,7 @@ export default {
                         delta: 1
                     });
                 }).catch(function (err) {
-                    if (err.status === 422) {
-                        _this.$h.toast(err.data[0].message);
-                    } else {
-                        _this.$toError();
-                    }
+                    _this.$toError(err);
                 });
             }
         },
@@ -166,8 +159,7 @@ export default {
                     delta: 1
                 });
             }).catch(function (err) {
-                console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
         },
         selectArea: function (area) {

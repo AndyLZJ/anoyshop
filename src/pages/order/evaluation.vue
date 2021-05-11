@@ -118,8 +118,7 @@ export default {
                     });
                 });
             }).catch(function (err) {
-                console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             });
         },
         submit: function () {
@@ -133,8 +132,7 @@ export default {
                 });
                 uni.navigateBack({delta: 1});
             }).catch(function (err) {
-                console.error(err);
-                _this.$toError();
+                _this.$toError(err);
             })
         },
         uploaded: function (list, index) {
@@ -144,7 +142,7 @@ export default {
         }
     },
     onLoad(options) {
-        options.id ? this.getDetail(parseInt(options.id)) : this.$toError();
+        options.id ? this.getDetail(parseInt(options.id)) : null;
         this.orderId = parseInt(options.id);
     },
     filters: {

@@ -121,7 +121,7 @@ export default {
     },
     onLoad(options) {
         this.keyword.group = options.group ? options.group : null;
-        this.style = options.goods_show ? options.goods_show : 0;
+        this.style = options.goods_show ? options.goods_show : 1;
     },
     onShow() {
         let _this = this;

@@ -8,5 +8,5 @@ export default {
     theme_color: 'theme_color',
     tab_bar: 'tab_bar',
     address_json: 'address_json',
-    shipping_address: 'shipping_address'
+    shipping_address: 'shipping_address',
 }

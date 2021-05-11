@@ -58,8 +58,7 @@ export default {
                         size: +headers['x-pagination-per-page'] ? +headers['x-pagination-per-page']: +headers['X-Pagination-Per-Page']
                     }
                 }).catch(function(err) {
-                    console.error(err);
-                    _this.$toError();
+                    _this.$toError(err);
                 });
             });
         },

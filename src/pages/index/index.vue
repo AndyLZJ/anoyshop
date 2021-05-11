@@ -22,6 +22,8 @@
         </he-navbar>
         <!-- #endif -->
         <view v-for="(item,index) in page" :key="index">
+            <component v-if="item.name === 'notice'" :id="item.name +'_' + index" is="notice" :facade="item.facade"
+                       :content="item.content" :data-index="index"></component>
             <component v-if="item.name === 'rubik'" :id="item.name +'_' + index" is="rubik" :facade="item.facade"
                        :content="item.content" :data-index="index"></component>
             <component v-else-if="item.name === 'title'" :id="item.name +'_' + index" is="titles" :facade="item.facade"
@@ -48,6 +50,9 @@
                        :content="item.content" :data-index="index"></component>
             <!--#endif-->
         </view>
+        <!-- #ifndef H5 -->
+        <favorites v-model="isFavorites"></favorites>
+        <!--#endif-->
     </view>
 </template>
 <script type="text/javascript">
@@ -66,9 +71,11 @@ import search from '../fitment/search/search.vue';
 import goods from '../fitment/goods/goods.vue';
 import tabs from '../fitment/tabs/tabs.vue';
 import rubik from "../fitment/rubik/rubik.vue";
+import notice from "../fitment/notice/notice.vue";
 import advertising from '../fitment/advertising/advertising.vue';
 // #ifndef H5
 import wechat from '../fitment/wechat/wechat.vue';
+import favorites from "./components/favorites.vue";
 // #endif
 import heNavbar from "../../components/he-navbar.vue";
 import {mapGetters} from "vuex";
@@ -85,9 +92,11 @@ export default {
         tabs,
         titles,
         rubik,
+        notice,
         advertising,
         // #ifndef H5
         wechat,
+        favorites,
         // #endif
         heNavbar
     },
@@ -109,7 +118,7 @@ export default {
             // #ifndef H5
             title: '首页',
             // #endif
-            menuButtonInfo: menuButtonInfo
+            menuButtonInfo: menuButtonInfo,
         };
     },
     // #ifdef H5
@@ -123,10 +132,18 @@ export default {
                 if (this.$store.state.apply.is_login) {
                     this.is_skip = false;
                 } else {
-                    this.$store.dispatch('user/weChatLogin', {code}).then(function () {
+                    this.$store.dispatch('user/weChatLogin', { code }).then(function() {
                         _this.is_skip = false;
-                        window.location.href = _this.$pageURL;
-                    }).catch(function () {
+                        uni.redirectTo({
+                            url: q,
+                            fail() {
+                                uni.switchTab({
+                                    url: q
+                                });
+                            }
+                        });
+                        //window.location.href = _this.$pageURL;
+                    }).catch(function() {
                         _this.is_skip = false;
                     });
                 }
@@ -151,7 +168,13 @@ export default {
                 lineHeight: `${this.statusBarHeight + this.navbarHeight}px`,
                 // #endif
             }
+        },
+        // #ifndef H5
+        // 是否显示收藏小程序
+        isFavorites:  function ( ) {
+            return !uni.getStorageSync('isfavorites');
         }
+        // #endif
     },
     /**
      * 页面显示时

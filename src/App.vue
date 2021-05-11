@@ -1,7 +1,7 @@
 <script>
 export default {
     globalData: {},
-    onLaunch: function (options) {
+    onLaunch: function(options) {
         return new Promise(() => {
             let _this = this;
             // #ifdef H5
@@ -14,7 +14,7 @@ export default {
             this.$store.dispatch('setting/subscribe');
         });
     },
-    onShow: function () {
+    onShow: function() {
         // 获取商城设置
         this.$store.dispatch('setting/getSetting');
         // 获取主题色
@@ -24,8 +24,7 @@ export default {
         this.$store.dispatch('user/authLogin');
         // #endif
     },
-    onHide: function () {
-    }
+    onHide: function() {}
 }
 </script>
 <style lang="scss">
@@ -33,13 +32,19 @@ export default {
 @import "colorui/icon.css";
 @import "static/css/index.css";
 @import "static/css/icon.css";
+
 // #ifdef H5
 uni-page-head {
     display: none;
 }
+
 uni-toast {
     z-index: 10078 !important;
 }
-// #endif
 
+uni-modal {
+    z-index: 10078 !important;
+}
+
+// #endif
 </style>
