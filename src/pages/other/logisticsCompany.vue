@@ -77,7 +77,6 @@ export default {
         list.sort((a, b) => a.name.localeCompare(b.name, "zh"));
         let data = _this.sortFriend(list);
         _this.list = data;
-        console.log(_this.list);
       });
   },
   methods: {
@@ -119,7 +118,11 @@ export default {
       map["#"] = [];
       let firstCharUpper;
       list.forEach(function (item) {
-        firstCharUpper = _this.getFirstUpperChar(item.name);
+        console.log(item);
+        firstCharUpper = item.coding.substr(0,1);
+        if (item.name === '亚马逊物流') {
+          firstCharUpper = 'Y';
+        }
         if (map.hasOwnProperty(firstCharUpper)) {
           map[firstCharUpper].push(item);
         } else {

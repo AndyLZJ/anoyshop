@@ -28,7 +28,9 @@
             :goods-amount="detail.goods_amount"
             :freight-amount="detail.freight_amount"
             :pay-amount="detail.pay_amount"
+            :coupon-reduced="detail.coupon_reduced"
             :status="detail.status"
+            :store-reduced="detail.store_reduced"
           ></detail-price>
           <detail-order-info
             :order-sn="detail.order_sn"
@@ -143,7 +145,6 @@ export default {
                 _this.freight.state = response.state;
               })
               .catch(function (err) {
-                console.log(err);
                 _this.freight.status = err.status;
               });
           }

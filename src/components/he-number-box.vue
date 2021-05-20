@@ -208,7 +208,6 @@ export default {
                 this.inputVal = value;
                 this.handleChange(value, type);
             } catch (e) {
-                console.error(e);
             }
         },
         onBlur(event) {

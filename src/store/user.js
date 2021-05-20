@@ -9,7 +9,8 @@ const user = {
             unreceived: 0,
             unsent: 0
         },
-        shippingAddress: []
+        shippingAddress: [],
+        couponTotal: 0
     },
     mutations: {
         userInfo(state, data) {
@@ -21,6 +22,9 @@ const user = {
         },
         shippingAddress(state, data) {
             state.shippingAddress = data;
+        },
+        couponTotal(state, data) {
+            state.couponTotal = data;
         }
     },
     getters: {
@@ -32,10 +36,16 @@ const user = {
         },
         getAddress: function (state) {
             return state.shippingAddress;
+        },
+        couponTotal: function (state) {
+            return state.couponTotal;
         }
     },
     actions: {
-        decryptUserInfo: function ({dispatch, commit}) {
+        decryptUserInfo: function ({
+            dispatch,
+            commit
+        }) {
             let $heshop = this._vm.$heshop;
             let $pageURL = this._vm.$pageURL;
             // #ifndef H5
@@ -50,12 +60,12 @@ const user = {
                                 encryptedData: res.encryptedData
                             }).then(function (res) {
                                 dispatch('visit');
-                                commit('apply/login', res, {root: true});
+                                commit('apply/login', res, {
+                                    root: true
+                                });
                                 uni.navigateBack({
                                     delta: 1
                                 });
-                            }).catch(function (error) {
-                                console.error(error);
                             });
                         }
                     });
@@ -83,11 +93,14 @@ const user = {
             }).then(function (res) {
                 document.location.replace(res.url);
             }).catch(function (error) {
-                console.error(error);
+                _this.$toError(error);
             });
             // #endif
         },
-        getUserProfile: function ({dispatch, commit}) {
+        getUserProfile: function ({
+            dispatch,
+            commit
+        }) {
             let $heshop = this._vm.$heshop;
             uni.login({
                 provider: 'weixin',
@@ -108,7 +121,9 @@ const user = {
                                 encryptedData: res.encryptedData
                             }).then(function (res) {
                                 dispatch('visit');
-                                commit('apply/login', res, {root: true});
+                                commit('apply/login', res, {
+                                    root: true
+                                });
                                 uni.navigateBack({
                                     delta: 1
                                 });
@@ -117,9 +132,6 @@ const user = {
                             });
                         }
                     });
-                },
-                fail: function (res) {
-                    console.log(res);
                 }
             });
         },
@@ -128,13 +140,14 @@ const user = {
                 let $heshop = this._vm.$heshop;
                 $heshop.users('get', {
                     behavior: 'visit'
-                }).then(function () {
-                }).catch(function (err) {
+                }).then(function () {}).catch(function (err) {
                     console.error(err);
                 });
             }
         },
-        getOrderTotal: function ({commit}) {
+        getOrderTotal: function ({
+            commit
+        }) {
             let $heshop = this._vm.$heshop;
             $heshop.order('get', {
                 behavior: 'tabcount'
@@ -145,7 +158,10 @@ const user = {
             });
         },
         // #ifdef H5
-        weChatLogin: function ({commit, dispatch}, options) {
+        weChatLogin: function ({
+            commit,
+            dispatch
+        }, options) {
             if (!options.code) return;
             let $heshop = this._vm.$heshop;
             return new Promise(function (resolve, reject) {
@@ -155,7 +171,9 @@ const user = {
                 }, {
                     code: options.code
                 }).then(function (res) {
-                    commit('apply/login', res, {root: true});
+                    commit('apply/login', res, {
+                        root: true
+                    });
                     dispatch('visit');
                     resolve();
                 }).catch(function (err) {
@@ -163,10 +181,13 @@ const user = {
                     reject();
                 });
             })
-            
+
         },
         // #endif
-        getAddress: function ({commit, state}) {
+        getAddress: function ({
+            commit,
+            state
+        }) {
             let $heshop = this._vm.$heshop;
             let $h = this._vm.$h;
             if ($h.test.isEmpty(state.shippingAddress)) {
@@ -199,11 +220,22 @@ const user = {
                         }
                     });
                 },
-                complete: function () {
-                }
+                complete: function () {}
+            });
+        },
+        // #endif
+        getCouponTotal: function ({
+            commit
+        }) {
+            let $heshop = this._vm.$heshop;
+            $heshop.coupon('get', {
+                behavior: 'tabcount'
+            }).then(function (res) {
+                commit('couponTotal', res.can_use_coupon_num);
+            }).catch(function (err) {
+                console.error(err);
             });
         }
-        // #endif
     }
 };
 

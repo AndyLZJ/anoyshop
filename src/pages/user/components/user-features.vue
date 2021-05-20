@@ -138,24 +138,26 @@ export default {
         uni.login({
           success(res) {
             if (res.code) {
-              _this.$heshop
-                .users(
-                  "put",
-                  {
-                    behavior: "bindMobile",
-                  },
-                  {
-                    code: res.code,
-                    encryptedData: e.detail.encryptedData,
-                    iv: e.detail.iv,
-                  }
-                )
-                .then(function (res) {
-                  _this.$store.state.apply.userInfo.mobile = res.mobile;
-                })
-                .catch(function (err) {
-                  _this.$toError(err);
-                });
+              setTimeout(function () {
+                _this.$heshop.users(
+                    "put",
+                    {
+                      behavior: "bindMobile",
+                    },
+                    {
+                      code: res.code,
+                      encryptedData: e.detail.encryptedData,
+                      iv: e.detail.iv,
+                    }
+                  ).then(function (res) {
+                    _this.$store.state.apply.userInfo.mobile = res.mobile;
+                    let userInfo = uni.getStorageSync("userInfo");
+                    userInfo.mobile = res.mobile;
+                    uni.setStorageSync("userInfo", userInfo);
+                  }).catch(function (err) {
+                    _this.$toError(err);
+                  });
+              }, 800);
             } else {
               _this.$toError(res);
             }

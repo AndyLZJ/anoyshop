@@ -40,8 +40,7 @@ export default {
             let _this = this;
             this.$heshop.users('put', {
                 behavior: "removeMobile"
-            }).then(function (response) {
-                console.log(response);
+            }).then(function () {
                 _this.$h.toast('解绑手机号成功');
                 _this.$store.state.apply.userInfo.mobile = '';
                 let userInfo = uni.getStorageInfoSync('userInfo');
@@ -49,7 +48,7 @@ export default {
                 uni.setStorageSync('userInfo', userInfo);
                 _this.showModal = false;
             }).catch(function (error) {
-                console.log(error.data);
+                _this.$toError(error);
                 _this.showModal = false;
             });
         }

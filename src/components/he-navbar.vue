@@ -174,13 +174,11 @@ export default {
             let style = {};
             // 导航栏宽度，如果在小程序下，导航栏宽度为胶囊的左边到屏幕左边的距离
             style.height = this.navbarHeight + 'px';
-            console.log(this.navbarHeight);
-            // // 如果是各家小程序，导航栏内部的宽度需要减少右边胶囊的宽度
+            // 如果是各家小程序，导航栏内部的宽度需要减少右边胶囊的宽度
             // #ifdef MP
             let rightButtonWidth = systemInfo.windowWidth - menuButtonInfo.left;
             style.marginRight = rightButtonWidth + 'px';
             // #endif
-            console.log(style);
             return style;
         },
         // 整个导航栏的样式

@@ -53,7 +53,8 @@
         {
             "path": "pages/cart/index",
             "style": {
-                "navigationBarTitleText": "购物车"
+                "navigationBarTitleText": "购物车",
+                "enablePullDownRefresh": true
             }
         },
         {
@@ -92,7 +93,10 @@
             }
         },
         {
-            "path": "pages/other/preview"
+            "path": "pages/other/preview",
+            "style": {
+                "navigationStyle": "custom"
+            }
         },
         {
             "path": "pages/other/map"
@@ -190,6 +194,19 @@
             "path": "pages/page/index",
             "style": {
                 "navigationBarTitleText": "微页面"
+            }
+        },
+        {
+            "path": "pages/coupon/index",
+            "style": {
+                "navigationBarTitleText": "我的优惠券"
+            }
+        },
+        {
+            "path": "pages/coupon/detail",
+            "style": {
+                "navigationBarTitleText": "优惠券详情",
+                "enablePullDownRefresh": true
             }
         }
     ],

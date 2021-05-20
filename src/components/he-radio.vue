@@ -46,8 +46,6 @@ export default {
     @include background_color('background_color');
 }
 .he-select {
-    height: 20px;
-    width: 20px;
     font-size: 20px;
     color: #FFFFFF;
 }

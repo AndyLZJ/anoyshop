@@ -10,12 +10,14 @@ const goods = {
     },
     getters: {
         shareGoods: function (state) {
-            console.log(state.shareGoods);
             return state.shareGoods;
         }
     },
     actions: {
-        shareGoods: function ({getters, commit}) {
+        shareGoods: function ({
+            getters,
+            commit
+        }) {
             let $heshop = this._vm.$heshop;
             if (getters.shareGoods.length === 0) {
                 $heshop.goods('get', {
@@ -27,7 +29,10 @@ const goods = {
                 });
             }
         },
-        emptyShareGoods: function ({commit, dispatch}) {
+        emptyShareGoods: function ({
+            commit,
+            dispatch
+        }) {
             commit('shareGoods', []);
             dispatch('shareGoods');
         }

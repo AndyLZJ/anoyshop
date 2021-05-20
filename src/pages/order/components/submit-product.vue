@@ -4,7 +4,8 @@
         <view class="he-product-list">
             <view class="he-item flex" v-for="(item, index) in goodsData" :key="index">
                 <view class="he-item__image__box">
-                    <image class="he-item__image" :src="item.goods_image"></image>
+                    <he-image :width="160" :height="160" :src="item.goods_image"></he-image>
+                    <!-- <image class="he-item__image" :src="item.goods_image"></image> -->
                     <view class="he-item__fail" v-if="item.failure_reason">
                         <view class="he-item__text">失效</view>
                     </view>

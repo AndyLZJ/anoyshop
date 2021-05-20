@@ -78,7 +78,6 @@ export default {
                     this.page = JSON.parse(value.content);
                     this.handleLoadData(value, id, key);
                 } else {
-                    console.error("没有数据信息集结在")
                     this.handleLoadData(null, id, key);
                 }
             } catch (error) {

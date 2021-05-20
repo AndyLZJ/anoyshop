@@ -17,6 +17,7 @@
       @click="maskClick"
     ></he-mask>
     <view
+      @touchmove.stop.prevent="() => {}"
       class="he-drawer-content flex flex-direction align-center"
       :style="[boxStyle]"
     >
@@ -66,7 +67,6 @@ export default {
   computed: {
     boxStyle: function () {
       let { top, height } = this.menuButtonInfo;
-
       return {
         top: top + height + uni.upx2px(12) + "px",
       };

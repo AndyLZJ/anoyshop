@@ -2,7 +2,7 @@
 // 所以这里做一个兼容polyfill的兼容处理
 if (!String.prototype.padStart) {
     // 为了方便表示这里 fillString 用了ES6 的默认参数，不影响理解
-    String.prototype.padStart = function(maxLength, fillString = ' ') {
+    String.prototype.padStart = function (maxLength, fillString = ' ') {
         if (Object.prototype.toString.call(fillString) !== "[object String]") throw new TypeError(
             'fillString must be String');
         let str = this;
@@ -28,7 +28,6 @@ function timeFormat(dateTime = null, fmt = 'yyyy-mm-dd') {
     if (!dateTime) dateTime = Number(new Date());
     // 如果dateTime长度为10或者13，则为秒和毫秒的时间戳，如果超过13位，则为其他的时间格式
     if (dateTime.toString().length == 10) dateTime *= 1000;
-    console.log(dateTime)
     let date = new Date(dateTime);
     let ret;
     let opt = {

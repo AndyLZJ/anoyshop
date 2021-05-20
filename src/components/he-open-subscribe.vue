@@ -42,8 +42,8 @@ export default {
         openSubscribeSuccess() {
             this.$emit('open-subscribe-success', this.digital);
         },
-        openSubscribeError(e) {
-            this.$emit('open-subscribe-success', this.digital);
+        openSubscribeError() {
+            // this.$emit('open-subscribe-success', this.digital);
         }
     }
 }

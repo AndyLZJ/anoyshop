@@ -173,9 +173,9 @@ export default {
       for (let i = 0; i < this.list.length; i++) {
         if (this.list[i].is_select) data.push(this.list[i].id);
       }
-      console.log(data);
       if (!this.$h.test.isEmpty(data)) {
         let _this = this;
+        _this.isEdit = false;
         this.$heshop
           .cart("delete", data)
           .then(function () {
@@ -280,6 +280,7 @@ export default {
       for (let i = 0; i < this.list.length; i++) {
         this.list[i].is_select = false;
       }
+      this.all = false;
     },
     setAll: function (bool) {
       if (this.isEdit) {
@@ -320,9 +321,52 @@ export default {
             all += price * +newVal[i].goods_number;
           }
         }
-
         this.select = data;
+
+        if (!this.isEdit) {
+          if (data.length === this.list.length) {
+            this.all = true;
+          } else {
+            this.all = false;
+          }
+        } else {
+          let num = 0;
+          for (let i = 0; i < this.failure.length; i++) {
+            if (this.failure[i].is_select === true) {
+              num++;
+            }
+          }
+          if (
+            num + this.select.length ===
+            this.failure.length + this.list.length
+          ) {
+            this.all = true;
+          } else {
+            this.all = false;
+          }
+        }
         this.total = all;
+      },
+      deep: true,
+    },
+    failure: {
+      handler(newVal) {
+        let num = 0;
+        for (let i = 0; i < newVal.length; i++) {
+          if (newVal[i].is_select === true) {
+            num++;
+          }
+        }
+        if (this.isEdit) {
+          if (
+            num + this.select.length ===
+            this.failure.length + this.list.length
+          ) {
+            this.all = true;
+          } else {
+            this.all = false;
+          }
+        }
       },
       deep: true,
     },
@@ -336,6 +380,13 @@ export default {
         }
       },
     },
+  },
+  onPullDownRefresh() {
+    this.getList();
+    setTimeout(function () {
+      uni.stopPullDownRefresh();
+    }, 1000);
+    this.isEdit = false;
   },
 };
 </script>

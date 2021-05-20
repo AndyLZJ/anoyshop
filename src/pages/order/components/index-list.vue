@@ -166,7 +166,7 @@ export default {
                 // #ifdef MP_WEIXIN
                 value.status = 201;
                 uni.navigateTo({
-                    url: '/pages/order/successful?order_id=' + value.id
+                    url: '/pages/order/successful?order_id=' + value.id + '&order_sn=' + value.order_sn
                 });
                 // #endif
                 // #ifdef H5
@@ -179,7 +179,7 @@ export default {
                     success: function () {
                         value.status = 201;
                         uni.navigateTo({
-                            url: '/pages/order/successful?order_id=' + value.id
+                            url: '/pages/order/successful?order_id=' + value.id + '&order_sn=' + value.order_sn
                         });
                     },
                     fail: function (err) {

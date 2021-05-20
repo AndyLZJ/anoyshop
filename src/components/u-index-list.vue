@@ -78,8 +78,11 @@
 			}
 		},
 		watch: {
-			scrollTop() {
-				this.updateData();
+			scrollTop: {
+				handler() {
+					this.updateData();
+				},
+				// immediate: true
 			}
 		},
 		computed: {
@@ -156,7 +159,6 @@
 				return -1;
 			},
 			onScroll() {
-				console.count('onScroll');
 				const {
 					children = []
 				} = this;
@@ -253,6 +255,12 @@
 					});
 				}
 			}
+		},
+		mounted() {
+			// this.setRect();
+			setTimeout(() => {
+				this.setRect();
+			})
 		}
 	};
 </script>

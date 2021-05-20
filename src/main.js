@@ -17,7 +17,7 @@ import resourceUrl from "./libs/function/resourceUrl";
 import heImage from "./components/he-image.vue";
 
 // #ifndef H5
-import siteinfo from "siteInfo";
+import siteinfo from "./siteinfo.js";
 // #endif
 // #ifdef H5
 import VueLazyload from "vue-lazyload";
@@ -54,6 +54,27 @@ Vue.prototype.$heshop = Heshop.connect({
     AppType: AppType,
     AppID: "98c08c25f8136d590c",
     AppSecret: "3AYpU16dZ1CY7ejqvrE39B351vanLJVD",
+    AppConfig: {
+        loginReset: "/app/leadmall/reset",
+    },
+    redLoadFun: function(argument) {
+        //#ifdef H5
+        location.reload();
+        //#endif
+        //#ifndef H5
+        let _page = getCurrentPages()[getCurrentPages().length - 1];
+        let _route = _page.route;
+        if (_page.options) {
+            let _q = "?";
+            for (let _k in _page.options) {
+                let _v = _page.options[_k];
+                _q += _k + "=" + _v + "&";
+            }
+            _route = _page.route + _q;
+        }
+        uni.reLaunch({ url: "/" + _route });
+        //#endif
+    },
     ErrorFun: function(error) {
         let status = error.response.status;
         if ([403, 401, 422].indexOf(status) == -1) {
@@ -117,6 +138,7 @@ const app = new Vue({
             "/pages/index/demo",
             "/pages/user/bind-phone",
             "/pages/other/logisticsCompany",
+            "/pages/coupon/detail",
         ],
         loginPage: "/pages/user/login"
     }),

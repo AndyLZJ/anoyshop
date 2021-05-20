@@ -171,6 +171,7 @@ const setting = {
         subscribe: function ({commit}) {
             let $heshop = this._vm.$heshop;
             $heshop.subscribe('get').then(function (response) {
+                console.log(response);
                 commit('subscribe', response);
             });
         }

@@ -57,9 +57,6 @@ export default {
         copy: function (content) {
             this.uniCopy({content});
         }
-    },
-    mounted() {
-        console.log(this.freightObj);
     }
 }
 </script>

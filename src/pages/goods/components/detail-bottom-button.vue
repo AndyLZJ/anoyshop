@@ -97,6 +97,7 @@ export default {
     background: #FFFFFF;
     position: fixed;
     bottom: 0;
+    z-index: 10;
     width: 100%;
 }
 .he-icon__button .iconfont {

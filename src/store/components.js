@@ -62,7 +62,6 @@ const components = {
                 res.forEach((item) => {
                     state.search.top += parseInt(item);
                 });
-                console.log(state.search.top);
             }).catch(function(err) {
                 console.log(err);
             });

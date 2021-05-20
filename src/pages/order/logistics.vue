@@ -60,8 +60,6 @@ export default {
                 }
                 list.reverse();
                 _this.list = list;
-            }).catch(function (err) {
-                console.error(err);
             });
         }
     },
