@@ -1,19 +1,26 @@
 /*
+ * @Description: 
  * @Author: qinuoyun
- * @Date:   2020-11-23 16:45:10
- * @Last Modified by:   qinuoyun
- * @Last Modified time: 2021-03-17 11:45:51
+ * @Date: 2020-11-23 16:45:10
+ * @LastEditTime: 2021-05-25 09:09:09
+ * @LastEditors: fjt
  */
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin') //最新版本copy-webpack-plugin插件暂不兼容，推荐v5.0.0
 
-let externals = process.env.UNI_PLATFORM === 'h5' ? {'siteInfo': 'siteInfo'} : {'siteInfo': 'commonjs2 ../siteinfo.js'};
-let copy = process.env.UNI_PLATFORM !== 'h5' ? [{
-    from: path.join(__dirname, 'src/siteinfo.js'),
-    to: 'siteinfo.js'
-}, {from: path.join(__dirname, 'src/version.js'), to: 'version.js'}] : [];
-copy.push.apply(copy, [{from: path.join(__dirname, 'we7'), to: 'we7', toType: "dir"}]);
+let externals = process.env.UNI_PLATFORM === 'h5' ? {
+    'siteInfo': 'siteInfo'
+} : {
+    'siteInfo': 'commonjs2 ../siteinfo.js'
+};
 
+
+let plugins = process.env.UNI_PLATFORM !== 'h5' ? [new CopyWebpackPlugin({
+    patterns: [{
+        from: path.join(__dirname, 'src/siteinfo.js'),
+        to: 'siteinfo.js'
+    }],
+})] : []
 module.exports = {
     css: {
         loaderOptions: {
@@ -34,11 +41,7 @@ module.exports = {
     },
     configureWebpack: {
         externals: externals,
-        plugins: [
-            new CopyWebpackPlugin({
-                patterns: copy,
-            }),
-        ],
+        plugins:plugins,
     },
     chainWebpack: (config) => {
         // // 发行或运行时启用了压缩时会生效

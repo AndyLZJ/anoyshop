@@ -17,7 +17,7 @@ import resourceUrl from "./libs/function/resourceUrl";
 import heImage from "./components/he-image.vue";
 
 // #ifndef H5
-import siteinfo from "./siteinfo.js";
+import siteinfo from "siteInfo";
 // #endif
 // #ifdef H5
 import VueLazyload from "vue-lazyload";
@@ -57,23 +57,9 @@ Vue.prototype.$heshop = Heshop.connect({
     AppConfig: {
         loginReset: "/app/leadmall/reset",
     },
-    redLoadFun: function(argument) {
-        //#ifdef H5
-        location.reload();
-        //#endif
-        //#ifndef H5
-        let _page = getCurrentPages()[getCurrentPages().length - 1];
-        let _route = _page.route;
-        if (_page.options) {
-            let _q = "?";
-            for (let _k in _page.options) {
-                let _v = _page.options[_k];
-                _q += _k + "=" + _v + "&";
-            }
-            _route = _page.route + _q;
-        }
-        uni.reLaunch({ url: "/" + _route });
-        //#endif
+    redLoadFun: function() {
+        Vue.prototype.$store.commit('apply/logout');
+        uni.reLaunch({url: '/pages/user/login'});
     },
     ErrorFun: function(error) {
         let status = error.response.status;

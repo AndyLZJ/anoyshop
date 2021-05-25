@@ -26,7 +26,7 @@
                 <!-- #ifndef H5 -->
                 <button hover-class="" open-type="contact" show-message-card
                         :send-message-img="pic" :send-message-title="name"
-                        send-message-path="/pages/goods/detail"
+                        :send-message-path="'/pages/goods/detail?id=' + goodsId"
                         class="he-service__button he-service__btn flex flex-direction align-center justify-center">
                   <view class="iconfont iconproductdetails_tab_customerservice_online"></view>
                   <text class="he-service__text">聊天</text>
@@ -54,7 +54,10 @@ export default {
         name: String,
         slideShow: Array,
         shoppingType: String,
-        stocks: Number
+        stocks: Number,
+        goodsId: {
+            type: [Number, String]
+        }
     },
     components: {
         heTell

@@ -374,6 +374,9 @@ export default {
   onShareAppMessage() {
     return this.$shareAppMessage(this.shareData);
   },
+  onShareTimeline() {
+    return this.$shareAppMessage(this.shareData);
+  },
   // #endif
   onPullDownRefresh() {
     this.getDetail();

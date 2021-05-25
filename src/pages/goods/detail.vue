@@ -84,6 +84,7 @@
         :name="detail.name"
         :stocks="detail.stocks"
         :shopping-type.sync="shoppingType"
+        :goods-id="detail.id"
         v-model="isShopping"
       ></detail-bottom-button>
       <he-cart
@@ -344,6 +345,9 @@ export default {
   // #endif
   // #ifndef H5
   onShareAppMessage() {
+    return this.$shareAppMessage(this.shareData);
+  },
+  onShareTimeline() {
     return this.$shareAppMessage(this.shareData);
   },
   // #endif

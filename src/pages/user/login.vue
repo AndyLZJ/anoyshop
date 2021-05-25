@@ -48,7 +48,11 @@ export default {
       getUserProfile: "user/getUserProfile",
     }),
     notLogin: function () {
-      uni.navigateBack({ delta: 1 });
+      if (getCurrentPages().length === 1) {
+        uni.reLaunch({ url: "/pages/index/index" });
+      } else {
+        uni.navigateBack({ delta: 1 });
+      }
     },
   },
   // #ifndef H5

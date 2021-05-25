@@ -144,6 +144,9 @@ module.exports = {
     onShareAppMessage() {
         return this.$shareAppMessage();
     },
+    onShareTimeline() {
+        return this.$shareAppMessage();
+    },
     onAddToFavorites() {
         return {
             title: this.storeSetting.name,

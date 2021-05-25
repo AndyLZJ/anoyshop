@@ -64,12 +64,13 @@ export default {
         },
         scrollToLower: function() {
             let _this = this;
+            console.log(this.goodsShow);
             if (this.page.count > this.page.current) {
                 this.loadStatus = 'loading';
                 this.page.current ++;
                 this.getGoodsList(this.group).then(function(res) {
                     if (_this.goodsShow !== 2) {
-                        _this.goods = res;
+                        _this.goods.push(...res);
                     } else {
                         _this.sliceArray(res);
                     }

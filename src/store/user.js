@@ -1,3 +1,7 @@
+// #ifndef H5
+import siteinfo from "siteInfo";
+// #endif
+
 const user = {
     namespaced: true,
     state: {
@@ -59,7 +63,7 @@ const user = {
                                 iv: res.iv,
                                 encryptedData: res.encryptedData
                             }).then(function (res) {
-                                dispatch('visit');
+                                // dispatch('visit');
                                 commit('apply/login', res, {
                                     root: true
                                 });
@@ -85,6 +89,9 @@ const user = {
                 route = route + query;
             }
             let url = $pageURL + '&_skip=' + route;
+            console.log('login__');
+            console.log(url);
+            console.log('login__');
             $heshop.login("post", {
                 type: 'wechat',
                 include: 'login_url',
@@ -120,7 +127,7 @@ const user = {
                                 iv: res.iv,
                                 encryptedData: res.encryptedData
                             }).then(function (res) {
-                                dispatch('visit');
+                                // dispatch('visit');
                                 commit('apply/login', res, {
                                     root: true
                                 });
@@ -140,9 +147,8 @@ const user = {
                 let $heshop = this._vm.$heshop;
                 $heshop.users('get', {
                     behavior: 'visit'
-                }).then(function () {}).catch(function (err) {
-                    console.error(err);
-                });
+                }).then(function () {
+                }).catch(function (err) {});
             }
         },
         getOrderTotal: function ({
@@ -174,7 +180,7 @@ const user = {
                     commit('apply/login', res, {
                         root: true
                     });
-                    dispatch('visit');
+                    // dispatch('visit');
                     resolve();
                 }).catch(function (err) {
                     console.error(err);

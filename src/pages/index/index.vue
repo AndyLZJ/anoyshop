@@ -233,7 +233,7 @@ export default {
   beforeCreate() {
     let _this = this;
     this.is_skip = true;
-    let q = this.$h.getQueryVariable("_skip");
+    let q = window.location.search.substring(1).split("_skip=")[1];
     if (q) {
       let code = this.$h.getQueryVariable("code");
       if (code) {
@@ -252,7 +252,6 @@ export default {
                   });
                 },
               });
-              //window.location.href = _this.$pageURL;
             })
             .catch(function () {
               _this.is_skip = false;
@@ -286,7 +285,6 @@ export default {
    * @return {[type]} [description]
    */
   onShow() {
-    console.log('loading');
     this.handlePageLoading();
     // #ifndef H5
     // 是否显示收藏小程序
@@ -331,7 +329,9 @@ export default {
      */
     handleLoadData(value) {
       let _this = this;
-      this.$heshop.pages("GET").then(function (data) {
+      this.$heshop
+        .pages("GET")
+        .then(function (data) {
           _this.background = data.background;
           if (!(value && _this.$heshop.MD5(value) == _this.$heshop.MD5(data))) {
             _this.page = JSON.parse(data.content);
@@ -350,7 +350,8 @@ export default {
             _this.title = data.name;
             // #endif
           }
-        }).catch(function (error) {
+        })
+        .catch(function (error) {
           _this.$toError(error);
         });
     },
@@ -415,5 +416,4 @@ export default {
 .iconsearchbar_search {
   font-size: 24px;
 }
-
 </style>
