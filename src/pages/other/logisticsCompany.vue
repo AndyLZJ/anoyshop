@@ -118,24 +118,26 @@ export default {
       map["#"] = [];
       let firstCharUpper;
       list.forEach(function (item) {
-        console.log(item);
-        firstCharUpper = item.coding.substr(0,1);
-        if (item.name === '亚马逊物流') {
-          firstCharUpper = 'Y';
-        }
+        firstCharUpper = _this.getFirstUpperChar(item.pinyin);
         if (map.hasOwnProperty(firstCharUpper)) {
           map[firstCharUpper].push(item);
         } else {
           map["#"].push(item);
         }
       });
-      return map;
+      let obj = {};
+      for (let key in map) {
+        if (map[key].length) obj[key] = map[key];
+      }
+      return obj;
     },
     back: function (row) {
       uni.redirectTo({
         url:
           "/pages/order/fill-return-information?name=" +
           row.name +
+          "&code=" +
+          row.code +
           "&id=" +
           this.id,
       });

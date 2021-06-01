@@ -126,15 +126,17 @@ export default {
           _this.detail = res;
           if (res.status >= 202 && res.freight && res.freight.type === 1) {
             _this.loading = true;
-            let { freight_sn, mobile, logistics_company } = res.freight;
+            let { freight_sn, logistics_company } = res.freight;
             _this.$heshop
               .express("post", {
                 no: freight_sn,
-                mobile: mobile,
+                mobile: res.buyer.mobile,
                 name: logistics_company,
               })
               .then(function (response) {
-                if (response.state >= 1) {
+				  console.log(response);
+                if (response.state === 0) {
+					console.log(response.list[response.list.length - 1]);
                   _this.freight = response.list[response.list.length - 1];
                 } else {
                   _this.freight.message = response.message;

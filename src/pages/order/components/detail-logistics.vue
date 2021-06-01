@@ -4,7 +4,7 @@
         <template v-if="freight.type === 1">
             <template v-if="$h.test.isEmpty(freightObj.status)">
                 <view class="flex-sub flex align-center" @click="navigateTo">
-                    <view class="flex-sub he-text" v-if="!freightObj.state">
+                    <view class="flex-sub he-text" v-if="freightObj.state !== 0">
                         {{ freightObj.message }}
                     </view>
                     <view class="flex-sub he-data_now" v-else>

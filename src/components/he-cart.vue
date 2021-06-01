@@ -448,6 +448,11 @@ export default {
           this.showSelect.goods_param = this.showSelect.param_value;
           this.$emit("setSelect", this.showSelect);
         }
+        if (newData.length > 1) {
+          newData[1].image_status = false;
+        } else if (newData.length > 2) {
+          newData[2].image_status = false;
+        }
         this.showParam = newData;
       },
       immediate: true,
@@ -527,11 +532,14 @@ export default {
 }
 
 .he-type-0 {
-  height: 84px;
+//   height: 84px;
   text-align: center;
 
   .he-price {
     margin-bottom: 10px;
+  }
+  .he-stock {
+      margin-bottom: 10px;
   }
 }
 

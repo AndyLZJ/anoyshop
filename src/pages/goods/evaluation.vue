@@ -36,7 +36,7 @@
               v-for="num in 5"
               :key="num"
               class="iconfont iconevaluate_star"
-              :class="item.star >= num+1 ? 'he-star__1' : 'he-star__0'"
+              :class="item.star >= num + 1 ? 'he-star__1' : 'he-star__0'"
             ></text>
             <!--#endif-->
             <!--#ifdef H5-->
@@ -128,6 +128,7 @@ export default {
         count: 1,
         size: 10,
       },
+      loading: false,
     };
   },
   methods: {
@@ -135,12 +136,16 @@ export default {
     setTab: function (active) {
       // 禁止双击
       if (this.tabKey === active) return;
+      if (this.loading) return;
+      this.loading = true;
       let _this = this;
       this.tabKey = active;
       this.isNoMore = false;
       this.page.current = 1;
+      this.list = [];
       this.getList().then(function (res) {
         _this.list = res;
+        _this.loading = false;
         _this.isNothing = _this.list.length === 0;
       });
     },

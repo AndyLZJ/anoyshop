@@ -14,7 +14,7 @@
                 </view>
             </view>
             <view class="he-column" id="u-right-column">
-                <view class="he-item" v-for="(item, index) in rightList" :key="index" @tap="navigateTo(item)">
+                <view class="he-item" v-for="(item) in rightList" :key="item.id" @tap="navigateTo(item)">
                     <he-image :height="347" :width="347" :src="item.slideshow[0]"></he-image>
                     <view class="he-item__name he-line-2">{{item.name}}</view>
                     <view class="he-item__footer flex justify-between align-center">

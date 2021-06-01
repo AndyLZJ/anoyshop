@@ -53,7 +53,7 @@
                 )
               "
             >
-              <view class="flex-sub he-text" v-if="exchangeFlow.state < 1">
+              <view class="flex-sub he-text" v-if="exchangeFlow.state !== 0">
                 {{ exchangeFlow.message }}
               </view>
               <view class="flex-sub he-data_now" v-else>
@@ -101,7 +101,7 @@
                 )
               "
             >
-              <view class="flex-sub he-text" v-if="returnFlow.state < 1">
+              <view class="flex-sub he-text" v-if="returnFlow.state !== 0">
                 {{ returnFlow.message }}
               </view>
               <view class="flex-sub he-data_now" v-else>
@@ -167,7 +167,12 @@
                 <view class="flex align-center justify-end">
                   <text class="he-item-price-prompt">优惠后</text>
                   <text class="he-item-payAmount"
-                    >￥{{ Math.floor(detail.goods.pay_amount/detail.goods.goods_number*100)/100 }}</text
+                    >￥{{
+                      Math.floor(
+                        (detail.goods.pay_amount / detail.goods.goods_number) *
+                          100
+                      ) / 100
+                    }}</text
                   >
                 </view>
                 <view class="he-item-price-prompt"
@@ -179,18 +184,6 @@
                   >￥{{ detail.goods.goods_price }}</view
                 >
               </template>
-              <!-- <view class="flex align-center justify-end">
-                <text class="he-weak-text">优惠后</text>
-                <text class="he-price"
-                  >¥{{
-                    Number(detail.goods.goods_price) === 0
-                      ? "0.00"
-                      : Number(detail.goods.goods_price) /
-                        detail.goods.goods_number
-                  }}</text
-                >
-              </view>
-              <view class="he-weak-text">¥{{ detail.goods.goods_price }}</view> -->
             </view>
           </view>
         </view>
@@ -353,7 +346,10 @@
               class="cu-btn he-btn"
               @tap="
                 navigateTo(
-                  '/pages/order/fill-return-information?id=' + detail.id
+                  '/pages/order/fill-return-information?id=' +
+                    detail.id +
+                    '&mobile=' +
+                    detail.return_address.mobile
                 )
               "
             >
@@ -469,9 +465,7 @@ export default {
     },
     getDetail: function (id, behavior) {
       let _this = this;
-      this.$heshop
-        .orderafter("get", id, behavior)
-        .then(function (res) {
+      this.$heshop.orderafter("get", id, behavior).then(function (res) {
           _this.detail = res;
           // 换货物流
           if (res.type === 2 && res.status === 200) {
@@ -479,14 +473,12 @@ export default {
               let no = res.merchant_freight_info.freight_sn;
               let mobile = res.return_address.mobile;
               let name = res.merchant_freight_info.logistics_company;
-              _this.$heshop
-                .express("post", {
+              _this.$heshop.express("post", {
                   no,
                   mobile,
                   name,
-                })
-                .then(function (res) {
-                  if (res.state >= 1) {
+                }).then(function (res) {
+                  if (res.state === 0) {
                     _this.exchangeFlow = res.list[res.list.length - 1];
                   } else {
                     _this.exchangeFlow.message = res.message;
@@ -496,8 +488,7 @@ export default {
                   _this.exchangeFlow.name = name;
                   _this.exchangeFlow.state = res.state;
                   _this.loading = false;
-                })
-                .catch(function (err) {
+                }).catch(function (err) {
                   if (err.status === 403) {
                     _this.exchangeFlow.status = 403;
                   }
@@ -505,11 +496,7 @@ export default {
                 });
             }
           }
-          if (
-            res.status === 122 ||
-            res.status === 132 ||
-            ((res.type === 2 || res.type === 1) && res.status === 200)
-          ) {
+          if (res.status === 122 ||res.status === 132 ||((res.type === 2 || res.type === 1) && res.status === 200)) {
             // 退货物流
             _this.loading = true;
             let no = res.user_freight_info.freight_sn;
@@ -522,7 +509,7 @@ export default {
                 name,
               })
               .then(function (res) {
-                if (res.state >= 1) {
+                if (res.state === 0) {
                   _this.returnFlow = res.list[res.list.length - 1];
                 } else {
                   _this.returnFlow.message = res.message;
@@ -540,8 +527,7 @@ export default {
           } else {
             _this.loading = false;
           }
-        })
-        .catch(function (err) {
+        }).catch(function (err) {
           if (err.status === 403 || err.status === 422) {
             uni.showToast({
               title: "售后订单不存在",
@@ -645,7 +631,7 @@ export default {
         }
       },
     },
-  },
+  }
 };
 </script>
 

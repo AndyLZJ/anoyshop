@@ -1,7 +1,7 @@
 <template>
     <view class="detail-bottom-button safe-area-inset-bottom" :data-theme="theme">
         <view class="he-buttons flex">
-            <view class="he-icon__button flex flex-direction align-center" @tap="switchTab('/pages/index/index')">
+            <view class="he-icon__button flex flex-direction align-center" @tap="reLaunch('/pages/index/index')">
                 <view class="iconfont iconnav_home_normal"></view>
                 <text class="he-icon__text">首页</text>
             </view>
@@ -9,7 +9,7 @@
                 <view class="iconfont iconproductdetails_tab_customerservice"></view>
                 <text class="he-icon__text">客服</text>
             </view>
-            <view class="he-icon__button flex flex-direction align-center" @tap="switchTab('/pages/cart/index')">
+            <view class="he-icon__button flex flex-direction align-center" @tap="reLaunch('/pages/cart/index')">
                 <view class="iconfont iconnav_shoppingcart_normal"></view>
                 <text class="he-icon__text">购物车</text>
             </view>
@@ -82,8 +82,8 @@ export default {
         }
     },
     methods: {
-        switchTab: function(url) {
-            uni.switchTab({
+        reLaunch: function(url) {
+            uni.reLaunch({
                 url: url
             });
         },

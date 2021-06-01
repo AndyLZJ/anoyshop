@@ -72,6 +72,7 @@ export default {
         logistics_company: "",
         freight_sn: "",
         images: [],
+        code: "",
       },
       list: [],
     };
@@ -79,6 +80,8 @@ export default {
   onLoad(option) {
     this.id = option.id;
     this.user_freight_info.logistics_company = option.name;
+    this.user_freight_info.code = option.code;
+    this.user_freight_info.mobile = option.mobile;
   },
   methods: {
     uploaded: function (v) {
@@ -115,7 +118,11 @@ export default {
     },
     navigateTo: function () {
       uni.redirectTo({
-        url: "/pages/other/logisticsCompany?id=" + this.id,
+        url:
+          "/pages/other/logisticsCompany?id=" +
+          this.id +
+          "&mobile=" +
+          this.user_freight_info.mobile,
       });
     },
   },

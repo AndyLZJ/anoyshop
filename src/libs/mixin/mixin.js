@@ -1,4 +1,4 @@
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 
 module.exports = {
     data() {
@@ -63,7 +63,7 @@ module.exports = {
         },
         // 报错跳转页面
         $toError: function (err) {
-            let {data, status} = err;
+            let { data, status } = err;
             if (status === 422) {
                 this.$h.toast(data[0].message)
             } else if (status === 403) {
@@ -78,7 +78,7 @@ module.exports = {
             }
             return args;
         },
-        uniCopy: function ({content, success, error}) {
+        uniCopy: function ({ content, success, error }) {
             if (!content) return error('the content can not be blank');
             content = typeof content === 'string' ? content : content.toString();
             // #ifndef H5

@@ -166,6 +166,10 @@ export default {
             }
         }
         // #endif
+        let _this = this;
+        setTimeout(function () {
+            console.log(_this.ctrl);
+        }, 2000)
     },
     beforeDestroy() {
         // #ifdef H5 || APP-PLUS
