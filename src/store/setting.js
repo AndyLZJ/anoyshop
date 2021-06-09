@@ -1,3 +1,4 @@
+
 const setting = {
     namespaced: true,
     state: {
@@ -81,10 +82,20 @@ const setting = {
         },
         subscribe: function (state) {
             return state.subscribe;
-        }
+        },
+        getCartIndex: function (state) {
+            let list = state.tab_bar.data;
+            let index = -1;
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].link.path === '/pages/cart/index') {
+                    index = i;
+                }
+            }
+            return index;
+        },
     },
     actions: {
-        getSetting: function ({commit}) {
+        getSetting: function ({ commit }) {
             let $heshop = this._vm.$heshop;
             let $storageKey = this._vm.$storageKey;
             if (uni.getStorageSync($storageKey.setting)) {
@@ -98,12 +109,12 @@ const setting = {
                 });
             }
         },
-        resetting: function ({dispatch}) {
+        resetting: function ({ dispatch }) {
             let $storageKey = this._vm.$storageKey;
             uni.removeStorageSync($storageKey.setting);
             dispatch('getSetting');
         },
-        getLocation: function ({commit}) {
+        getLocation: function ({ commit }) {
             uni.getLocation({
                 type: 'wgs84',
                 success: function (res) {
@@ -111,14 +122,14 @@ const setting = {
                 }
             });
         },
-        getSys: function ({commit}) {
+        getSys: function ({ commit }) {
             uni.getSystemInfo({
                 success: function (res) {
                     commit('setSys', res);
                 }
             });
         },
-        getTheme: function ({commit}) {
+        getTheme: function ({ commit }) {
             let $heshop = this._vm.$heshop;
             let $storageKey = this._vm.$storageKey;
             if (uni.getStorageSync($storageKey.theme_color)) {
@@ -134,30 +145,35 @@ const setting = {
                 });
             }
         },
-        getTabBar: function ({commit}) {
-            let $heshop = this._vm.$heshop;
-            let $storageKey = this._vm.$storageKey;
-            if (uni.getStorageSync($storageKey.tab_bar)) {
-                commit('tabBar', uni.getStorageSync($storageKey.tab_bar));
-            } else {
-                $heshop.fitment('post', {
-                    keyword: 'tabbar'
-                }).then(function (res) {
-                    let data = JSON.parse(res.content);
-                    commit('tabBar', data);
-                    uni.setStorageSync($storageKey.tab_bar, data);
-                }).catch(function (err) {
-                    console.error(err);
-                });
-            }
+        getTabBar: function ({ commit }) {
+            return new Promise((resolve, reject) => {
+                let $heshop = this._vm.$heshop;
+                let $storageKey = this._vm.$storageKey;
+                if (uni.getStorageSync($storageKey.tab_bar)) {
+                    commit('tabBar', uni.getStorageSync($storageKey.tab_bar));
+                    resolve();
+                } else {
+                    $heshop.fitment('post', {
+                        keyword: 'tabbar'
+                    }).then(function (res) {
+                        let data = JSON.parse(res.content);
+                        commit('tabBar', data);
+                        uni.setStorageSync($storageKey.tab_bar, data);
+                        resolve();
+                    }).catch(function (err) {
+                        console.error(err);
+                        reject();
+                    });
+                }
+            })
         },
-        getAddress: function ({commit}) {
+        getAddress: function ({ commit }) {
             let $heshop = this._vm.$heshop;
             let $storageKey = this._vm.$storageKey;
             if (uni.getStorageSync($storageKey.address_json)) {
                 commit('addressJson', uni.getStorageSync($storageKey.address_json));
             } else {
-                $heshop.search('post', {include: 'setting'}, {
+                $heshop.search('post', { include: 'setting' }, {
                     keyword: 'addressjson',
                     content_key: ''
                 }).then(function (res) {
@@ -168,7 +184,7 @@ const setting = {
                 });
             }
         },
-        subscribe: function ({commit}) {
+        subscribe: function ({ commit }) {
             let $heshop = this._vm.$heshop;
             $heshop.subscribe('get').then(function (response) {
                 console.log(response);

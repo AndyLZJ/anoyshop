@@ -13,7 +13,6 @@
             <component v-if="item.name == 'advertising'" is="advertising" :facade="item.facade" :content="item.content" :data-index="index"></component>
             <component v-if="item.name == 'notice'" is="notice" :facade="item.facade" :content="item.content" :data-index="index"></component>
             <component v-if="item.name == 'separate'" is="separate" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            <component v-if="item.name == 'coupon'" is="coupon" :facade="item.facade" :content="item.content" :data-index="index"></component>
         </view>
     </scroll-view>
 </template>
@@ -31,7 +30,6 @@ import advertising from '../fitment/advertising/advertising.vue';
 import tabs from '../fitment/tabs/tabs.vue';
 import rubik from "../fitment/rubik/rubik.vue";
 import notice from "../fitment/notice/notice.vue";
-import coupon from "../fitment/coupon/coupon.vue";
 
 export default {
     components: {
@@ -46,8 +44,7 @@ export default {
         tabs,
         titles,
         rubik,
-        notice,
-        coupon
+        notice
     },
     data() {
         return {
@@ -77,14 +74,7 @@ export default {
             let key = 'micropage' + id;
             try {
                 const value = this.getStorageSync(key);
-                //设置页面名称
                 if (value) {
-                    uni.setNavigationBarTitle({
-                        title: value.name,
-                    });
-                    //#ifdef H5
-                    document.title = value.name
-                    //#endif
                     this.page = JSON.parse(value.content);
                     this.handleLoadData(value, id, key);
                 } else {
@@ -100,13 +90,6 @@ export default {
          */
         handleLoadData(value, id, key) {
             this.$heshop.pages("GET", parseInt(id)).then(data => {
-                //设置页面名称
-                uni.setNavigationBarTitle({
-                    title: data.name,
-                });
-                //#ifdef H5
-                document.title = value.name
-                //#endif
                 if (value && (this.$heshop.MD5(value) == this.$heshop.MD5(data))) {
                     return;
                 } else {

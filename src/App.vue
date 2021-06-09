@@ -1,7 +1,14 @@
+<!--
+ * @Description: 
+ * @Author: fjt
+ * @Date: 2021-05-24 13:22:32
+ * @LastEditTime: 2021-06-08 15:55:01
+ * @LastEditors: fjt
+-->
 <script>
 export default {
   globalData: {},
-  onLaunch: function (options) {
+  onLaunch: function () {
     return new Promise(() => {
       let _this = this;
       // #ifdef H5
@@ -10,7 +17,24 @@ export default {
       // #endif
       // 获取设备设置
       this.$store.dispatch("setting/getSys");
-      this.$store.dispatch("setting/getTabBar");
+      this.$store.dispatch("setting/getTabBar").then(function () {
+        let index = _this.$store.getters["setting/getCartIndex"];
+        let is_login = uni.getStorageSync("token");
+        if (is_login) {
+          _this.$store.dispatch("cart/getCartNumber").then((response) => {
+            if (response !== 0) {
+              uni.setTabBarBadge({
+                index: index,
+                text: response + "",
+              });
+            } else {
+              uni.removeTabBarBadge({
+                index: index,
+              });
+            }
+          });
+        }
+      });
       this.$store.dispatch("setting/subscribe");
     });
   },

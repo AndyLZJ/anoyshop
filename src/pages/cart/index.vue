@@ -227,13 +227,11 @@ export default {
         })
         .then(function (res) {
           for (let i = 0; i < _this[_this.key].length; i++) {
-            if (
-              _this[_this.key][i].goods_id === parseInt(res.goods_id) &&
-              _this[_this.key][i].goods_param === res.goods_param
-            ) {
+            if (_this[_this.key][i].id === item.cart_id) {
               _this[_this.key][i].show_goods_param = res.show_goods_param;
               _this[_this.key][i].goods_param = res.goods_param;
               _this[_this.key][i].goods_number = res.goods_number;
+              _this[_this.key][i].goods_image = res.goods_image;
             }
           }
           if (item.cart_id !== res.id) {
@@ -314,7 +312,9 @@ export default {
         let all = 0;
         let data = [];
         this.total = 0;
+        let goodsnum = 0;
         for (let i = 0; i < newVal.length; i++) {
+          goodsnum += newVal[i].goods_number;
           if (newVal[i].is_select === true) {
             let price = +newVal[i].price;
             data.push(newVal[i]);
@@ -346,6 +346,18 @@ export default {
           }
         }
         this.total = all;
+        goodsnum = goodsnum > 99 ? "99+" : goodsnum + "";
+        let index = this.$store.getters["setting/getCartIndex"];
+        if (goodsnum != 0) {
+          uni.setTabBarBadge({
+            index: index,
+            text: goodsnum,
+          });
+        } else {
+          uni.removeTabBarBadge({
+            index: index,
+          });
+        }
       },
       deep: true,
     },
@@ -377,6 +389,20 @@ export default {
           this.getList().then(function () {
             _this.$store.commit("cart/setCartAdd", false);
           });
+          let index = this.$store.getters["setting/getCartIndex"];
+          this.$store.dispatch("cart/getCartNumber").then((response) => {
+            if (response !== 0) {
+              uni.setTabBarBadge({
+                index: index,
+                text: response + "",
+              });
+            } else {
+              uni.removeTabBarBadge({
+                index: index,
+              });
+            }
+            this.$store.commit("cart/cartNum", false);
+          });
         }
       },
     },
@@ -387,6 +413,22 @@ export default {
       uni.stopPullDownRefresh();
     }, 1000);
     this.isEdit = false;
+  },
+  onShow() {
+    if (this.isLogin) {
+      let index = this.$store.getters["setting/getCartIndex"];
+      if (index > -1) {
+        this.$store.dispatch("cart/getCartNumber").then((response) => {
+          console.log(response);
+          if (response !== 0) {
+            uni.setTabBarBadge({
+              index: index,
+              text: response + "",
+            });
+          }
+        });
+      }
+    }
   },
 };
 </script>

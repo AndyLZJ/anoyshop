@@ -59,27 +59,12 @@
                     ]"
                     :key="valueIndex"
                   >
-                    <view
-                      class="he-item__close flex justify-center align-center"
-                      @click.stop="navigateTo(colValue)"
-                    >
-                      <text
-                        class="iconfont iconproductdetails_popup_enlargethepicture"
-                      ></text>
+                    <view class="he-item__close flex justify-center align-center" @click.stop="navigateTo(imageList,rowIndex,valueIndex)">
+                      <text class="iconfont iconproductdetails_popup_enlargethepicture"></text>
                     </view>
-                    <he-image
-                      :height="195"
-                      :width="192"
-                      :image-style="{ borderRadius: '16rpx' }"
-                      class="he-attr__img"
-                      :src="colValue.image"
-                    ></he-image>
-                    <view
-                      class="he-attr__name flex justify-center align-center"
-                    >
-                      <text class="he-text he-line-2">{{
-                        colValue.value
-                      }}</text>
+                    <he-image :height="195" :width="192" :image-style="{ borderRadius: '16rpx' }" class="he-attr__img" :src="colValue.image"></he-image>
+                    <view  class="he-attr__name flex justify-center align-center">
+                      <text class="he-text he-line-2">{{colValue.value}}</text>
                     </view>
                   </view>
                 </template>
@@ -88,11 +73,8 @@
           </view>
         </view>
         <view class="he-number flex justify-between align-center">
-          <view class="he-text"
-            >数量
-            <span class="he-min-number"
-              >（{{ minNumber }}{{ goods.unit }}起购）</span
-            >
+          <view class="he-text">数量
+            <span class="he-min-number">（{{ minNumber }}{{ goods.unit }}起购）</span>
           </view>
           <he-number-box
             :disabled-input="true"
@@ -322,13 +304,19 @@ export default {
         });
       });
     },
-    navigateTo: function (col) {
+    navigateTo: function (row, rowIndex, valueIndex) {
+        let index = 0;
+        if (rowIndex === 0) {
+            index = valueIndex;
+        } else {
+            index = row[rowIndex].length + valueIndex + 1;
+        }
       uni.navigateTo({
         url:
           "/pages/other/preview?pic=" +
-          encodeURIComponent(col.image) +
-          "&name=" +
-          col.value,
+          encodeURIComponent(JSON.stringify(row)) +
+          "&index=" +
+          index,
       });
     },
     setRow: function (row) {
@@ -380,7 +368,22 @@ export default {
         })
         .then(function () {
           _this.$store.commit("cart/setCartAdd", true);
+          _this.$store.commit("cart/cartNum", true);
+          console.log(_this.$store.state.cart);
           _this.$h.toast("加入购物车成功");
+          let index = _this.$store.getters["setting/getCartIndex"];
+          _this.$store.dispatch("cart/getCartNumber").then((response) => {
+            if (response !== 0) {
+              uni.setTabBarBadge({
+                index: index,
+                text: response + "",
+              });
+            } else {
+              uni.removeTabBarBadge({
+                index: index,
+              });
+            }
+          });
         })
         .catch(function (err) {
           if (err.status === 401) {
@@ -532,14 +535,14 @@ export default {
 }
 
 .he-type-0 {
-//   height: 84px;
+  //   height: 84px;
   text-align: center;
 
   .he-price {
     margin-bottom: 10px;
   }
   .he-stock {
-      margin-bottom: 10px;
+    margin-bottom: 10px;
   }
 }
 

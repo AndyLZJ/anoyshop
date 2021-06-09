@@ -1,11 +1,22 @@
+/*
+ * @Description: 
+ * @Author: fjt
+ * @Date: 2021-04-26 12:37:36
+ * @LastEditTime: 2021-06-08 10:57:49
+ * @LastEditors: fjt
+ */
 const cart = {
     namespaced: true,
     state: {
-        cart_add: false
+        cart_add: false,
+        cart_num: false
     },
     mutations: {
         setCartAdd(state, data) {
             state.cart_add = data;
+        },
+        cartNum(state, data) {
+            state.cart_num = data;
         }
     },
     getters: {
@@ -13,7 +24,20 @@ const cart = {
             return state.cart_add;
         }
     },
-    actions: {}
+    actions: {
+        getCartNumber: function ({  }) {
+            return new Promise((resolve, reject) => {
+                let $heshop = this._vm.$heshop;
+                $heshop.cart('get', {
+                    behavior: "number",
+                }).then(function (response) {
+                    resolve(response);
+                }).catch(function () {
+                    reject();
+                });
+            })
+        }
+    }
 };
 
 export default cart;

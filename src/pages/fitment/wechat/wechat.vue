@@ -1,16 +1,34 @@
 <template>
-    <view class="le-wechat">
-        <official-account></official-account>
+    <view class="le-wechat" v-show="is_show">
+        <official-account @load="bindload" @error="binderror"></official-account>
     </view>
 </template>
 <script type="text/javascript">
 export default {
     name: 'wechat',
+    data() {
+        return {
+            is_show: false,
+            height: '0px;'
+        };
+    },
+    mounted() {
+
+    },
+    methods: {
+        bindload: function(detail) {
+            this.is_show = true;
+            this.height = "auto"
+        },
+        binderror: function(detail) {
+            this.is_show = false;
+            this.height = "0px"
+        }
+    }
 };
 </script>
 <style lang="scss" scoped="true">
 .le-wechat {
-    height: 170px;
     width: 100%;
 
     .le-wechat__tips {

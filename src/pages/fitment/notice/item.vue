@@ -132,6 +132,18 @@ export default {
             this.initSize()
         })
     },
+
+    /**
+     * 数据监听
+     * @type {Object}
+     */
+    watch: {
+        speed() {
+            this.$nextTick(() => {
+                this.initSize()
+            })
+        }
+    },
     // #ifdef APP-NVUE
     beforeDestroy() {
         this.stopAnimation = true
@@ -278,10 +290,11 @@ export default {
 
 .uni-noticebar-icon {
     margin-right: 10rpx;
+
     image {
-    	margin-top: 5px;
-    	width: 40rpx;
-    	height: 40rpx;
+        margin-top: 5px;
+        width: 40rpx;
+        height: 40rpx;
     }
 }
 

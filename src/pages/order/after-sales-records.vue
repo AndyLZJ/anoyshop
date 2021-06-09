@@ -1,6 +1,11 @@
 <template>
   <view class="he-page-content" :data-theme="theme">
-    <view class="he-item" v-for="(item, index) in list" :key="index">
+    <view
+      class="he-item"
+      v-for="(item, index) in list"
+      :key="index"
+      @click="navigateTo('/pages/order/after-sales-details?id=' + item.id)"
+    >
       <view class="he-item__top flex justify-between align-center">
         <view class="he-status__sign">
           <view
@@ -41,6 +46,12 @@
         </view>
       </view>
       <view
+        v-if="
+          (item.type !== 2 && item.status === 200) ||
+          item.status >= 200 ||
+          item.status === 121 ||
+          item.status === 131
+        "
         class="he-item__footer flex align-center"
         :class="
           item.type !== 2 && item.status === 200
@@ -54,13 +65,26 @@
         </view>
         <view>
           <button
-            class="cu-btn"
+            class="cu-btn he-btn-over"
             v-if="item.status >= 200"
-            @click="setClose(item)"
+            @click.stop="setClose(item)"
           >
             删除记录
           </button>
-          <button class="cu-btn" @click="navigateTo(item.id)">查看详情</button>
+          <button
+            class="cu-btn he-btn-fill"
+            @click.stop="
+              navigateTo(
+                '/pages/order/fill-return-information?id=' +
+                  item.id +
+                  '&mobile=' +
+                  item.return_address.mobile
+              )
+            "
+            v-if="item.status === 121 || item.status === 131"
+          >
+            填写退货信息
+          </button>
         </view>
       </view>
     </view>
@@ -142,8 +166,8 @@ export default {
     },
   },
   methods: {
-    navigateTo: function (id) {
-      uni.navigateTo({ url: "/pages/order/after-sales-details?id=" + id });
+    navigateTo: function (url) {
+      uni.navigateTo({ url: url });
     },
     getList: function () {
       let _this = this;
@@ -341,15 +365,17 @@ export default {
 .cu-btn {
   height: 56px;
   background: #ffffff;
-  border: 1px solid #cccccc;
   border-radius: 28px;
   font-size: 24px;
   font-family: PingFang SC;
   font-weight: 500;
+}
+.he-btn-over {
+  border: 1px solid #cccccc;
+  border-radius: 28px;
   color: #222222;
 }
-
-.cu-btn:last-child {
+.he-btn-fill {
   margin-left: 16px;
   @include font_color("font_color");
   border-style: solid;

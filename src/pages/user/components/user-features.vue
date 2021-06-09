@@ -56,7 +56,7 @@
       </view>
       <view class="iconfont iconbtn_arrow"></view>
     </view>
-    <view class="he-item flex justify-between" @click="isPhone = true">
+    <view class="he-item flex justify-between" @click="isTell = true">
       <view class="flex">
         <view class="iconfont iconpersonalcenter_contactus"></view>
         <text class="he-text">联系我们</text>
@@ -64,7 +64,13 @@
       <view class="iconfont iconbtn_arrow"></view>
     </view>
     <!--联系我们-->
-    <he-tell v-model="isPhone" :phone-number="storeSetting.phone"></he-tell>
+    <user-tell
+      v-model="isTell"
+      :is-he-tell.sync="isHeTell"
+      :is-qr-code.sync="isQrcode"
+    ></user-tell>
+    <he-tell v-model="isHeTell" :phone-number="storeSetting.phone"></he-tell>
+    <user-qrcode v-model="isQrcode"></user-qrcode>
     <!--清理缓存-->
     <he-clear-storage v-model="isClear"></he-clear-storage>
     <!--#ifdef H5-->
@@ -74,19 +80,24 @@
   </view>
 </template>
 <script>
-import heTell from "@/components/he-tell.vue";
+import userQrcode from "./user-qrcode.vue";
 import heClearStorage from "@/components/he-clear-storage.vue";
 // #ifdef H5
 import userBindPhone from "./user-bind-phone.vue";
 // #endif
+import userTell from "./user-tell.vue";
+import heTell from "@/components/he-tell.vue";
+
 export default {
   name: "user-features",
   components: {
-    heTell,
+    userQrcode,
     heClearStorage,
     // #ifdef H5
     userBindPhone,
     // #endif
+    userTell,
+    heTell,
   },
   computed: {
     mobile: function () {
@@ -105,8 +116,10 @@ export default {
   },
   data() {
     return {
-      isPhone: false,
+      isQrcode: false,
+      isTell: false,
       isClear: false,
+      isHeTell: false,
       // #ifdef H5
       isBind: false,
       // #endif
@@ -139,7 +152,8 @@ export default {
           success(res) {
             if (res.code) {
               setTimeout(function () {
-                _this.$heshop.users(
+                _this.$heshop
+                  .users(
                     "put",
                     {
                       behavior: "bindMobile",
@@ -149,12 +163,14 @@ export default {
                       encryptedData: e.detail.encryptedData,
                       iv: e.detail.iv,
                     }
-                  ).then(function (res) {
+                  )
+                  .then(function (res) {
                     _this.$store.state.apply.userInfo.mobile = res.mobile;
                     let userInfo = uni.getStorageSync("userInfo");
                     userInfo.mobile = res.mobile;
                     uni.setStorageSync("userInfo", userInfo);
-                  }).catch(function (err) {
+                  })
+                  .catch(function (err) {
                     _this.$toError(err);
                   });
               }, 800);

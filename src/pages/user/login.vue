@@ -14,7 +14,7 @@
       <button
         v-if="canIUseGetUserProfile"
         class="cu-btn he-login"
-        @click="getUserProfile"
+        @click="login"
       >
         微信一键授权登录
       </button>
@@ -22,7 +22,7 @@
         v-else
         class="cu-btn he-login"
         open-type="getUserInfo"
-        @getuserinfo="decryptUserInfo"
+        @getuserinfo="login"
       >
         微信一键授权登录
       </button>
@@ -34,14 +34,25 @@
       <!-- #endif -->
       <button class="cu-btn he-out" @click="notLogin">暂不登录</button>
     </view>
+    <user-newuser-coupon
+      v-model="isNewuser"
+      :coupon="userInfo.register && userInfo.register.coupon_list"
+    ></user-newuser-coupon>
   </view>
 </template>
 
 <script>
 import { mapActions } from "vuex";
+import userNewuserCoupon from "../../components/user-newuser-coupon.vue";
 
 export default {
   name: "login",
+  components: { userNewuserCoupon },
+  data() {
+    return {
+      isNewuser: false,
+    };
+  },
   methods: {
     ...mapActions({
       decryptUserInfo: "user/decryptUserInfo",
@@ -54,14 +65,70 @@ export default {
         uni.navigateBack({ delta: 1 });
       }
     },
+    login: function () {
+      if (this.canIUseGetUserProfile) {
+        this.getUserProfile().then(() => {
+          if (!this.$h.test.isEmpty(this.userInfo.register.coupon_list)) {
+            this.isNewuser = true;
+          } else {
+            uni.navigateBack({
+              delta: 1,
+            });
+          }
+          setTimeout(() => {
+            let index = this.$store.getters["setting/getCartIndex"];
+            this.$store.dispatch("cart/getCartNumber").then((response) => {
+              if (response !== 0) {
+                uni.setTabBarBadge({
+                  index: index,
+                  text: response + "",
+                });
+              } else {
+                uni.removeTabBarBadge({
+                  index: index,
+                });
+              }
+            });
+          }, 1000);
+        });
+      } else {
+        this.decryptUserInfo().then(() => {
+          if (!this.$h.test.isEmpty(this.userInfo.register.coupon_list)) {
+            this.isNewuser = true;
+          } else {
+            uni.navigateBack({
+              delta: 1,
+            });
+          }
+          setTimeout(() => {
+            let index = this.$store.getters["setting/getCartIndex"];
+            this.$store.dispatch("cart/getCartNumber").then((response) => {
+              if (response !== 0) {
+                uni.setTabBarBadge({
+                  index: index,
+                  text: response + "",
+                });
+              } else {
+                uni.removeTabBarBadge({
+                  index: index,
+                });
+              }
+            });
+          }, 1000);
+        });
+      }
+    },
   },
-  // #ifndef H5
   computed: {
+    // #ifndef H5
     canIUseGetUserProfile: function () {
       return uni.canIUse("getUserProfile");
     },
+    // #endif
+    userInfo: function () {
+      return this.$store.state.apply.userInfo;
+    },
   },
-  // #endif
 };
 </script>
 

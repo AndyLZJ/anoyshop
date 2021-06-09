@@ -1,6 +1,3 @@
-// #ifndef H5
-import siteinfo from "siteInfo";
-// #endif
 
 const user = {
     namespaced: true,
@@ -52,95 +49,93 @@ const user = {
         }) {
             let $heshop = this._vm.$heshop;
             let $pageURL = this._vm.$pageURL;
-            // #ifndef H5
-            uni.login({
-                provider: 'weixin',
-                success: function (loginRes) {
-                    uni.getUserInfo({
-                        success: function (res) {
-                            $heshop.login("post", "weapp", {
-                                code: loginRes.code,
-                                iv: res.iv,
-                                encryptedData: res.encryptedData
-                            }).then(function (res) {
-                                // dispatch('visit');
-                                commit('apply/login', res, {
-                                    root: true
+            return new Promise((resolve, reject) => {
+                // #ifndef H5
+                uni.login({
+                    provider: 'weixin',
+                    success: function (loginRes) {
+                        uni.getUserInfo({
+                            success: function (res) {
+                                $heshop.login("post", "weapp", {
+                                    code: loginRes.code,
+                                    iv: res.iv,
+                                    encryptedData: res.encryptedData
+                                }).then(function (res) {
+                                    dispatch('visit');
+                                    commit('apply/login', res, {
+                                        root: true
+                                    });
+                                    resolve();
                                 });
-                                uni.navigateBack({
-                                    delta: 1
-                                });
-                            });
-                        }
-                    });
+                            }
+                        });
+                    }
+                });
+                // #endif
+                // #ifdef H5
+                let page = getCurrentPages()[getCurrentPages().length - 2];
+                let route = '/pages/user/index';
+                if (page) {
+                    route = '/' + page.route;
+                    let query = '?'
+                    for (let key in page.options) {
+                        query += `${key}=${page.options[key]}&`
+                    }
+                    query = query.slice(0, query.length - 1);
+                    route = route + query;
                 }
-            });
-            // #endif
-            // #ifdef H5
-            let page = getCurrentPages()[getCurrentPages().length - 2];
-            let route = '/pages/user/index';
-            if (page) {
-                route = '/' + page.route;
-                let query = '?'
-                for (let key in page.options) {
-                    query += `${key}=${page.options[key]}&`
-                }
-                query = query.slice(0, query.length - 1);
-                route = route + query;
-            }
-            let url = $pageURL + '&_skip=' + route;
-            console.log('login__');
-            console.log(url);
-            console.log('login__');
-            $heshop.login("post", {
-                type: 'wechat',
-                include: 'login_url',
-                url: url,
-                scope: 'snsapi_userinfo'
-            }).then(function (res) {
-                document.location.replace(res.url);
-            }).catch(function (error) {
-                _this.$toError(error);
-            });
-            // #endif
+                let url = $pageURL + '&_skip=' + route;
+                $heshop.login("post", {
+                    type: 'wechat',
+                    include: 'login_url',
+                    url: url,
+                    scope: 'snsapi_userinfo'
+                }).then(function (res) {
+                    document.location.replace(res.url);
+                }).catch(function (error) {
+                    _this.$toError(error);
+                });
+                // #endif
+            })
         },
         getUserProfile: function ({
             dispatch,
             commit
         }) {
-            let $heshop = this._vm.$heshop;
-            uni.login({
-                provider: 'weixin',
-                success: function () {
+            return new Promise((resolve, reject) => {
+                let $heshop = this._vm.$heshop;
+                uni.login({
+                    provider: 'weixin',
+                    success: function () {
 
-                }
-            });
-            uni.getUserProfile({
-                lang: "zh_CN",
-                desc: '授权',
-                success: function (res) {
-                    uni.login({
-                        provider: 'weixin',
-                        success: function (loginRes) {
-                            $heshop.login("post", "weapp", {
-                                code: loginRes.code,
-                                iv: res.iv,
-                                encryptedData: res.encryptedData
-                            }).then(function (res) {
-                                // dispatch('visit');
-                                commit('apply/login', res, {
-                                    root: true
+                    }
+                });
+                uni.getUserProfile({
+                    lang: "zh_CN",
+                    desc: '授权',
+                    success: function (res) {
+                        uni.login({
+                            provider: 'weixin',
+                            success: function (loginRes) {
+                                $heshop.login("post", "weapp", {
+                                    code: loginRes.code,
+                                    iv: res.iv,
+                                    encryptedData: res.encryptedData
+                                }).then(function (res) {
+                                    dispatch('visit');
+                                    commit('apply/login', res, {
+                                        root: true
+                                    });
+                                    resolve();
+                                }).catch(function (error) {
+                                    console.error(error);
+                                    reject();
                                 });
-                                uni.navigateBack({
-                                    delta: 1
-                                });
-                            }).catch(function (error) {
-                                console.error(error);
-                            });
-                        }
-                    });
-                }
-            });
+                            }
+                        });
+                    }
+                });
+            })
         },
         visit: function () {
             if (uni.getStorageSync('token')) {
@@ -148,7 +143,7 @@ const user = {
                 $heshop.users('get', {
                     behavior: 'visit'
                 }).then(function () {
-                }).catch(function (err) {});
+                }).catch(function (err) { });
             }
         },
         getOrderTotal: function ({
@@ -180,14 +175,12 @@ const user = {
                     commit('apply/login', res, {
                         root: true
                     });
-                    // dispatch('visit');
+                    dispatch('visit');
                     resolve();
-                }).catch(function (err) {
-                    console.error(err);
+                }).catch(function () {
                     reject();
                 });
             })
-
         },
         // #endif
         getAddress: function ({
@@ -226,7 +219,7 @@ const user = {
                         }
                     });
                 },
-                complete: function () {}
+                complete: function () { }
             });
         },
         // #endif

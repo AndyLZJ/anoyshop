@@ -1,17 +1,28 @@
+<!--
+ * @Description: 
+ * @Author: fjt
+ * @Date: 2021-05-18 13:49:46
+ * @LastEditTime: 2021-06-04 17:58:04
+ * @LastEditors: fjt
+-->
 <template>
   <view class="he-page-content">
-    <he-image
-      :width="750"
-      :height="750"
-      :src="pic"
-      :image-style="{
-        marginTop: '20vh',
-      }"
-      @click.native="navigateBack"
-    ></he-image>
-    <view class="he-name">
-      {{ name }}
-    </view>
+    <swiper class="he-scroll" :current="current">
+      <swiper-item v-for="(item, key) in pic" :key="key" class="le-scroll-item">
+        <he-image
+          :width="750"
+          :height="750"
+          :src="item.image"
+          :image-style="{
+            marginTop: '20vh',
+          }"
+          @click.native="navigateBack"
+        ></he-image>
+        <view class="he-name">
+          {{ item.value }}
+        </view>
+      </swiper-item>
+    </swiper>
   </view>
 </template>
 
@@ -20,13 +31,15 @@ export default {
   name: "index",
   data() {
     return {
-      pic: "",
-      name: "",
+      pic: [],
+      current: 0,
     };
   },
   onLoad(options) {
-    this.pic = decodeURIComponent(options.pic);
-    this.name = options.name;
+    let array = JSON.parse(decodeURIComponent(options.pic));
+    array = array.flat(1);
+    this.pic = array;
+    this.current = options.index;
   },
   methods: {
     navigateBack: function () {
@@ -37,11 +50,16 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.he-scroll {
+  width: 750px;
+  height: 100%;
+}
 .he-page-content {
+  width: 750px;
   background-color: #000000;
   overflow: hidden;
+  height: 100vh;
 }
-
 .he-name {
   width: 356px;
   border: 2px solid #ffffff;

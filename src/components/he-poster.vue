@@ -136,13 +136,12 @@ export default {
           _this.loading = false;
         });
     },
-    // #ifndef H5
-    function_name(imgSrc) {
-      var save = uni.getFileSystemManager();
-      var number = Math.random();
+    saveImage: function () {
+      let save = uni.getFileSystemManager();
+      let number = Math.random();
       save.writeFile({
         filePath: wx.env.USER_DATA_PATH + "/pic" + number + ".png",
-        data: imgSrc.slice(22),
+        data: this.path.slice(22),
         encoding: "base64",
         success: () => {
           uni.saveImageToPhotosAlbum({
@@ -171,34 +170,6 @@ export default {
           });
         },
       });
-    },
-    // #endif
-    saveImage: function () {
-      // #ifndef H5
-      this.function_name(this.path);
-      // #endif
-      // #ifdef H5
-      let base64ToBlob = function (code) {
-        let parts = code.split(";base64,");
-        let contentType = parts[0].split(":")[1];
-        let raw = window.atob(parts[1]);
-        let rawLength = raw.length;
-        let uInt8Array = new Uint8Array(rawLength);
-        for (let i = 0; i < rawLength; ++i) {
-          uInt8Array[i] = raw.charCodeAt(i);
-        }
-        return new Blob([uInt8Array], {
-          type: contentType,
-        });
-      };
-      let aLink = document.createElement("a");
-      let blob = base64ToBlob(this.path); //new Blob([content]);
-      let evt = document.createEvent("HTMLEvents");
-      evt.initEvent("click", true, true); //initEvent 不加后两个参数在FF下会报错  事件类型，是否冒泡，是否阻止浏览器的默认行为
-      aLink.download = "fileName";
-      aLink.href = URL.createObjectURL(blob);
-      aLink.click();
-      // #endif
     },
   },
 };
