@@ -48,6 +48,9 @@ const setting = {
         tradeSetting: function (state) {
             return state.setting.setting_collection.trade_setting;
         },
+        storagePicLimit: function (state) {
+            return Number(state.setting.storage_limit.pic_limit) * 1048576;
+        },
         getLocation: function (state) {
             return state.location;
         },
@@ -93,6 +96,10 @@ const setting = {
             }
             return index;
         },
+        getPicLimit: function (state) {
+            let limit = state.setting.storage_limit.pic_limit;
+            return limit * 1024 * 1024;
+        }
     },
     actions: {
         getSetting: function ({ commit }) {

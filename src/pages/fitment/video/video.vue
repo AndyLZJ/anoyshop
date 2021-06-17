@@ -11,7 +11,7 @@
         :loop="content.loop"
         :src="content.video.url"
       >
-        当前浏览器不支持最新的video播放
+        <!-- 当前浏览器不支持最新的video播放 -->
       </video>
     </view>
   </view>

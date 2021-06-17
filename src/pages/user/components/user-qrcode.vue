@@ -2,7 +2,7 @@
  * @Description: 
  * @Author: fjt
  * @Date: 2021-06-04 16:32:18
- * @LastEditTime: 2021-06-08 16:52:32
+ * @LastEditTime: 2021-06-15 14:17:22
  * @LastEditors: fjt
 -->
 <template>
@@ -26,9 +26,9 @@
         <image
           class="he-box-img"
           @click="previewImage"
-          :src="storeSetting.contact_img"
+          :src="storeSetting.contact.friend.pic_url"
         />
-        <view class="he-box-des">{{ storeSetting.contact_des }}</view>
+        <view class="he-box-des">{{ storeSetting.contact.friend.des }}</view>
         <!-- #ifndef H5 -->
         <button
           class="he-box__save cu-btn"

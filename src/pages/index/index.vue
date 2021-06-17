@@ -2,6 +2,7 @@
     <view class="pages fitment-pages" :style="{
       background: background,
     }" v-if="!is_skip">
+        <openidad @confirm="handleConfirm"></openidad>
         <!-- #ifndef H5 -->
         <he-navbar :is-back="false" title-bold title-size="32" :title="fixed ? '' : title" :background="{ background: '#fff' }">
             <view class="he-search flex align-center" v-if="fixed" :style="{ height: menuButtonInfo.height + 'px' }" @click="navigateToDetail">
@@ -99,6 +100,8 @@ import userNewuserCoupon from "../../components/user-newuser-coupon.vue";
 // #endif
 import { mapGetters } from "vuex";
 
+import openidad from "./ad.vue";
+
 export default {
     components: {
         videos,
@@ -122,6 +125,7 @@ export default {
         // #ifdef H5
         userNewuserCoupon,
         // #endif
+        openidad
     },
     data() {
         return {
@@ -194,6 +198,9 @@ export default {
             navbarHeight: "setting/getNavBarHeight",
             statusBarHeight: "setting/statusBarHeight",
         }),
+        is_ad() {
+            return uni.getStorageSync('openingad') || false;
+        },
         topHeight: function() {
             return {
                 height: `${this.statusBarHeight + this.navbarHeight}px`,
@@ -211,13 +218,28 @@ export default {
      * @return {[type]} [description]
      */
     onShow() {
-        this.handlePageLoading();
+        let is_ad = uni.getStorageSync('openingad');
+        if (!is_ad) {
+            uni.hideTabBar();
+            setTimeout(() => { //设置延迟执行
+                this.handlePageLoading();
+            }, 1000);
+        } else {
+            uni.showTabBar();
+            this.handlePageLoading();
+        }
         // #ifndef H5
         // 是否显示收藏小程序
         this.isFavorites = !uni.getStorageSync("isfavorites");
         // #endif
     },
     methods: {
+        handleConfirm(value) {
+            console.log("我被执行奥科吉是动画")
+            console.log("value", value)
+            uni.showTabBar();
+            this.handlePageLoading();
+        },
         /**
          * 执行页面保存操作
          * @return {[type]} [description]

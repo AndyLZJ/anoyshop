@@ -216,13 +216,15 @@ export default {
           list[i].is_select = false;
         }
       }
-      value.is_select ? (value.is_select = false) : (value.is_select = true);
+      value.is_select ? (value.is_select = false) : (value['is_select'] = true);
       let array = [];
       for (let i = 0; i < showParam.length; i++) {
         let list = showParam[i].value;
         let item = list.find(function (item) {
           return item.is_select === true;
         });
+        console.log('item');
+        console.log(item);
         array[i] = item ? item.value : null;
       }
       let arrayIndex = 0;
@@ -271,6 +273,8 @@ export default {
           });
         });
       }
+      console.log(array);
+      console.log(showParam);
       if (array.length === showParam.length) {
         let str = "";
         array.forEach(function (item) {
@@ -288,6 +292,7 @@ export default {
       } else {
         this.showSelect = null;
       }
+      console.log(this.showSelect);
     },
     identifier: function (showParam, newArray, attrNum_0) {
       showParam.forEach(function (col, index) {
@@ -311,13 +316,28 @@ export default {
         } else {
             index = row[rowIndex].length + valueIndex + 1;
         }
-      uni.navigateTo({
-        url:
-          "/pages/other/preview?pic=" +
-          encodeURIComponent(JSON.stringify(row)) +
-          "&index=" +
-          index,
-      });
+        let _this = this;
+        wx.navigateTo({
+            url:
+            "/pages/other/preview?pic=" +
+            encodeURIComponent(JSON.stringify(row)) +
+            "&index=" +
+            index,
+            events: {
+                setEvent: function(data) {
+                    _this.imageList.forEach(row => {
+                        row.forEach(item => {
+                            item.is_select = false;
+                        });
+                    });
+                    let one = _this.showParam[0].value.find(item => {
+                        return data.col.value === item.value;
+                    });
+                    console.log(one);
+                    _this.setSelect(rowIndex, one, data.col.index)
+                }
+            }
+        });
     },
     setRow: function (row) {
       row.forEach(function (item, index) {

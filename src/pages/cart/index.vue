@@ -232,6 +232,7 @@ export default {
               _this[_this.key][i].goods_param = res.goods_param;
               _this[_this.key][i].goods_number = res.goods_number;
               _this[_this.key][i].goods_image = res.goods_image;
+              _this[_this.key][i].price = res.price;
             }
           }
           if (item.cart_id !== res.id) {

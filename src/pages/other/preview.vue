@@ -2,12 +2,12 @@
  * @Description: 
  * @Author: fjt
  * @Date: 2021-05-18 13:49:46
- * @LastEditTime: 2021-06-04 17:58:04
+ * @LastEditTime: 2021-06-16 11:52:40
  * @LastEditors: fjt
 -->
 <template>
   <view class="he-page-content">
-    <swiper class="he-scroll" :current="current">
+    <swiper class="he-scroll" :current="current" @change="swiperChange">
       <swiper-item v-for="(item, key) in pic" :key="key" class="le-scroll-item">
         <he-image
           :width="750"
@@ -43,7 +43,16 @@ export default {
   },
   methods: {
     navigateBack: function () {
+      const eventChannel = this.getOpenerEventChannel();
+      console.log(this.current);
+      eventChannel.emit("setEvent", {
+        current: this.current,
+        col: this.pic[this.current],
+      });
       uni.navigateBack({ delta: 1 });
+    },
+    swiperChange: function (data) {
+      this.current = data.detail.current;
     },
   },
 };

@@ -19,7 +19,7 @@
         class="he-icon__button flex flex-direction align-center"
         @tap="reLaunch('/pages/cart/index')"
       >
-        <view class="he-badge" v-if="isNaN" :style="[baddgeStyle]">{{
+        <view class="he-badge" v-if="isNaNBool" :style="[baddgeStyle]">{{
           badge
         }}</view>
         <view class="iconfont iconnav_shoppingcart_normal"></view>
@@ -130,7 +130,7 @@ export default {
       isService: false,
       isPhone: false,
       badge: "",
-      isNaN: false
+      isNaNBool: false
     };
   },
   methods: {
@@ -151,9 +151,12 @@ export default {
     this.$store.dispatch("cart/getCartNumber").then((response) => {
         console.log(response);
         if (response !== 0) {
-            this.isNaN = true;
+            this.isNaNBool = true;
+        } else {
+            this.isNaNBool = false;
         }
-      this.badge = response + "";
+        this.badge = response + "";
+        console.log(this.isNaNBool);
     });
   },
   watch: {
@@ -161,11 +164,14 @@ export default {
         handler(val) {
             if (val) {
                 this.$store.dispatch("cart/getCartNumber").then((response) => {
-                if (response !== 0) {
-                    this.isNaN = true;
-                }
-                this.badge = response + "";
-                this.$store.commit("cart/cartNum", false);
+                    if (response !== 0) {
+                        this.isNaNBool = true;
+                    } else {
+                        this.isNaNBool = false;
+                    }
+                    this.badge = response + "";
+                    this.$store.commit("cart/cartNum", false);
+                    console.log(this.isNaNBool);
                 });
             }
         },

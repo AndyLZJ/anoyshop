@@ -59,7 +59,7 @@ Vue.prototype.$heshop = Heshop.connect({
     },
     redLoadFun: function() {
         Vue.prototype.$store.commit('apply/logout');
-        uni.reLaunch({url: '/pages/user/login'});
+        uni.reLaunch({ url: '/pages/user/login' });
     },
     ErrorFun: function(error) {
         let status = error.response.status;
@@ -110,6 +110,7 @@ const app = new Vue({
     router: Heshop.router({
         whiteList: [
             "/",
+            "/pages/index/ad",
             "/pages/index/index",
             "/pages/other/error",
             "/pages/page/index",

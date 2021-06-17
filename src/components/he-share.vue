@@ -49,7 +49,7 @@
     <he-poster
       v-model="isPoster"
       :post-data="postData"
-      :couponType="couponType"
+      :coupon-type="couponType"
     ></he-poster>
     <!--#ifdef H5-->
     <view class="le-share" v-if="isWeChat">
@@ -73,7 +73,7 @@ export default {
       type: Object,
     },
     couponType: {
-      type: Object,
+      type: String,
     },
   },
   data() {

@@ -115,7 +115,7 @@
       <he-share
         v-model="isShare"
         :post-data="{ coupon_id: shareId }"
-        couponType="coupon"
+        coupon-type="coupon"
       ></he-share>
     </template>
     <detail-invalid v-model="isInvaild" :title="invaildStr"></detail-invalid>

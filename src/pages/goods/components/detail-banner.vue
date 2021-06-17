@@ -23,25 +23,30 @@
       :interval="3000"
       circular
       :duration="500"
-      :autoplay="!play"
       :style="{
         height: '750rpx',
         backgroundColor: bgColor,
       }"
     >
+      <!-- :autoplay="!play" -->
+
       <swiper-item class="he-swiper-item" v-if="isVideo">
         <view class="he-video-img" @click="setPay" v-if="!play">
-          <image
-            class="he-video-play"
-            :src="ipAddress + '/goods-banner-image.png'"
-          ></image>
-          <image
-            class="he-swiper-image"
-            :src="videoCover ? videoCover : video.cover"
-            mode="aspectFill"
-          ></image>
+          <view
+            class="he-swiper-image he-swiper-img-one"
+            :style="{
+              backgroundImage: `url(${
+                videoCover ? videoCover : list[0][name] || list[0]
+              })`,
+            }"
+          >
+            <view class="he-video-play">
+              <view class="iconfont iconbofang"></view>
+            </view>
+          </view>
         </view>
         <video
+          @click="stopVideo"
           :src="video.url"
           enable-play-gesture
           :autoplay="play"
@@ -171,6 +176,10 @@ export default {
     doPreviewImage: function (index, list) {
       this.$utils.doPreviewImage(index, list);
     },
+    stopVideo: function () {
+      console.log("stop");
+      this.play = false;
+    },
   },
   mounted() {
     this.getOrder();
@@ -237,7 +246,7 @@ export default {
 .he-swiper-notice {
   position: absolute;
   z-index: 88;
-  top: 88px;
+  top: 188px;
   left: 32px;
   height: 60px;
   width: 296px;
@@ -259,17 +268,37 @@ export default {
   }
 }
 .he-video-img {
-  width: 100%;
-  height: 100%;
+  height: 750px !important;
+  width: 750px !important;
   position: relative;
   .he-video-play {
+    display: block;
     width: 120px;
     height: 120px;
     position: absolute;
     top: 50%;
     left: 50%;
-    z-index: 1;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000 !important;
     transform: translate(-50%, -50%);
   }
+  .iconbofang {
+    font-size: 36px;
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+.he-swiper-img-one {
+  height: 750px !important;
+  width: 750px !important;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: relative;
+  // object-fit: contain;
 }
 </style>

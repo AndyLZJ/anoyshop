@@ -15,7 +15,7 @@
         </view>
         <view class="iconfont iconbtn_arrow"></view>
       </button>
-      <view class="he-item flex justify-between" v-else>
+      <view class="he-item flex justify-between" v-else @click="bindPhone">
         <view class="flex">
           <view class="iconfont iconpersonalcenter_phone"></view>
           <text class="he-text">绑定手机号</text>
@@ -56,36 +56,68 @@
       </view>
       <view class="iconfont iconbtn_arrow"></view>
     </view>
-    <view class="he-item flex justify-between" @click="isTell = true">
+    <view
+      class="he-item flex justify-between"
+      v-if="storeSetting.contact.phone.bool"
+      @click="isHeTell = true"
+    >
       <view class="flex">
-        <view class="iconfont iconpersonalcenter_contactus"></view>
-        <text class="he-text">联系我们</text>
+        <view class="iconfont iconpersonalcenter_phone2"></view>
+        <view class="he-content-text">
+          <view class="he-text">电话客服</view>
+          <view class="he-time" v-if="isEmpty(storeSetting.contact.phone)">{{
+            storeSetting.contact.phone.time
+          }}</view>
+        </view>
       </view>
       <view class="iconfont iconbtn_arrow"></view>
     </view>
-    <!--联系我们-->
-    <user-tell
-      v-model="isTell"
-      :is-he-tell.sync="isHeTell"
-      :is-qr-code.sync="isQrcode"
-    ></user-tell>
+    <!-- #ifndef H5 -->
+    <button
+      open-type="contact"
+      class="he-item flex justify-between he-item__btn"
+      v-if="storeSetting.contact.online.bool"
+    >
+      <view class="flex">
+        <view class="iconfont iconpersonalcenter_contactus"></view>
+        <view class="he-content-text">
+          <view class="he-text">在线客服</view>
+          <view class="he-time" v-if="isEmpty(storeSetting.contact.online)">{{
+            storeSetting.contact.online.time
+          }}</view>
+        </view>
+      </view>
+      <view class="iconfont iconbtn_arrow"></view>
+    </button>
+    <!-- #endif -->
+    <view
+      class="he-item flex justify-between"
+      v-if="storeSetting.contact.friend.bool"
+      @click="isQrcode = true"
+    >
+      <view class="flex">
+        <view class="iconfont iconpersonalcenter_add"></view>
+        <view class="he-content-text">
+          <view class="he-text">加好友联系</view>
+          <view class="he-time" v-if="isEmpty(storeSetting.contact.friend)">{{
+            storeSetting.contact.friend.time
+          }}</view>
+        </view>
+      </view>
+      <view class="iconfont iconbtn_arrow"></view>
+    </view>
     <he-tell v-model="isHeTell" :phone-number="storeSetting.phone"></he-tell>
     <user-qrcode v-model="isQrcode"></user-qrcode>
     <!--清理缓存-->
     <he-clear-storage v-model="isClear"></he-clear-storage>
-    <!--#ifdef H5-->
     <!--绑定手机-->
     <user-bind-phone v-model="isBind"></user-bind-phone>
-    <!--#endif-->
   </view>
 </template>
 <script>
 import userQrcode from "./user-qrcode.vue";
 import heClearStorage from "@/components/he-clear-storage.vue";
-// #ifdef H5
 import userBindPhone from "./user-bind-phone.vue";
-// #endif
-import userTell from "./user-tell.vue";
 import heTell from "@/components/he-tell.vue";
 
 export default {
@@ -93,16 +125,13 @@ export default {
   components: {
     userQrcode,
     heClearStorage,
-    // #ifdef H5
     userBindPhone,
-    // #endif
-    userTell,
     heTell,
   },
   computed: {
     mobile: function () {
       let data = this.$store.state.apply.userInfo.mobile;
-      if (!data) return;
+      if (!data) return null;
       data = data + "";
       return data
         ? data
@@ -120,9 +149,7 @@ export default {
       isTell: false,
       isClear: false,
       isHeTell: false,
-      // #ifdef H5
       isBind: false,
-      // #endif
     };
   },
   methods: {
@@ -134,7 +161,6 @@ export default {
     clearStorage: function () {
       this.isClear = true;
     },
-    // #ifdef H5
     bindPhone: function () {
       if (this.mobile) {
         this.isBind = true;
@@ -142,7 +168,6 @@ export default {
         this.navigateTo("/pages/user/bind-phone");
       }
     },
-    // #endif
     // #ifndef H5
     getPhoneNumber: function (e) {
       let _this = this;
@@ -183,10 +208,13 @@ export default {
       }
     },
     // #endif
+    isEmpty: function (data) {
+      return !this.$h.test.isEmpty(data.time);
+    },
   },
 };
 </script>
-<style scoped>
+<style scoped lang="scss">
 .user-features {
   margin: 20px 20px 0 20px;
   padding: 20px 0;
@@ -195,9 +223,22 @@ export default {
 }
 
 .he-item {
-  height: 80px;
   line-height: 80px;
   padding: 0 24px;
+  .he-content-text {
+    .he-text {
+      text-align: left;
+    }
+  }
+  .he-time {
+    font-size: 22px;
+    font-family: PingFang SC;
+    font-weight: 500;
+    color: #8c8c8c;
+    line-height: 1.2;
+    margin-top: -10px;
+    padding-left: 20px;
+  }
 }
 
 .iconbtn_arrow {
@@ -207,9 +248,11 @@ export default {
 .iconpersonalcenter_contactus,
 .iconpersonalcenter_clearcache,
 .iconpersonalcenter_phone,
-.iconpersonalcenter_address {
+.iconpersonalcenter_address,
+.iconpersonalcenter_phone2,
+.iconpersonalcenter_add {
   font-size: 28px;
-  color: #bebebe;
+  color: #d7d7d7;
 }
 
 .he-text {

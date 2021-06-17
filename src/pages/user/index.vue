@@ -2,7 +2,7 @@
  * @Description: 
  * @Author: fjt
  * @Date: 2021-05-18 13:49:46
- * @LastEditTime: 2021-06-05 10:41:05
+ * @LastEditTime: 2021-06-14 20:30:59
  * @LastEditors: fjt
 -->
 <template>
@@ -10,9 +10,6 @@
     <view class="le-content">
       <user-top></user-top>
       <user-coupon></user-coupon>
-
-    
-
       <user-my-order></user-my-order>
       <user-features></user-features>
       <he-products-featured

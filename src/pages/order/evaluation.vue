@@ -77,6 +77,7 @@
             @on-remove="removeImage"
             @on-uploaded="uploaded"
             :max-count="6"
+            :max-size="getPicLimit"
           ></he-upload-image>
         </view>
       </view>
@@ -94,6 +95,7 @@
 
 <script>
 import heUploadImage from "@/components/he-upload-image.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "evaluation",
@@ -117,6 +119,9 @@ export default {
       }
       return num !== this.form.length;
     },
+    ...mapGetters("setting", {
+      getPicLimit: "getPicLimit",
+    }),
   },
   methods: {
     setTextarea: function (e, index) {

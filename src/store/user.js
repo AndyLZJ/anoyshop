@@ -234,7 +234,10 @@ const user = {
             }).catch(function (err) {
                 console.error(err);
             });
-        }
+        },
+        bindPhone: function ({ }) {
+            
+         }
     }
 };
 
