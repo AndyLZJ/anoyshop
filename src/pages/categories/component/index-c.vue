@@ -1,5 +1,5 @@
 <template>
-    <scroll-view class="he-content">
+    <scroll-view class="he-content" scroll-y>
         <view v-if="!$h.test.isEmpty(list)">
             <view class="he-row" v-for="item in list" :key="item.id">
                 <view class="he-header flex align-center justify-center">
@@ -7,7 +7,7 @@
                     <text class="he-header__name">{{item.name}}</text>
                     <text class="iconfont iconclassification_line he-icon__right"></text>
                 </view>
-                <view class="he-body flex">
+                <view class="he-body flex flex-wrap">
                     <view class="he-empty" v-if="!item.children">暂无内容</view>
                    <view class="he-item flex flex-direction align-center justify-between"
                          @click="navigateTo(child)"

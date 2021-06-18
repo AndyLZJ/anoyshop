@@ -1,5 +1,5 @@
 <template>
-    <scroll-view class="he-content">
+    <scroll-view class="he-content" scroll-y>
         <view class="flex flex-wrap" v-if="!$h.test.isEmpty(list)">
             <view class="he-item flex flex-direction align-center justify-between"
                   @click="navigateTo(item)"
