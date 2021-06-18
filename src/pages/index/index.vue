@@ -98,7 +98,7 @@ import heNavbar from "../../components/he-navbar.vue";
 // #ifdef H5
 import userNewuserCoupon from "../../components/user-newuser-coupon.vue";
 // #endif
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 import openidad from "./ad.vue";
 
@@ -232,8 +232,14 @@ export default {
         // 是否显示收藏小程序
         this.isFavorites = !uni.getStorageSync("isfavorites");
         // #endif
+        if (this.isLogin) {
+            this.setCartNumber()
+        }
     },
     methods: {
+        ...mapActions({
+            setCartNumber: "cart/setCartNumber",
+        }),
         handleConfirm(value) {
             console.log("我被执行奥科吉是动画")
             console.log("value", value)

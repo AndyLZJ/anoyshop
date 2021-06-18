@@ -76,7 +76,7 @@
       <view class="he-bottom"></view>
     </view>
     <!--联系我们-->
-    <he-tell v-model="isPhone" :phone-number="storeSetting.phone"></he-tell>
+    <he-tell v-model="isPhone" :phone-number="storeSetting.contact && storeSetting.contact.phone.value"></he-tell>
   </view>
 </template>
 
@@ -162,6 +162,7 @@ export default {
   watch: {
     "$store.state.cart.cart_num": {
         handler(val) {
+            console.log(val);
             if (val) {
                 this.$store.dispatch("cart/getCartNumber").then((response) => {
                     if (response !== 0) {
@@ -170,6 +171,7 @@ export default {
                         this.isNaNBool = false;
                     }
                     this.badge = response + "";
+                    console.log(this.badge);
                     this.$store.commit("cart/cartNum", false);
                     console.log(this.isNaNBool);
                 });

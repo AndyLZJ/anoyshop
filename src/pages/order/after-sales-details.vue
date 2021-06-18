@@ -543,7 +543,7 @@ export default {
     },
     makePhoneCall: function () {
       uni.makePhoneCall({
-        phoneNumber: this.storeSetting.phone,
+        phoneNumber: this.storeSetting.contact.phone.value,
       });
     },
     copy: function (content) {

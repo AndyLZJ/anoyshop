@@ -106,7 +106,7 @@
       </view>
       <view class="iconfont iconbtn_arrow"></view>
     </view>
-    <he-tell v-model="isHeTell" :phone-number="storeSetting.phone"></he-tell>
+    <he-tell v-model="isHeTell" :phone-number="storeSetting.contact && storeSetting.contact.phone.value"></he-tell>
     <user-qrcode v-model="isQrcode"></user-qrcode>
     <!--清理缓存-->
     <he-clear-storage v-model="isClear"></he-clear-storage>

@@ -2,7 +2,7 @@
     <view class="ad" v-if="display" :class="{'ad_element':current>0}">
         <view class="ad-item-photo" :style="{ width: '100%', height: '100vh' }" v-if="contentData.length">
             <swiper class="ad-item-image" :circular="circular" :autoplay="autoplay" @change="handleChange" easing-function="easeOutCubic">
-                <swiper-item class="ad-item-cover" v-for="(item, index) in contentData" :key="index">
+                <swiper-item class="ad-item-cover" v-for="(item, index) in contentData" :key="index" style="background-color: #FFFFFF">
                     <image lazy-load :src="item.url" mode="aspectFill" style="width: 100%; height: 100%" @touchstart="touchStart" @touchend="touchEnd"></image>
                 </swiper-item>
                 <swiper-item>
@@ -334,6 +334,7 @@ export default {
         padding: 32px;
 
         .ad-item-cover {
+            background-color: #FFFFFF;
             box-sizing: content-box;
             -webkit-appearance: none;
             -webkit-border-radius: 16px;

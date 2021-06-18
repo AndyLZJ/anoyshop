@@ -2,7 +2,7 @@
  * @Description: 
  * @Author: fjt
  * @Date: 2021-05-18 13:49:46
- * @LastEditTime: 2021-06-14 20:30:59
+ * @LastEditTime: 2021-06-18 10:23:16
  * @LastEditors: fjt
 -->
 <template>
@@ -54,12 +54,14 @@ export default {
     ...mapActions({
       getOrderTotal: "user/getOrderTotal",
       getCouponTotal: "user/getCouponTotal",
+      setCartNumber: "cart/setCartNumber",
     }),
   },
   onShow() {
     if (this.isLogin) {
       this.getOrderTotal();
       this.getCouponTotal();
+      this.setCartNumber();
     }
     uni.login();
   },

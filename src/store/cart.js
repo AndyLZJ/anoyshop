@@ -2,7 +2,7 @@
  * @Description: 
  * @Author: fjt
  * @Date: 2021-04-26 12:37:36
- * @LastEditTime: 2021-06-08 10:57:49
+ * @LastEditTime: 2021-06-18 10:27:41
  * @LastEditors: fjt
  */
 const cart = {
@@ -25,7 +25,7 @@ const cart = {
         }
     },
     actions: {
-        getCartNumber: function ({  }) {
+        getCartNumber: function ({ }) {
             return new Promise((resolve, reject) => {
                 let $heshop = this._vm.$heshop;
                 $heshop.cart('get', {
@@ -36,6 +36,24 @@ const cart = {
                     reject();
                 });
             })
+        },
+        setCartNumber: function ({ rootGetters, dispatch }) {
+            let index = rootGetters['setting/getCartIndex'];
+            if (index === -1) {
+                return;
+            }
+            dispatch('getCartNumber').then(res => {
+                if (res !== 0) {
+                    uni.setTabBarBadge({
+                        index: index,
+                        text: res + "",
+                    });
+                } else {
+                    uni.removeTabBarBadge({
+                        index: index,
+                    });
+                }
+            });
         }
     }
 };
