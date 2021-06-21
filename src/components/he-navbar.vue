@@ -230,7 +230,12 @@ export default {
                 // this.customBack.bind(this.$u.$parent.call(this))();
             } else {
                 uni.navigateBack({
-                    delta: 1
+                    delta: 1,
+                    fail() {
+                        uni.switchTab({
+                            url: '/pages/index/index'
+                        })
+                    }
                 });
             }
         }

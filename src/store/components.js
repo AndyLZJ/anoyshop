@@ -1,3 +1,9 @@
+/*
+ * @Author: fjt
+ * @Date: 2021-05-16 17:54:36
+ * @LastEditors: fjt
+ * @LastEditTime: 2021-06-14 21:55:11
+ */
 const components = {
     namespaced: true,
     state: {
@@ -62,8 +68,7 @@ const components = {
                 res.forEach((item) => {
                     state.search.top += parseInt(item);
                 });
-            }).catch(function(err) {
-                console.log(err);
+            }).catch(function() {
             });
             uni.createSelectorQuery().select('#search').boundingClientRect(function(rect) {
                 if (rect) {

@@ -50,16 +50,7 @@ export default {
     data() {
         return {
             display: true,
-            def_content: [{
-                    url: "http://qmxq.oss-cn-hangzhou.aliyuncs.com/template/ad_1.png",
-                },
-                {
-                    url: "http://qmxq.oss-cn-hangzhou.aliyuncs.com/template/ad_2.png",
-                },
-                {
-                    url: "http://qmxq.oss-cn-hangzhou.aliyuncs.com/template/ad_3.png",
-                },
-            ],
+            def_content: [],
             facade: {},
             content: {},
             step: 1,
@@ -83,19 +74,14 @@ export default {
         },
         contentData() {
             let _array = [];
-            if (this.content.length === 0) {
-                this.content = this.def_content;
-            }
-            if (this.content.length == 1) {
-                if (!this.content[0].url) {
-                    this.content = this.def_content;
-                }
-            }
             for (let index in this.content) {
                 let item = this.content[index];
                 if (item.url) {
                     _array.push(item);
                 }
+            }
+            if (_array.length === 0) {
+                this.toSkip();
             }
             return _array;
         },
@@ -105,7 +91,6 @@ export default {
     },
     mounted() {
         let open = uni.getStorageSync('openingad');
-        console.log("open", open)
         if (!open) {
             this.display = true;
             this.handleLoadData();

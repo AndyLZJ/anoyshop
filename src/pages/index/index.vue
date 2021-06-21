@@ -241,8 +241,6 @@ export default {
             setCartNumber: "cart/setCartNumber",
         }),
         handleConfirm(value) {
-            console.log("我被执行奥科吉是动画")
-            console.log("value", value)
             uni.showTabBar();
             this.handlePageLoading();
         },

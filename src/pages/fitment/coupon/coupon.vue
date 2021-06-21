@@ -123,7 +123,6 @@ export default {
               behavior: "coupon",
               coupon_id: _array,
             }).then(function (response) {
-              console.log(response);
               _this.list = response.data;
             }).catch(function (error) {
               _this.$toError(error);

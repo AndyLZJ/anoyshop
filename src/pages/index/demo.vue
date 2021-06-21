@@ -24,13 +24,10 @@ export default {
             wx.requestSubscribeMessage({
                 tmplIds: ['qkIqVoZ8vGOWYDniHg_vBekQ6tLXVj796ruHWCMCFFg'],
                 success: function (e) {
-                    console.log(e);
                 },
                 fail: function (e) {
-                    console.log(e);
                 },
                 complete: function (e) {
-                    console.log(e);
                 }
             });
         },

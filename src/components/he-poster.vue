@@ -90,20 +90,13 @@ export default {
       };
     },
     boxSize: function () {
-      console.log(this.couponType);
       if (this.couponType === "coupon") {
         return {
           height: "613rpx",
         };
-        return {
-          height: "784rpx",
-        };
       } else {
         return {
           height: "784rpx",
-        };
-        return {
-          height: "613rpx",
         };
       }
     },

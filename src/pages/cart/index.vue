@@ -162,7 +162,12 @@ export default {
         if (this.list[i].is_select) data.push(this.list[i]);
       }
       uni.navigateTo({
-        url: "/pages/order/submit?data=" + JSON.stringify(data),
+        url: "/pages/order/submit",
+        success: function (res) {
+          res.eventChannel.emit("acceptDataFromOpenerPage", {
+            data: data,
+          });
+        },
       });
     },
     del: function () {
@@ -420,7 +425,6 @@ export default {
       let index = this.$store.getters["setting/getCartIndex"];
       if (index > -1) {
         this.$store.dispatch("cart/getCartNumber").then((response) => {
-          console.log(response);
           if (response !== 0) {
             uni.setTabBarBadge({
               index: index,

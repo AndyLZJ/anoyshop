@@ -2,7 +2,7 @@
  * @Description: 
  * @Author: fjt
  * @Date: 2021-06-05 10:25:41
- * @LastEditTime: 2021-06-05 11:36:02
+ * @LastEditTime: 2021-06-14 21:53:20
  * @LastEditors: fjt
  */
 
@@ -20,8 +20,7 @@ const saveImage = (image) => {
                             duration: 2000
                         });
                     },
-                    fail(err) {
-                        console.log(err);
+                    fail() {
                     }
                 });
                 // 图片不存在
@@ -43,11 +42,9 @@ module.exports = {
                             success() {
                                 saveImage(image);
                             },
-                            fail(err) {
-                                console.log(err);
+                            fail() {
                             },
-                            complete(res) {
-                                console.log(res);
+                            complete() {
                             }
                         });
                     }

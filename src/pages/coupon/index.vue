@@ -180,7 +180,6 @@ export default {
       });
       query.exec(
         function (res) {
-          console.log(res);
           _this.tabQueryInfo = res;
           _this.scrollByIndex();
         }.bind(this)

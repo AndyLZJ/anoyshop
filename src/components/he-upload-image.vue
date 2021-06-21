@@ -270,9 +270,6 @@ export default {
       this.$utils.doPreviewImage(url, images);
     },
   },
-  mounted() {
-    console.log(this.storagePicLimit);
-  },
 };
 </script>
 

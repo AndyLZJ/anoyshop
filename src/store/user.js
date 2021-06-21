@@ -204,18 +204,15 @@ const user = {
         // #ifndef H5
         authLogin: function () {
             uni.checkSession({
-                success: function (res) {
-                    console.log(res);
+                success: function () {
                 },
                 fail: function () {
                     uni.login({
                         provider: 'weixin',
                         scopes: 'auth_base',
-                        success: function (res) {
-                            console.log(res);
+                        success: function () {
                         },
-                        fail: function (err) {
-                            console.log(err);
+                        fail: function () {
                         }
                     });
                 },

@@ -195,7 +195,6 @@ export default {
       } else {
         id = this.detail.id;
       }
-      console.log(id);
       return id;
     },
     lineColor: function () {

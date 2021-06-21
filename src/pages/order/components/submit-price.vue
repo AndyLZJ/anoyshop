@@ -98,7 +98,6 @@ export default {
             _this.possible = list.filter(
               (item) => item.isAvailable === 1
             ).length;
-            console.log(list);
             _this.coupon = list;
             resolve();
           })
