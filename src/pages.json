@@ -183,8 +183,7 @@
         },
         {
             "path": "pages/order/after-sales-records",
-            "style":
-            {
+            "style": {
                 "navigationBarTitleText": "售后记录",
                 "enablePullDownRefresh": true
             }
@@ -246,9 +245,17 @@
                 "enablePullDownRefresh": true
             }
         }
+        // #ifndef H5
+        ,
+        {
+            "path": "pages/live/index",
+          "style": {
+              "navigationBarTitleText": "直播间列表"
+          }
+        }
+        // #endif
     ],
-    "tabBar":
-    {
+    "tabBar": {
         "color": "#ccc",
         "selectedColor": "#ff4c91",
         "borderStyle": "black",
@@ -275,8 +282,7 @@
             "text": "用户中心"
         }]
     },
-    "globalStyle":
-    {
+    "globalStyle": {
         "navigationBarTextStyle": "black",
         "navigationBarTitleText": "",
         "navigationBarBackgroundColor": "#F8F8F8",

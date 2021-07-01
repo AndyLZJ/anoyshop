@@ -61,6 +61,9 @@
             <view v-else-if="item.name === 'wechat'" :id="item.name + '_' + index">
                 <component is="wechat" :facade="item.facade" :content="item.content" :data-index="index"></component>
             </view>
+            <view v-else-if="item.name === 'wechatLive'" :id="item.name + '_' + index">
+                <component is="wechatLive" :facade="item.facade" :content="item.content" :data-index="index"></component>
+            </view>
             <!--#endif-->
         </view>
         <!-- #ifndef H5 -->
@@ -93,6 +96,7 @@ import coupon from "../fitment/coupon/coupon.vue";
 // #ifndef H5
 import wechat from "../fitment/wechat/wechat.vue";
 import favorites from "./components/favorites.vue";
+import wechatLive from "../fitment/wechatLive/wechatLive.vue"
 // #endif
 import heNavbar from "../../components/he-navbar.vue";
 // #ifdef H5
@@ -120,6 +124,7 @@ export default {
         // #ifndef H5
         wechat,
         favorites,
+        wechatLive,
         // #endif
         heNavbar,
         // #ifdef H5

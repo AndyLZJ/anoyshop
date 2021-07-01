@@ -149,7 +149,7 @@ export default {
         for (this.root = this.$parent; this.root.$options.name !== 'mp-html'; this.root = this.root.$parent) ;
         // #ifdef H5 || APP-PLUS
         if (this.opts[0]) {
-            for (let i = this.childs.length; i--;)
+            for (var i = this.childs.length; i--;)
                 if (this.childs[i].name === 'img')
                     break
             if (i != -1) {

@@ -126,6 +126,7 @@ const app = new Vue({
             "/pages/user/bind-phone",
             "/pages/other/logisticsCompany",
             "/pages/coupon/detail",
+            "/pages/live/index"
         ],
         loginPage: "/pages/user/login"
     }),

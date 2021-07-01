@@ -15,7 +15,16 @@ function MPageNavigate(item) {
                 url: item.path + '?group=' + item.param.id + '&goods_show=' + item.param.goods_show + '&name=' + item.param.name
             });
         }
+        // #ifndef H5
+        if (item.index === 10) {
+            const roomId = [item.param.roomid];
+            wx.navigateTo({
+                url: `plugin-private://wx2b03c6e691cd7370/pages/live-player-plugin?room_id=${roomId}`
+            });
+        }
+        // #endif
     } else {
+        if (!item || item.length === 0) return;
         if ([3, 4, 5, 1].indexOf(item.index) == -1) {
             uni.navigateTo({
                 url: item.path,

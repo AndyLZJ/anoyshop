@@ -11,6 +11,7 @@
         </wx-open-subscribe>
         <button @click="subscribe">尝试点击起来</button>
         <!--#endif-->
+      <button @click="livePlayer">去直播</button>
     </view>
 </template>
 <script type="text/javascript">
@@ -35,8 +36,15 @@ export default {
         // #ifdef H5
         subscribe: function () {
             document.getElementById('subscribe').click();
-        }
+        },
         // #endif
+        livePlayer() {
+          const roomId = [11];
+          const customParams = encodeURIComponent(JSON.stringify({ path: 'pages/index/index', pid: 1 }));
+          wx.navigateTo({
+            url: `plugin-private://wx2b03c6e691cd7370/pages/live-player-plugin?room_id=${roomId}&custom_params=${customParams}`
+          });
+        }
     },
     onLoad() {
         // #ifdef H5

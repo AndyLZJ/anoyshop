@@ -10,6 +10,6 @@ module.exports = {
     "acid": "3",
     "multiid": "0",
     "version": "1.2.0",
-    "siteroot": "https://dev.91bd.cn/index.php",
+    "siteroot": "https://dev2.91bd.cn/index.php",
     "design_method": "3"
 }

@@ -212,7 +212,9 @@ export default {
           if (!res.hasOwnProperty("empty_status")) {
             _this.detail = res;
           } else {
+            console.log('empty')
             _this.emptyStatus = res.empty_status;
+            console.log(_this.emptyStatus);
             uni.setNavigationBarTitle({
               title: _this.emptyText,
             });
@@ -233,12 +235,16 @@ export default {
     },
     selectEval: function (id) {
       let _this = this;
-      return new Promise(function (resolve) {
+      return new Promise(function (resolve, reject) {
         uni
           .createSelectorQuery()
           .select(id)
           .boundingClientRect(function (rect) {
-            resolve(rect.top - _this.navbarHeight - _this.statusBarHeight);
+            if (rect) {
+              resolve(rect.top - _this.navbarHeight - _this.statusBarHeight);
+            } else {
+              reject();
+            }
           })
           .exec();
       });
@@ -269,6 +275,7 @@ export default {
     // #endif
   },
   onLoad(options) {
+    console.log(options);
     this.isTouch = true;
     // #ifdef H5
     uni.setNavigationBarTitle({
@@ -291,6 +298,7 @@ export default {
       _this.isLoading = false;
       // #ifdef H5
       _this.$wechat.updateShareData(_this.shareData);
+      console.log('update')
       setTimeout(() => {
         let array = [
           _this.selectEval("#detail-evaluation"),
@@ -305,6 +313,8 @@ export default {
           if (_this.isProductsFeatured) {
             _this.top.featured = res[2];
           }
+          _this.isTouch = false;
+        }).catch(() => {
           _this.isTouch = false;
         });
       }, 800);
