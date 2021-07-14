@@ -1,83 +1,41 @@
 <template>
-  <view
-    class="he-page-content he-coupon"
-    :data-theme="theme"
-    :class="loading ? 'flex justify-center align-center' : ''"
-  >
+  <view class="he-page-content he-coupon" :data-theme="theme" :class="loading ? 'flex justify-center align-center' : ''">
     <he-loading size="50" mode="flower" v-if="loading"></he-loading>
     <template v-else>
-      <view
-        class="le-coupon-detail"
-        :class="
-          detail.status === 0 || (detail.status === 1 && couponShare)
-            ? 'he-normal'
-            : 'he-invalid'
-        "
-      >
+      <view class="le-coupon-detail" :class="detail.status === 0 || (detail.status === 1 && couponShare) ? 'he-normal' : 'he-invalid'">
         <view class="le-coupon-detail-top">
-          <image
-            class="he-item-image"
-            v-if="!couponShare && detail.status !== 0"
-            :src="detail.status | img(ipAddress)"
-          />
+          <image class="he-item-image" v-if="!couponShare && detail.status !== 0" :src="detail.status | img(ipAddress)" />
           <view class="le-coupon-doc-line flex justify-center">
             <view class="le-coupon-doc-item" v-for="item in 17" :key="item">
               <view class="le-coupon-doc"></view>
             </view>
           </view>
           <view class="le-coupon-heade-body flex flex-direction align-center">
-            <view
-              class="le-coupon-share flex flex-direction align-center justify-between"
-              @click="setShare"
-              v-if="
-                (detail.enable_share && detail.status === 0 && !couponShare) ||
-                (detail.enable_share && !shareReceive)
-              "
-            >
+            <view class="le-coupon-share flex flex-direction align-center justify-between" @click="setShare" v-if="
+                (detail.enable_share && detail.status === 0 && !couponShare) || (detail.enable_share && !shareReceive)
+              ">
               <view class="iconfont iconproductdetails_share"></view>
               <text class="he-share__text">分享</text>
             </view>
             <view class="le-coupon-name">{{ detail.name }}</view>
-            <view class="le-coupon-price">{{
-              detail.sub_price | setNumber
-            }}</view>
+            <view class="le-coupon-price">{{ detail.sub_price | setNumber }}</view>
             <view class="le-coupon-condition">
-              <template v-if="Number(detail.min_price) > 0">
-                满{{ Number(detail.min_price) }}可用
-              </template>
+              <template v-if="Number(detail.min_price) > 0"> 满{{ Number(detail.min_price) }}可用 </template>
               <template v-else> 无门槛使用 </template>
-              ，{{
-                detail.appoint_type === 1 ? "全部商品可用" : "部分商品可用"
-              }}
+              ，{{ detail.appoint_type === 1 ? '全部商品可用' : '部分商品可用' }}
             </view>
-            <template
-              v-if="(!couponShare && detail.status === 0) || couponShare"
-            >
+            <template v-if="(!couponShare && detail.status === 0) || couponShare">
               <!-- #ifdef MP-WEIXIN -->
-              <button
-                class="cu-btn le-coupon-btn"
-                v-if="couponShare && shareReceive"
-                @click="receive()"
-              >
+              <button class="cu-btn le-coupon-btn" v-if="couponShare && shareReceive" @click="receive()">
                 立即领取
               </button>
               <!-- #endif -->
               <!-- #ifdef H5 -->
-              <he-open-subscribe
-                @open-subscribe-success="receive"
-                :template-id="subTemplateId"
-                v-if="couponShare && shareReceive"
-              >
+              <he-open-subscribe @open-subscribe-success="receive" :template-id="subTemplateId" v-if="couponShare && shareReceive">
                 <button class="cu-btn le-coupon-btn">立即领取</button>
               </he-open-subscribe>
               <!-- #endif -->
-              <button
-                class="cu-btn le-coupon-btn le-coupon-use-btn"
-                v-else
-                @click="redirectTo()"
-              >
-                立即使用
-              </button>
+              <button class="cu-btn le-coupon-btn le-coupon-use-btn" v-else @click="redirectTo()">立即使用</button>
             </template>
           </view>
         </view>
@@ -90,12 +48,10 @@
           <view class="le-coupon-bottom-body">
             <view class="le-coupon-title">可用时间</view>
             <view class="le-coupon-text">
-              <template v-if="detail.expire_type === 1">
-                领取后{{ detail.expire_day }}天内
-              </template>
+              <template v-if="detail.expire_type === 1"> 领取后{{ detail.expire_day }}天内 </template>
               <template v-else>
-                {{ detail.begin_time | timeFormat("yyyy-mm-dd hh:MM:ss") }}-{{
-                  detail.end_time | timeFormat("yyyy-mm-dd hh:MM:ss")
+                {{ detail.begin_time | timeFormat('yyyy-mm-dd hh:MM:ss') }}-{{
+                detail.end_time | timeFormat('yyyy-mm-dd hh:MM:ss')
                 }}
               </template>
             </view>
@@ -109,69 +65,62 @@
           </view>
         </view>
       </view>
-      <he-products-featured
-        v-if="goodsSetting.recommend_showpage.coupon_detail.value"
-      ></he-products-featured>
-      <he-share
-        v-model="isShare"
-        :post-data="{ coupon_id: shareId }"
-        coupon-type="coupon"
-      ></he-share>
+      <he-products-featured v-if="goodsSetting.recommend_showpage.coupon_detail.value"></he-products-featured>
+      <he-share v-model="isShare" :post-data="{ coupon_id: shareId }" coupon-type="coupon"></he-share>
     </template>
     <detail-invalid v-model="isInvaild" :title="invaildStr"></detail-invalid>
   </view>
 </template>
-
 <script>
-import { mapGetters } from "vuex";
-import heProductsFeatured from "../../components/he-products-featured.vue";
-import heShare from "../../components/he-share.vue";
-import detailInvalid from "./components/detail-invalid.vue";
-import heLoading from "../../components/he-loading.vue";
+import { mapGetters } from 'vuex';
+import heProductsFeatured from '../../components/he-products-featured.vue';
+import heShare from '../../components/he-share.vue';
+import detailInvalid from './components/detail-invalid.vue';
+import heLoading from '../../components/he-loading.vue';
 // #ifdef H5
-import heOpenSubscribe from "@/components/he-open-subscribe.vue";
+import heOpenSubscribe from '@/components/he-open-subscribe.vue';
 // #endif
 // #ifdef H5
 let menuList = [
   // 分享给朋友
-  "menuItem:share:appMessage",
+  'menuItem:share:appMessage',
   // 分享到朋友圈
-  "menuItem:share:timeline",
+  'menuItem:share:timeline',
   // 分享到QQ
-  "menuItem:share:qq",
+  'menuItem:share:qq',
   // 分享到微博
-  "menuItem:share:weiboApp",
+  'menuItem:share:weiboApp',
   // 分享到QQ空间
-  "menuItem:share:QZone",
+  'menuItem:share:QZone'
 ];
 // #endif
 export default {
-  name: "detail",
+  name: 'detail',
   data() {
     return {
       isShare: false,
       loading: true,
       isInvaild: false,
-      invaildStr: "",
+      invaildStr: '',
       couponShare: null,
       shareReceive: true,
       detail: {},
       id: null,
-      behavior: null,
+      behavior: null
     };
   },
   computed: {
-    shareData: function () {
-      let imageUrl = "";
-      let title = "";
+    shareData: function() {
+      let imageUrl = '';
+      let title = '';
       let id = null;
       // #ifndef H5
-      imageUrl = this.ipAddress + "/coupon-share-applets-background.png";
+      imageUrl = this.ipAddress + '/coupon-share-applets-background.png';
       title = this.storeSetting.name;
       // #endif
       // #ifdef H5
-      imageUrl = this.ipAddress + "/coupon-share-wechat-background.png";
-      title = "送你优惠券，赶快来抢吧！";
+      imageUrl = this.ipAddress + '/coupon-share-wechat-background.png';
+      title = '送你优惠券，赶快来抢吧！';
       // #endif
       if (!this.couponShare) {
         id = this.detail.coupon_id;
@@ -180,15 +129,15 @@ export default {
       }
       return {
         title,
-        path: "/pages/coupon/detail?id=" + id + "&couponShare=1",
+        path: '/pages/coupon/detail?id=' + id + '&couponShare=1',
         imageUrl,
         // #ifdef H5
-        desc: "商家发福利啦！斥巨资帮助买家省钱",
+        desc: '商家发福利啦！斥巨资帮助买家省钱'
         // #endif
       };
     },
     // 海报分享ID
-    shareId: function () {
+    shareId: function() {
       let id = null;
       if (!this.couponShare) {
         id = this.detail.coupon_id;
@@ -197,21 +146,21 @@ export default {
       }
       return id;
     },
-    lineColor: function () {
+    lineColor: function() {
       let color = this.themeColor;
       if (!this.couponShare && this.detail.status !== 0) {
-        color = "#cccccc";
+        color = '#cccccc';
       }
       return {
-        backgroundImage: `linear-gradient(to right, ${color} 0%, ${color} 50%, transparent 0%)`,
+        backgroundImage: `linear-gradient(to right, ${color} 0%, ${color} 50%, transparent 0%)`
       };
     },
-    subTemplateId: function () {
-      return [this.$store.getters["setting/subscribe"].coupon_expire];
+    subTemplateId: function() {
+      return [this.$store.getters['setting/subscribe'].coupon_expire];
     },
     ...mapGetters({
-      goodsSetting: "setting/goodsSetting",
-    }),
+      goodsSetting: 'setting/goodsSetting'
+    })
   },
   components: {
     heProductsFeatured,
@@ -219,19 +168,19 @@ export default {
     heLoading,
     detailInvalid,
     // #ifdef H5
-    heOpenSubscribe,
+    heOpenSubscribe
     // #endif
   },
   onLoad(options) {
     let id = null;
     let couponShare = null;
-    let behavior = "coupon";
+    let behavior = 'coupon';
     if (this.isLogin) {
-      behavior = "user";
+      behavior = 'user';
     }
     if (options.scene) {
-      id = parseInt(this.getQueryVariable(options, "id"));
-      couponShare = this.getQueryVariable(options, "couponShare");
+      id = parseInt(this.getQueryVariable(options, 'id'));
+      couponShare = this.getQueryVariable(options, 'couponShare');
     } else {
       id = parseInt(options.id);
       couponShare = options.couponShare;
@@ -239,13 +188,13 @@ export default {
     this.couponShare = couponShare;
     // 分享进入的并不是自己的优惠券
     if (this.couponShare) {
-      behavior = "coupon";
+      behavior = 'coupon';
       uni.setNavigationBarTitle({
-        title: "领取优惠券",
+        title: '领取优惠券'
       });
     } else {
       uni.setNavigationBarTitle({
-        title: "优惠券详情",
+        title: '优惠券详情'
       });
     }
     this.id = id;
@@ -262,27 +211,27 @@ export default {
     }
   },
   methods: {
-    getQueryVariable: function (options, variable) {
+    getQueryVariable: function(options, variable) {
       let query = decodeURIComponent(options.scene);
-      let vars = query.split("&");
+      let vars = query.split('&');
       for (let i = 0; i < vars.length; i++) {
-        let pair = vars[i].split("=");
+        let pair = vars[i].split('=');
         if (pair[0] == variable) {
           return pair[1];
         }
       }
       return null;
     },
-    setShare: function () {
+    setShare: function() {
       this.isShare = true;
     },
-    getDetail: function () {
+    getDetail: function() {
       let _this = this;
       this.$heshop
-        .coupon("get", this.id, {
-          behavior: this.behavior,
+        .coupon('get', this.id, {
+          behavior: this.behavior
         })
-        .then(function (response) {
+        .then(function(response) {
           _this.detail = response;
           // #ifdef H5
           if (response.enable_share) {
@@ -290,29 +239,29 @@ export default {
           } else {
             // 隐藏转发按钮
             _this.$wechat.hideMenuItems({
-              menuList: menuList,
+              menuList: menuList
             });
           }
           // #endif
           _this.loading = false;
         })
-        .catch(function (error) {
+        .catch(function(error) {
           _this.loading = false;
           _this.$toError(error);
         });
     },
-    receive: function () {
+    receive: function() {
       let _this = this;
       if (this.isLogin) {
         function couponRequire() {
           _this.$heshop
-            .coupon("post", {
-              id: _this.detail.id,
+            .coupon('post', {
+              id: _this.detail.id
             })
-            .then(function () {
+            .then(function() {
               _this.shareReceive = false;
             })
-            .catch(function (error) {
+            .catch(function(error) {
               if (error.status === 403) {
                 _this.invaildStr = error.data.message;
                 _this.isInvaild = true;
@@ -322,11 +271,11 @@ export default {
         // #ifdef MP-WEIXIN
         wx.requestSubscribeMessage({
           tmplIds: _this.subTemplateId,
-          success: function () {},
-          fail: function () {},
-          complete: function () {
+          success: function() {},
+          fail: function() {},
+          complete: function() {
             couponRequire();
-          },
+          }
         });
         // #endif
         // #ifdef H5
@@ -334,37 +283,37 @@ export default {
         // #endif
       } else {
         uni.navigateTo({
-          url: "/pages/user/login",
+          url: '/pages/user/login'
         });
       }
     },
-    redirectTo: function () {
+    redirectTo: function() {
       uni.redirectTo({
-        url: "/pages/goods/search-list?coupon_id=" + this.detail.coupon_id,
+        url: '/pages/goods/search-list?coupon_id=' + this.detail.coupon_id
       });
-    },
+    }
   },
   filters: {
-    setNumber: function (value) {
+    setNumber: function(value) {
       return Number(value);
     },
-    img: function (type, ipAddress) {
+    img: function(type, ipAddress) {
       let str = ipAddress;
       if (type === 1) {
-        str += "/coupon-used-icon.png";
+        str += '/coupon-used-icon.png';
       } else if (type === 2) {
-        str += "/coupon-expired-icon.png";
+        str += '/coupon-expired-icon.png';
       } else if (type === 3) {
-        str += "/coupon-unable-icon.png";
+        str += '/coupon-unable-icon.png';
       }
       return str;
-    },
+    }
   },
   // #ifdef H5
   beforeDestroy() {
     // 显示转发按钮
     this.$wechat.showMenuItems({
-      menuList: menuList,
+      menuList: menuList
     });
     this.$wechat.updateShareData(this.$shareAppMessage());
   },
@@ -379,13 +328,13 @@ export default {
   // #endif
   onPullDownRefresh() {
     this.getDetail();
-    setTimeout(function () {
+    setTimeout(function() {
       uni.stopPullDownRefresh();
     }, 1000);
-  },
+  }
 };
-</script>
 
+</script>
 <style scoped lang="scss">
 .he-coupon {
   overflow: hidden;
@@ -405,11 +354,13 @@ export default {
   border-top-right-radius: 16px;
   border-top-left-radius: 16px;
   position: relative;
+
   .le-coupon-doc {
     top: 0;
     left: 50%;
     transform: translate(-50%, -50%);
   }
+
   .he-item-image {
     width: 120px;
     height: 120px;
@@ -460,7 +411,7 @@ export default {
   }
 
   .le-coupon-price::before {
-    content: "￥";
+    content: '￥';
     font-size: 24px;
     font-family: PingFang SC;
     font-weight: 500;
@@ -485,14 +436,14 @@ export default {
     font-weight: 500;
     color: #ffffff;
     margin-top: 32px;
-    @include background_color("background_color");
+    @include background_color('background_color');
   }
 
   .le-coupon-btn.le-coupon-use-btn {
     background-color: #ffffff !important;
-    @include font_color("font_color");
+    @include font_color('font_color');
     border: 1px solid transparent;
-    @include border_color("border_color");
+    @include border_color('border_color');
   }
 }
 
@@ -582,32 +533,41 @@ export default {
   border-radius: 50%;
   background: RGBA(245, 245, 245, 1);
 }
+
 .he-normal {
   .le-coupon-detail-top {
-    @include border_color("border_color");
+    @include border_color('border_color');
   }
+
   .le-coupon-price {
-    @include font_color("font_color");
+    @include font_color('font_color');
   }
+
   .le-coupon-detail-bottom {
-    @include border_color("border_color");
+    @include border_color('border_color');
   }
+
   .le-coupon-doc {
-    @include border_color("border_color");
+    @include border_color('border_color');
   }
 }
+
 .he-invalid {
   .le-coupon-detail-top {
     border-color: #ccc;
   }
+
   .le-coupon-price {
     color: #999999;
   }
+
   .le-coupon-detail-bottom {
     border-color: #ccc;
   }
+
   .le-coupon-doc {
     border-color: #ccc;
   }
 }
+
 </style>

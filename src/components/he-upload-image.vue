@@ -172,8 +172,7 @@ export default {
             if (!this.checkFileExt(val)) return;
             // 如果是非多选，index大于等于1或者超出最大限制数量时，不处理
             if (!multiple && index >= 1) return;
-            console.log(val);
-            console.log(val.size);
+         
             if (val.size > maxSize) {
               this.$h.toast("超出允许的文件大小");
             } else {
@@ -231,7 +230,7 @@ export default {
       this.lists[index].progress = 0;
       this.lists[index].error = true;
       this.lists[index].response = null;
-      console.log(err);
+   
       this.$h.toast(err.data.message);
       this.$emit("on-error", err, index, this.lists, this.index);
     },

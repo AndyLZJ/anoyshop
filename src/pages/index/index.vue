@@ -1,78 +1,85 @@
 <template>
-    <view class="pages fitment-pages" :style="{
+  <view class="pages fitment-pages" :style="{
       background: background,
     }" v-if="!is_skip">
-        <openidad @confirm="handleConfirm"></openidad>
-        <!-- #ifndef H5 -->
-        <he-navbar :is-back="false" title-bold title-size="32" :title="fixed ? '' : title" :background="{ background: '#fff' }">
-            <view class="he-search flex align-center" v-if="fixed" :style="{ height: menuButtonInfo.height + 'px' }" @click="navigateToDetail">
-                <text class="iconfont iconsearchbar_search"></text>
-                <text class="he-search-text">请输入关键字搜索</text>
-            </view>
-        </he-navbar>
-        <view :style="[topHeight]"></view>
-        <!-- #endif -->
-        <!-- #ifdef H5 -->
-        <he-navbar v-if="fixed" :is-back="false" title-bold title-size="32" :background="{ background: '#fff' }">
-            <view class="he-search flex align-center" @click="navigateToDetail">
-                <text class="iconfont iconsearchbar_search"></text>
-                <text class="he-search-text">请输入关键字搜索</text>
-            </view>
-        </he-navbar>
-        <!-- #endif -->
-        <view v-for="(item, index) in page" :key="index">
-            <view v-if="item.name === 'notice'" :id="item.name + '_' + index">
-                <component is="notice" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            </view>
-            <view v-else-if="item.name === 'rubik'" :id="item.name + '_' + index">
-                <component is="rubik" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            </view>
-            <view v-else-if="item.name === 'title'" :id="item.name + '_' + index">
-                <component is="titles" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            </view>
-            <view v-else-if="item.name === 'navigation'" :id="item.name + '_' + index">
-                <component is="navigation" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            </view>
-            <view v-else-if="item.name === 'video'" :id="item.name + '_' + index">
-                <component is="videos" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            </view>
-            <view v-else-if="item.name === 'separate'" :id="item.name + '_' + index">
-                <component is="separate" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            </view>
-            <view v-else-if="item.name === 'banner'" :id="item.name + '_' + index">
-                <component is="banner" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            </view>
-            <view v-else-if="item.name === 'search'" id="search">
-                <component is="search" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            </view>
-            <view v-else-if="item.name === 'goods'" :id="item.name + '_' + index">
-                <component is="goods" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            </view>
-            <view v-else-if="item.name === 'blank'" :id="item.name + '_' + index">
-                <component is="blank" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            </view>
-            <view v-else-if="item.name === 'tabs'" :id="item.name + '_' + index">
-                <component :background="background" :page-index="index" is="tabs" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            </view>
-            <view v-else-if="item.name === 'coupon'" :id="item.name + '_' + index">
-                <component :background="background" :page-index="index" is="coupon" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            </view>
-            <!-- #ifndef H5 -->
-            <view v-else-if="item.name === 'wechat'" :id="item.name + '_' + index">
-                <component is="wechat" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            </view>
-            <view v-else-if="item.name === 'wechatLive'" :id="item.name + '_' + index">
-                <component is="wechatLive" :facade="item.facade" :content="item.content" :data-index="index"></component>
-            </view>
-            <!--#endif-->
-        </view>
-        <!-- #ifndef H5 -->
-        <favorites v-model="isFavorites"></favorites>
-        <!--#endif-->
-        <!-- #ifdef H5 -->
-        <user-newuser-coupon v-model="isNewuser" :coupon="userInfo.register && userInfo.register.coupon_list" :wechatUrl="wechatUrl"></user-newuser-coupon>
-        <!--#endif-->
+    <openidad @confirm="handleConfirm"></openidad>
+    <!-- #ifndef H5 -->
+    <he-navbar :is-back="false" title-bold title-size="32" :title="fixed ? '' : title" :background="{ background: '#fff' }">
+      <view class="he-search flex align-center" v-if="fixed" :style="{ height: menuButtonInfo.height + 'px' }" @click="navigateToDetail">
+        <text class="iconfont iconsearchbar_search"></text>
+        <text class="he-search-text">请输入关键字搜索</text>
+      </view>
+    </he-navbar>
+    <view :style="[topHeight]"></view>
+    <!-- #endif -->
+    <!-- #ifdef H5 -->
+    <he-navbar v-if="fixed" :is-back="false" title-bold title-size="32" :background="{ background: '#fff' }">
+      <view class="he-search flex align-center" @click="navigateToDetail">
+        <text class="iconfont iconsearchbar_search"></text>
+        <text class="he-search-text">请输入关键字搜索</text>
+      </view>
+    </he-navbar>
+    <!-- #endif -->
+    <view v-for="(item, index) in page" :key="index">
+      <view v-if="item.name === 'notice'" :id="item.name + '_' + index">
+        <component is="notice" :facade="item.facade" :content="item.content" :data-index="index"></component>
+      </view>
+      <view v-else-if="item.name === 'rubik'" :id="item.name + '_' + index">
+        <component is="rubik" :facade="item.facade" :content="item.content" :data-index="index"></component>
+      </view>
+      <view v-else-if="item.name === 'title'" :id="item.name + '_' + index">
+        <component is="titles" :facade="item.facade" :content="item.content" :data-index="index"></component>
+      </view>
+      <view v-else-if="item.name === 'navigation'" :id="item.name + '_' + index">
+        <component is="navigation" :facade="item.facade" :content="item.content" :data-index="index"></component>
+      </view>
+      <view v-else-if="item.name === 'video'" :id="item.name + '_' + index">
+        <component is="videos" :facade="item.facade" :content="item.content" :data-index="index"></component>
+      </view>
+      <view v-else-if="item.name === 'separate'" :id="item.name + '_' + index">
+        <component is="separate" :facade="item.facade" :content="item.content" :data-index="index"></component>
+      </view>
+      <view v-else-if="item.name === 'banner'" :id="item.name + '_' + index">
+        <component is="banner" :facade="item.facade" :content="item.content" :data-index="index"></component>
+      </view>
+      <view v-else-if="item.name === 'search'" id="search">
+        <component is="search" :facade="item.facade" :content="item.content" :data-index="index"></component>
+      </view>
+      <view v-else-if="item.name === 'goods'" :id="item.name + '_' + index">
+        <component is="goods" :facade="item.facade" :content="item.content" :data-index="index"></component>
+      </view>
+      <view v-else-if="item.name === 'blank'" :id="item.name + '_' + index">
+        <component is="blank" :facade="item.facade" :content="item.content" :data-index="index"></component>
+      </view>
+      <view v-else-if="item.name === 'tabs'" :id="item.name + '_' + index">
+        <component :background="background" :page-index="index" is="tabs" :facade="item.facade" :content="item.content" :data-index="index"></component>
+      </view>
+      <view v-else-if="item.name === 'coupon'" :id="item.name + '_' + index">
+        <component :background="background" :page-index="index" is="coupon" :facade="item.facade" :content="item.content" :data-index="index"></component>
+      </view>
+      <view v-else-if="item.name === 'task'" :id="item.name + '_' + index">
+        <component :background="background" :page-index="index" is="task" :facade="item.facade" :content="item.content" :data-index="index"></component>
+      </view>
+      <!-- #ifndef H5 -->
+      <view v-else-if="item.name === 'wechat'" :id="item.name + '_' + index">
+        <component is="wechat" :facade="item.facade" :content="item.content" :data-index="index"></component>
+      </view>
+      <view v-else-if="item.name === 'wechatLive'" :id="item.name + '_' + index">
+        <component is="wechatLive" :facade="item.facade" :content="item.content" :data-index="index"></component>
+      </view>
+      <!--#endif-->
     </view>
+    <!-- #ifndef H5 -->
+    <favorites v-model="isFavorites"></favorites>
+    <!--#endif-->
+    <!-- #ifdef H5 -->
+    <user-newuser-coupon v-model="isNewuser" :coupon="userInfo.register && userInfo.register.coupon_list" :wechatUrl="wechatUrl"></user-newuser-coupon>
+    <!--#endif-->
+    <!-- 优化展现形式 -->
+    <taskpopups v-model="item.display" :title="item.remark" :index="index" v-for="(item, index) in popupsList" :key="index"></taskpopups>
+    <!-- 测试使用 -->
+<!--     <cartoon :score="100" title="测试" v-model="is_cartoon"></cartoon> -->
+  </view>
 </template>
 <script type="text/javascript">
 let menuButtonInfo = {};
@@ -93,6 +100,7 @@ import rubik from "../fitment/rubik/rubik.vue";
 import notice from "../fitment/notice/notice.vue";
 import advertising from "../fitment/advertising/advertising.vue";
 import coupon from "../fitment/coupon/coupon.vue";
+import task from "../fitment/task/task.vue";
 // #ifndef H5
 import wechat from "../fitment/wechat/wechat.vue";
 import favorites from "./components/favorites.vue";
@@ -105,272 +113,376 @@ import userNewuserCoupon from "../../components/user-newuser-coupon.vue";
 import { mapGetters, mapActions } from "vuex";
 
 import openidad from "./ad.vue";
-
+import cartoon from "@/plugins/task/components/cartoon.vue";
+import taskpopups from "@/plugins/task/components/popups.vue";
 export default {
-    components: {
-        videos,
-        separate,
-        blank,
-        banner,
-        search,
-        goods,
-        navigation,
-        tabs,
-        titles,
-        rubik,
-        notice,
-        advertising,
-        coupon,
-        // #ifndef H5
-        wechat,
-        favorites,
-        wechatLive,
-        // #endif
-        heNavbar,
-        // #ifdef H5
-        userNewuserCoupon,
-        // #endif
-        openidad
-    },
-    data() {
-        return {
-            is_skip: false,
-            background: "#F7F7F7",
-            page: [],
-            empty: {
-                name: "blank",
-                icon: this.ipAddress + "/pageicon/blank-icon.png",
-                title: "辅助空白",
-                content: {},
-                facade: {
-                    height: 10,
-                    background_color: "#FFFFFF",
-                },
-            },
-            // #ifndef H5
-            title: "首页",
-            isFavorites: true,
-            // #endif
-            menuButtonInfo: menuButtonInfo,
-            // #ifdef H5
-            isNewuser: false,
-            wechatUrl: "/",
-            // #endif
-        };
-    },
-    // #ifdef H5
-    beforeCreate() {
-        let _this = this;
-        this.is_skip = true;
-        let q = window.location.search.substring(1).split("_skip=")[1];
-        if (q) {
-            let code = this.$h.getQueryVariable("code");
-            if (code) {
-                if (this.$store.state.apply.is_login) {
-                    this.is_skip = false;
-                } else {
-                    this.wechatUrl = q;
-                    this.$store.dispatch("user/weChatLogin", { code }).then(function() {
-                            _this.is_skip = false;
-                            if (!_this.$h.test.isEmpty(_this.userInfo.register.coupon_list)) {
-                                _this.isNewuser = true;
-                            } else {
-                                uni.redirectTo({
-                                    url: q,
-                                    fail() {
-                                        uni.switchTab({
-                                            url: q,
-                                        });
-                                    },
-                                });
-                            }
-                        })
-                        .catch(function() {
-                            _this.is_skip = false;
-                        });
-                }
-            }
-        } else {
-            this.is_skip = false;
-        }
-    },
+  components: {
+    videos,
+    separate,
+    blank,
+    banner,
+    search,
+    goods,
+    navigation,
+    tabs,
+    titles,
+    rubik,
+    notice,
+    advertising,
+    coupon,
+    task,
+    // #ifndef H5
+    wechat,
+    favorites,
+    wechatLive,
     // #endif
-    computed: {
-        ...mapGetters({
-            searchTop: "components/getSearchTop",
-            fixed: "components/getSearchFixed",
-            searchHeight: "components/getSearchHeight",
-            navbarHeight: "setting/getNavBarHeight",
-            statusBarHeight: "setting/statusBarHeight",
-        }),
-        is_ad() {
-            return uni.getStorageSync('openingad') || false;
+    heNavbar,
+    // #ifdef H5
+    userNewuserCoupon,
+    // #endif
+    openidad,
+    taskpopups,
+    cartoon
+  },
+  data() {
+    return {
+      is_cartoon: 1,
+      popupsList: [],
+      is_skip: false,
+      background: "#F7F7F7",
+      page: [],
+      empty: {
+        name: "blank",
+        icon: this.ipAddress + "/pageicon/blank-icon.png",
+        title: "辅助空白",
+        content: {},
+        facade: {
+          height: 10,
+          background_color: "#FFFFFF",
         },
-        topHeight: function() {
-            return {
-                height: `${this.statusBarHeight + this.navbarHeight}px`,
-                // #ifdef H5
-                lineHeight: `${this.statusBarHeight + this.navbarHeight}px`,
-                // #endif
-            };
-        },
-        userInfo: function() {
-            return this.$store.state.apply.userInfo;
-        },
+      },
+      // #ifndef H5
+      title: "首页",
+      isFavorites: true,
+      // #endif
+      menuButtonInfo: menuButtonInfo,
+      // #ifdef H5
+      isNewuser: false,
+      wechatUrl: "/",
+      // #endif
+      taskShare: false,
+      isShareCount: null
+    };
+  },
+  // #ifdef H5
+  beforeCreate() {
+    let _this = this;
+    this.is_skip = true;
+    let q = window.location.search.substring(1).split("_skip=")[1];
+    if (q) {
+      let code = this.$h.getQueryVariable("code");
+      if (code) {
+        if (this.$store.state.apply.is_login) {
+          this.is_skip = false;
+        } else {
+          this.wechatUrl = q;
+          this.$store.dispatch("user/weChatLogin", { code }).then(function() {
+              _this.is_skip = false;
+              if (!_this.$h.test.isEmpty(_this.userInfo.register.coupon_list)) {
+                _this.isNewuser = true;
+              } else {
+                uni.redirectTo({
+                  url: q,
+                  fail() {
+                    uni.switchTab({
+                      url: q,
+                    });
+                  },
+                });
+              }
+            })
+            .catch(function() {
+              _this.is_skip = false;
+            });
+        }
+      }
+    } else {
+      this.is_skip = false;
+    }
+  },
+  // #endif
+  computed: {
+    ...mapGetters({
+      searchTop: "components/getSearchTop",
+      fixed: "components/getSearchFixed",
+      searchHeight: "components/getSearchHeight",
+      navbarHeight: "setting/getNavBarHeight",
+      statusBarHeight: "setting/statusBarHeight",
+    }),
+    is_ad() {
+      return uni.getStorageSync('openingad') || false;
+    },
+    topHeight: function() {
+      return {
+        height: `${this.statusBarHeight + this.navbarHeight}px`,
+        // #ifdef H5
+        lineHeight: `${this.statusBarHeight + this.navbarHeight}px`,
+        // #endif
+      };
+    },
+    userInfo: function() {
+      return this.$store.state.apply.userInfo;
+    },
+    shareData: function() {
+      return {
+        title: this.shareSetting.describe ? this.shareSetting.describe : `欢迎光临${this.storeSetting.name} 挑选好物`,
+        path: '/pages/index/index',
+        imageUrl:  this.shareSetting.cover_img ? this.shareSetting.cover_img : this.storeSetting.logo
+      };
+    },
+  },
+  /**
+   * 页面显示时
+   * @return {[type]} [description]
+   */
+  onShow() {
+    let is_ad = uni.getStorageSync('openingad');
+    if (!is_ad) {
+      uni.hideTabBar();
+      setTimeout(() => { //设置延迟执行
+        this.handlePageLoading();
+      }, 1000);
+    } else {
+      uni.showTabBar();
+      this.handlePageLoading();
+    }
+    // #ifndef H5
+    // 是否显示收藏小程序
+    this.isFavorites = !uni.getStorageSync("isfavorites");
+    // #endif
+    if (this.isLogin) {
+      this.setCartNumber()
+    }
+  },
+  methods: {
+    handler() {
+      console.log('show')
+    },
+    ...mapActions({
+      setCartNumber: "cart/setCartNumber",
+    }),
+    handleConfirm(value) {
+      uni.showTabBar();
+      this.handlePageLoading();
     },
     /**
-     * 页面显示时
+     * 获取日志
      * @return {[type]} [description]
      */
-    onShow() {
-        let is_ad = uni.getStorageSync('openingad');
-        if (!is_ad) {
-            uni.hideTabBar();
-            setTimeout(() => { //设置延迟执行
-                this.handlePageLoading();
-            }, 1000);
+    handleTaskShare() {
+      //用于单次提示
+      const value = uni.getStorageSync('handleTaskShare');
+      if (value) {
+        this.binding = {};
+        return true
+      }
+      /**
+       * 处理数据
+       * @param  {[type]} res [description]
+       * @return {[type]}     [description]
+       */
+      this.$heshop.plugin("get", { include: "task", model: "score", type: 'single', keyword: 'share', status: 0 }).then(res => {
+        if (res && res.status === 0) {
+          this.$nextTick(() => {
+            console.log("展示分享转发数据信息")
+            this.popupsList.push({
+              display: true,
+              remark: res.remark
+            })
+            clearInterval(this.isShareCount);
+            uni.setStorageSync('handleTaskShare', 1);
+          })
+        }
+      }).catch(err => {
+        console.log("查看错误信息")
+      })
+    },
+    /**
+     * 执行页面保存操作
+     * @return {[type]} [description]
+     */
+    handlePageLoading() {
+      try {
+        const value = this.getStorageSync("micropage");
+        if (value) {
+          // #ifdef H5
+          uni.setNavigationBarTitle({
+            title: value.name,
+          });
+          // #endif
+          // #ifndef H5
+          this.title = value.name;
+          // #endif
+          this.background = value.background;
+          this.page = JSON.parse(value.content);
+          const num = this.page.findIndex(function(item) {
+            return item.name === "search";
+          });
+          this.$store.commit("components/setSearchIndex", num);
+          this.$store.commit("components/setPage", this.page);
+          this.handleLoadData(value);
         } else {
-            uni.showTabBar();
-            this.handlePageLoading();
+          this.handleLoadData();
         }
-        // #ifndef H5
-        // 是否显示收藏小程序
-        this.isFavorites = !uni.getStorageSync("isfavorites");
-        // #endif
-        if (this.isLogin) {
-            this.setCartNumber()
-        }
+      } catch (error) {
+        this.handleLoadData();
+      }
     },
-    methods: {
-        ...mapActions({
-            setCartNumber: "cart/setCartNumber",
-        }),
-        handleConfirm(value) {
-            uni.showTabBar();
-            this.handlePageLoading();
-        },
-        /**
-         * 执行页面保存操作
-         * @return {[type]} [description]
-         */
-        handlePageLoading() {
-            try {
-                const value = this.getStorageSync("micropage");
-                if (value) {
-                    // #ifdef H5
-                    uni.setNavigationBarTitle({
-                        title: value.name,
-                    });
-                    // #endif
-                    // #ifndef H5
-                    this.title = value.name;
-                    // #endif
-                    this.background = value.background;
-                    this.page = JSON.parse(value.content);
-                    const num = this.page.findIndex(function(item) {
-                        return item.name === "search";
-                    });
-                    this.$store.commit("components/setSearchIndex", num);
-                    this.$store.commit("components/setPage", this.page);
-                    this.handleLoadData(value);
-                } else {
-                    this.handleLoadData();
-                }
-            } catch (error) {
-                this.handleLoadData();
-            }
-        },
-        /**
-         * 加载数据信息
-         * @return {[type]} [description]
-         */
-        handleLoadData(value) {
-            let _this = this;
-            this.$heshop
-                .pages("GET")
-                .then(function(data) {
-                    _this.background = data.background;
-                    if (!(value && _this.$heshop.MD5(value) == _this.$heshop.MD5(data))) {
-                        _this.page = JSON.parse(data.content);
-                        const num = _this.page.findIndex(function(item) {
-                            return item.name === "search";
-                        });
-                        _this.$store.commit("components/setSearchIndex", num);
-                        _this.$store.commit("components/setPage", _this.page);
-                        uni.setStorageSync("micropage", data);
-                        // #ifdef H5
-                        uni.setNavigationBarTitle({
-                            title: data.name,
-                        });
-                        // #endif
-                        // #ifndef H5
-                        _this.title = data.name;
-                        // #endif
-                    }
-                })
-                .catch(function(error) {
-                    _this.$toError(error);
-                });
-        },
-        navigateToDetail() {
-            uni.navigateTo({
-                url: "/pages/goods/search",
+    /**
+     * 加载数据信息
+     * @return {[type]} [description]
+     */
+    handleLoadData(value) {
+      let _this = this;
+      this.$heshop
+        .pages("GET")
+        .then(function(data) {
+          _this.background = data.background;
+          if (!(value && _this.$heshop.MD5(value) == _this.$heshop.MD5(data))) {
+            _this.page = JSON.parse(data.content);
+            const num = _this.page.findIndex(function(item) {
+              return item.name === "search";
             });
-        },
+            _this.$store.commit("components/setSearchIndex", num);
+            _this.$store.commit("components/setPage", _this.page);
+            uni.setStorageSync("micropage", data);
+            // #ifdef H5
+            uni.setNavigationBarTitle({
+              title: data.name,
+            });
+            // #endif
+            // #ifndef H5
+            _this.title = data.name;
+            // #endif
+          }
+        })
+        .catch(function(error) {
+          _this.$toError(error);
+        });
     },
-    onPageScroll(e) {
+    navigateToDetail() {
+      uni.navigateTo({
+        url: "/pages/goods/search",
+      });
+    },
+    toTaskonShare() {
+      this.taskShare = true;
+      //用于延时测试数据
+      setTimeout(res => {
+        let task_status = this.$manifest("task", "status");
         let that = this;
-        let scrollTop = parseInt(e.scrollTop);
-        let isSatisfy =
-            scrollTop >= that.searchTop + this.navbarHeight ? true : false;
-        if (that.searchFixed === isSatisfy) {
-            return false;
+        if (task_status) {
+          this.$store.dispatch("plugins/onShare").then(res => {
+            console.log("执行分享数据接口", res)
+            if (Object.prototype.toString.call(res) == '[object Object]') {
+              that.$nextTick(() => {
+                that.taskShare = false;
+              })
+            }
+          }).catch(error => {
+
+          });
         }
-        this.$store.commit("components/setSearchFixed", isSatisfy);
-    },
+      }, 1000)
+    }
+  },
+  onLoad(options) {
+    console.log(options);
+    // #ifdef H5
+    this.$wechat.updateShareData(this.$shareAppMessage());
+    // #endif
+    let that = this;
+    // this.isShareCount = setInterval(() => {
+    //   console.log("定时执行判断页面分享获取")
+    //   that.handleTaskShare();
+    // }, 10000);
+  },
+  // #ifdef H5
+  beforeDestroy() {
+    // 显示转发按钮
+    this.$wechat.showMenuItems({
+      menuList: menuList,
+    });
+    this.$wechat.updateShareData(this.$shareAppMessage());
+  },
+  // #endif
+  // #ifndef H5
+  // onShareAppMessage() {
+  //   console.count('index:onShareAppMessage');
+  //   console.log(this.taskShare);
+  //   if (this.taskShare) return;
+  //   console.log('index::::' , this.$shareAppMessage(this.shareData));
+  //   return this.$shareAppMessage(this.shareData);
+  // },
+  // onShareTimeline() {
+  //   if (this.taskShare) return;
+  //   return this.$shareAppMessage(this.shareData);
+  // },
+  // #endif
+  onPageScroll(e) {
+    let that = this;
+    let scrollTop = parseInt(e.scrollTop);
+    let isSatisfy = scrollTop >= that.searchTop + this.navbarHeight ? true : false;
+    if (that.searchFixed === isSatisfy) {
+      return false;
+    }
+    this.$store.commit("components/setSearchFixed", isSatisfy);
+  },
 };
+
 </script>
 <style lang="scss" scoped>
 .pages {
-    width: 100%;
-    min-height: 100vh;
-    background-color: RGBA(245, 245, 245, 1);
+  width: 100%;
+  min-height: 100vh;
+  background-color: RGBA(245, 245, 245, 1);
 }
 
 .he-page-title {
-    background-color: #fff;
-    position: fixed;
-    z-index: 10;
-    width: 100%;
-    top: 0;
-    text-align: center;
-    // #ifndef H5
-    padding-top: 95px;
-    // #endif
+  background-color: #fff;
+  position: fixed;
+  z-index: 10;
+  width: 100%;
+  top: 0;
+  text-align: center;
+  // #ifndef H5
+  padding-top: 95px;
+  // #endif
 }
 
 .he-search {
-    background: #ffffff;
-    border: 2px solid #e5e5e5;
-    border-radius: 32px;
-    margin: 0 20px;
-    width: 100%;
-    padding-left: 24px;
-    // #ifdef H5
-    height: 63px;
-    // #endif
+  background: #ffffff;
+  border: 2px solid #e5e5e5;
+  border-radius: 32px;
+  margin: 0 20px;
+  width: 100%;
+  padding-left: 24px;
+  // #ifdef H5
+  height: 63px;
+  // #endif
 }
 
 .he-search-text {
-    display: inline-block;
-    font-size: 26px;
-    font-family: PingFang SC;
-    font-weight: 500;
-    color: #999999;
-    margin-left: 12px;
+  display: inline-block;
+  font-size: 26px;
+  font-family: PingFang SC;
+  font-weight: 500;
+  color: #999999;
+  margin-left: 12px;
 }
 
 .iconsearchbar_search {
-    font-size: 24px;
+  font-size: 24px;
 }
+
 </style>

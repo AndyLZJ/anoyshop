@@ -3,34 +3,22 @@
     <view class="detail-basic-information">
       <view class="he-top flex align-center justify-between">
         <view>
-          <text class="he-price">{{ price }}</text>
+          <text class="he-price he-price_task" v-if="is_task">{{task.task_number}}<text style="font-size: 12px">积分+¥</text>{{ task.task_price }}</text>
+          <text class="he-price" v-else>{{ price }}</text>
           <text class="he-old-price">¥{{ linePrice }}</text>
         </view>
-        <text class="fr he-sale"
-          >已售{{ sales + virtual_sales }}{{ unit }}</text
-        >
+        <text class="fr he-sale">已售{{ sales + virtual_sales }}{{ unit }}</text>
       </view>
       <view class="he-bottom flex justify-between">
         <text class="he-name he-line-2">{{ name }}</text>
-        <view
-          class="he-share flex flex-direction align-center justify-between"
-          @click="setShare"
-        >
+        <view class="he-share flex flex-direction align-center justify-between" @click="setShare">
           <view class="iconfont iconproductdetails_share"></view>
           <text class="he-share__text">分享</text>
         </view>
       </view>
-      <view
-        class="he-coupon flex align-center"
-        @click="isCoupon = true"
-        v-if="!$h.test.isEmpty(coupon)"
-      >
+      <view class="he-coupon flex align-center" @click="isCoupon = true" v-if="!$h.test.isEmpty(coupon)">
         <view class="he-coupon-left flex align-center">
-          <view
-            class="he-coupon-item flex align-center"
-            :key="index"
-            v-for="(item, index) in coupon"
-          >
+          <view class="he-coupon-item flex align-center" :key="index" v-for="(item, index) in coupon">
             <view class="he-coupon-edge he-coupon-item-left">
               <view class="he-edge-doc"></view>
             </view>
@@ -51,11 +39,10 @@
         </view>
       </view>
     </view>
-    <he-share v-model="isShare" :post-data="{ goods_id: goodsId }"></he-share>
+    <he-share v-model="isShare" :post-data="{ goods_id: goodsId }" :is_task="is_task"></he-share>
     <detail-coupon v-model="isCoupon" :coupon="newCoupon"></detail-coupon>
   </view>
 </template>
-
 <script>
 import heShare from "../../../components/he-share.vue";
 import detailCoupon from "./detail-coupon.vue";
@@ -67,51 +54,53 @@ export default {
     detailCoupon,
   },
   props: {
+    is_task: Boolean,
+    task: [Object, Array],
     name: {
       type: String,
-      default: function () {
+      default: function() {
         return "";
       },
     },
     price: {
       type: String,
-      default: function () {
+      default: function() {
         return "";
       },
     },
     unit: {
       type: String,
-      default: function () {
+      default: function() {
         return "";
       },
     },
     linePrice: {
       type: String,
-      default: function () {
+      default: function() {
         return "";
       },
     },
     sales: {
       type: Number,
-      default: function () {
+      default: function() {
         return 0;
       },
     },
     virtual_sales: {
       type: Number,
-      default: function () {
+      default: function() {
         return 0;
       },
     },
     goodsId: {
       type: Number,
-      default: function () {
+      default: function() {
         return 0;
       },
     },
     goods: {
       type: Object,
-      default: function () {
+      default: function() {
         return {};
       },
     },
@@ -125,10 +114,25 @@ export default {
     };
   },
   methods: {
-    setShare: function () {
+    setShare: function() {
       this.isShare = true;
+      this.toTaskonShare();
     },
-    getLen: function (list) {
+    toTaskonShare() {
+      //用于延时测试数据
+      setTimeout(res => {
+        let task_status = this.$manifest("task", "status");
+        let that = this;
+        if (task_status) {
+          this.$store.dispatch("plugins/onShare").then(res => {
+            console.log("执行了分享接口", res)
+          }).catch(error => {
+
+          });
+        }
+      }, 1000)
+    },
+    getLen: function(list) {
       let str = "";
       list.forEach((item) => {
         item.min_price = Number(item.min_price);
@@ -139,12 +143,12 @@ export default {
           str += `${item.sub_price}无门槛`;
         }
       });
-      if ( uni.upx2px(550) - str.length * uni.upx2px(24) - list.length * uni.upx2px(24) - ((list.length -1) * uni.upx2px(12) ) < 0) {
+      if (uni.upx2px(550) - str.length * uni.upx2px(24) - list.length * uni.upx2px(24) - ((list.length - 1) * uni.upx2px(12)) < 0) {
         this.coupon.pop();
         this.getLen(this.coupon);
       }
     },
-    getCoupon: function () {
+    getCoupon: function() {
       let _this = this;
       this.$heshop
         .coupon("get", {
@@ -152,12 +156,12 @@ export default {
           goods_id: this.goodsId,
           type: "all",
         })
-        .then(function (response) {
+        .then(function(response) {
           _this.newCoupon = response;
           _this.coupon = JSON.parse(JSON.stringify(response));
           _this.getLen(_this.coupon);
         })
-        .catch(function (error) {
+        .catch(function(error) {
           _this.$toError(error);
         });
     },
@@ -166,8 +170,8 @@ export default {
     this.getCoupon();
   },
 };
-</script>
 
+</script>
 <style scoped lang="scss">
 .detail-basic-information {
   background: #ffffff;
@@ -175,19 +179,28 @@ export default {
   padding: 32px 24px 28px 24px;
   margin: 20px 20px 0 20px;
 }
+
 .he-top {
   margin-bottom: 17px;
 }
+
 .he-price {
   font-size: 40px;
   font-family: DINPro;
   font-weight: bold;
   @include font_color("font_color");
 }
+
 .he-price:before {
   content: "￥";
   font-size: 30px;
 }
+
+.he-price.he-price_task:before {
+  content: "";
+  font-size: 30px;
+}
+
 .he-old-price {
   font-size: 24px;
   font-family: PingFang SC;
@@ -196,12 +209,14 @@ export default {
   color: #999999;
   margin-left: 17px;
 }
+
 .he-sale {
   font-size: 24px;
   font-family: PingFang SC;
   font-weight: 500;
   color: #999999;
 }
+
 .he-name {
   font-size: 28px;
   font-family: DINPro;
@@ -210,33 +225,40 @@ export default {
   line-height: 36px;
   width: 545px;
 }
+
 .he-share {
   width: 70px;
 }
+
 .he-share__text {
   font-size: 20px;
   font-family: PingFang SC;
   font-weight: 500;
   color: #999999;
 }
+
 .iconproductdetails_share {
   width: 32px;
   height: 32px;
   font-size: 32px;
   color: RGBA(153, 153, 153, 1);
 }
+
 .he-coupon {
   width: 662px;
   height: 64px;
   margin-top: 16px;
+
   .he-coupon-left {
     width: 550px;
     height: 46px;
+
     .he-coupon-item {
       margin-right: 16px;
       height: 44px;
       overflow: hidden;
     }
+
     .he-coupon-item-center {
       border-top: 1px solid transparent;
       border-bottom: 1px solid transparent;
@@ -249,6 +271,7 @@ export default {
       transform: rotateZ(360deg);
       @include border_color("border_color");
     }
+
     .he-coupon-edge {
       width: 16px;
       height: 44px;
@@ -258,16 +281,19 @@ export default {
       @include border_color("border_color");
       position: relative;
     }
+
     .he-coupon-item-left {
       border-left: 1px solid transparent;
       border-top-left-radius: 8px;
       border-bottom-left-radius: 8px;
     }
+
     .he-coupon-item-right {
       border-right: 1px solid transparent;
       border-top-right-radius: 8px;
       border-bottom-right-radius: 8px;
     }
+
     .he-edge-doc {
       width: 16px;
       height: 16px;
@@ -279,23 +305,28 @@ export default {
       background: #ffffff;
       @include border_color("border_color");
     }
+
     .he-coupon-item-left .he-edge-doc {
       transform: translate(-50%, -50%);
       left: 0;
     }
+
     .he-coupon-item-right .he-edge-doc {
       transform: translate(50%, -50%);
       right: 0;
     }
   }
+
   .he-coupon-right {
     width: 112px;
     height: 44px;
+
     .iconbtn_arrow {
       font-size: 22px;
       margin-left: 4px;
       color: #BEBEBE;
     }
+
     .he-coupon-right-text {
       font-size: 24px;
       font-family: PingFang SC;
@@ -304,4 +335,5 @@ export default {
     }
   }
 }
+
 </style>

@@ -4,7 +4,6 @@ function doPreviewImage(url, images) {
         urls: images,
         current: url,
         fail: function f(e) {
-            console.error(e);
             uni.showToast({
                 title: '预览图片失败',
                 icon: 'none'

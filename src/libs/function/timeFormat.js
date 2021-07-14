@@ -29,6 +29,7 @@ function timeFormat(dateTime = null, fmt = 'yyyy-mm-dd') {
     // 如果dateTime长度为10或者13，则为秒和毫秒的时间戳，如果超过13位，则为其他的时间格式
     if (dateTime.toString().length == 10) dateTime *= 1000;
     let date = new Date(dateTime);
+  console.log(date);
     let ret;
     let opt = {
         "y+": date.getFullYear().toString(), // 年
@@ -45,6 +46,7 @@ function timeFormat(dateTime = null, fmt = 'yyyy-mm-dd') {
             fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")));
         }
     }
+  // console.log(fmt)
     return fmt;
 }
 

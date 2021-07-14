@@ -104,6 +104,7 @@ export default {
      */
     async mounted() {
         this.handleCheck();
+      console.count('goods');
     },
     methods: {
         /**

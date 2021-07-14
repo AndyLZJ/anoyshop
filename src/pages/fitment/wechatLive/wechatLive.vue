@@ -163,7 +163,7 @@ export default {
       return '已结束';
     },
     priceText(item) {
-      console.log(item);
+  
       if (item.price_type === 1) {
         return `￥${item.price}`;
       }

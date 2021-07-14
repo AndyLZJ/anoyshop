@@ -92,6 +92,7 @@ export default {
   },
   methods: {
     closeModal: function () {
+      const _this = this;
       this.showModal = false;
       // #ifndef H5
       uni.navigateBack({
@@ -100,10 +101,10 @@ export default {
       // #endif
       // #ifdef H5
       uni.redirectTo({
-        url: this.wechatUrl,
+        url: _this.wechatUrl,
         fail() {
           uni.switchTab({
-            url: this.wechatUrl,
+            url: _this.wechatUrl
           });
         },
       });
@@ -121,7 +122,12 @@ export default {
 .he-box {
   width: 660px;
   height: 804px;
+  // #ifdef H5
   margin: 10vh auto 0 auto;
+  // #endif
+  //#ifndef H5
+  margin: 15vh auto 0 auto;
+  // #endif
   position: relative;
 }
 .he-box__close {

@@ -1,58 +1,42 @@
 <template>
-  <view
-    class="he-page-content"
-    :data-theme="theme"
-    :class="loading ? 'flex justify-center align-center' : ''"
-  >
+  <view class="he-page-content" :data-theme="theme" :class="loading ? 'flex justify-center align-center' : ''">
     <he-loading size="50" mode="flower" v-if="loading"></he-loading>
     <template v-if="!loading">
       <view class="he-header he-box">
         <view class="he-top">{{ detail.status | getStatusText(detail) }}</view>
-        <view
-          class="he-bottom"
-          v-if="detail.status !== 100 && detail.status !== 102"
-        >
+        <view class="he-bottom" v-if="detail.status !== 100 && detail.status !== 102">
           {{ detail.status | getStatusTime(detail) }}
         </view>
       </view>
       <!--换货物流-->
-      <view
-        class="he-box he-logistics"
-        v-if="detail.type == 2 && detail.status == 200"
-      >
+      <view class="he-box he-logistics" v-if="detail.type == 2 && detail.status == 200">
         <view class="he-top">换货物流</view>
         <view class="detail-logistics flex align-center">
           <template v-if="exchangeFlow.status">
             <text class="he-company">
               {{
-                detail.merchant_freight_info.type === 1
-                  ? detail.merchant_freight_info.logistics_company
-                  : "无物流"
+              detail.merchant_freight_info.type === 1
+              ? detail.merchant_freight_info.logistics_company
+              : "无物流"
               }}
             </text>
             <template v-if="detail.merchant_freight_info.type === 1">
               <text>{{ detail.merchant_freight_info.freight_sn }}</text>
-              <button
-                class="cu-btn he-copy"
-                @click="copy(detail.merchant_freight_info.freight_sn)"
-              >
+              <button class="cu-btn he-copy" @click="copy(detail.merchant_freight_info.freight_sn)">
                 复制
               </button>
             </template>
           </template>
           <template v-else>
             <text class="iconfont iconorderdetails_logistics"></text>
-            <view
-              class="flex-sub flex align-center"
-              @click="
+            <view class="flex-sub flex align-center" @click="
                 navigateToLogistics(
                   exchangeFlow.no,
                   exchangeFlow.mobile,
                   exchangeFlow.name,
                   '换货物流'
                 )
-              "
-            >
+              ">
               <view class="flex-sub he-text" v-if="exchangeFlow.state !== 0">
                 {{ exchangeFlow.message }}
               </view>
@@ -66,41 +50,32 @@
         </view>
       </view>
       <!--退货物流-->
-      <view
-        class="he-box he-logistics"
-        v-if="
+      <view class="he-box he-logistics" v-if="
           detail.status == 122 ||
           detail.status == 132 ||
           ((detail.type == 2 || detail.type == 1) && detail.status == 200)
-        "
-      >
+        ">
         <view class="he-top">退货物流</view>
         <view class="detail-logistics flex align-center">
           <template v-if="returnFlow.status">
             <text class="he-company">{{
               detail.user_freight_info.logistics_company
-            }}</text>
+              }}</text>
             <text>{{ detail.user_freight_info.freight_sn }}</text>
-            <button
-              class="cu-btn he-copy"
-              @click="copy(detail.user_freight_info.freight_sn)"
-            >
+            <button class="cu-btn he-copy" @click="copy(detail.user_freight_info.freight_sn)">
               复制
             </button>
           </template>
           <template v-else>
             <text class="iconfont iconorderdetails_logistics"></text>
-            <view
-              class="flex-sub flex align-center"
-              @click="
+            <view class="flex-sub flex align-center" @click="
                 navigateToLogistics(
                   returnFlow.no,
                   returnFlow.mobile,
                   returnFlow.name,
                   '退货物流'
                 )
-              "
-            >
+              ">
               <view class="flex-sub he-text" v-if="returnFlow.state !== 0">
                 {{ returnFlow.message }}
               </view>
@@ -114,10 +89,7 @@
         </view>
       </view>
       <!--退货地址-->
-      <view
-        v-if="detail.status == 121 || detail.status == 131"
-        class="he-return-address he-box"
-      >
+      <view v-if="detail.status == 121 || detail.status == 131" class="he-return-address he-box">
         <view class="he-top">退货地址</view>
         <view class="he-body">
           <text class="he-name">{{ detail.return_address.name }}</text>
@@ -137,52 +109,36 @@
       <!--商品信息-->
       <view class="he-product-info he-box">
         <view class="he-top"> 商品信息 </view>
-        <view
-          class="he-bottom flex"
-          @click="navigateTo('/pages/goods/detail?id=' + detail.goods.goods_id)"
-        >
-          <he-image
-            :width="160"
-            :height="160"
-            :src="detail.goods.goods_image"
-            :image-style="{ borderRadius: '8rpx', marginRight: '24rpx' }"
-          ></he-image>
+        <view class="he-bottom flex" @click="navigateTo('/pages/goods/detail?id=' + detail.goods.goods_id)">
+          <he-image :width="160" :height="160" :src="detail.goods.goods_image" :image-style="{ borderRadius: '8rpx', marginRight: '24rpx' }"></he-image>
           <view class="he-content flex">
             <view class="he-content-left">
               <view class="he-name he-line-1">{{
                 detail.goods.goods_name
-              }}</view>
+                }}</view>
               <view class="he-attr">{{ detail.goods.show_goods_param }}</view>
               <view class="he-number-price">
                 <text class="he-number">x{{ detail.goods.goods_number }}</text>
               </view>
             </view>
             <view class="he-content-right flex-sub">
-              <template
-                v-if="
+              <template v-if="
                   Number(detail.goods.total_amount) >
                   Number(detail.goods.pay_amount)
-                "
-              >
+                ">
                 <view class="flex align-center justify-end">
                   <text class="he-item-price-prompt">优惠后</text>
-                  <text class="he-item-payAmount"
-                    >￥{{
-                      Math.floor(
-                        (detail.goods.pay_amount / detail.goods.goods_number) *
-                          100
-                      ) / 100
-                    }}</text
-                  >
+                  <text class="he-item-payAmount">￥{{
+                    Math.floor(
+                    (detail.goods.pay_amount / detail.goods.goods_number) *
+                    100
+                    ) / 100
+                    }}</text>
                 </view>
-                <view class="he-item-price-prompt"
-                  >￥{{ detail.goods.goods_price }}</view
-                >
+                <view class="he-item-price-prompt">￥{{ detail.goods.goods_price }}</view>
               </template>
               <template v-else>
-                <view class="he-item-payAmount"
-                  >￥{{ detail.goods.goods_price }}</view
-                >
+                <view class="he-item-payAmount">￥{{ detail.goods.goods_price }}</view>
               </template>
             </view>
           </view>
@@ -194,38 +150,39 @@
           <view class="he-item__label">售后方式</view>
           <view class="he-item__value">
             {{
-              detail.type === 0
-                ? "仅退款"
-                : detail.type === 1
-                ? "退货退款"
-                : detail.type === 2
-                ? "换货"
-                : ""
+            detail.type === 0
+            ? "仅退款"
+            : detail.type === 1
+            ? "退货退款"
+            : detail.type === 2
+            ? "换货"
+            : ""
             }}
           </view>
         </view>
         <view class="he-item flex align-center justify-between">
           <view class="he-item__label">{{
             detail.type === 2 ? "换货数量" : "退款数量"
-          }}</view>
+            }}</view>
           <view class="he-item__value">{{ detail.return_number }}</view>
         </view>
         <template v-if="detail.type !== 2">
+          <template v-if="$manifest('task', 'config.integral_return')">
+            <view class="he-item flex align-center justify-between" v-if="detail.order_type=='task'">
+              <view class="he-item__label">退还积分</view>
+              <view class="he-item__value he-price">{{ detail.return_score }}积分</view>
+            </view>
+          </template>
           <view class="he-item flex align-center justify-between">
             <view class="he-item__label">退款金额</view>
-            <view class="he-item__value he-price"
-              >¥{{ detail.return_amount }}</view
-            >
+            <view class="he-item__value he-price">¥{{ detail.return_amount }}</view>
           </view>
           <view class="he-item flex align-center justify-between">
             <view class="he-item__label">退款原因</view>
             <view class="he-item__value">{{ detail.return_reason }}</view>
           </view>
         </template>
-        <view
-          class="he-item-other flex justify-between"
-          v-if="detail.user_note"
-        >
+        <view class="he-item-other flex justify-between" v-if="detail.user_note">
           <view class="he-item__label flex-sub">问题描述</view>
           <view class="he-item__value flex-treble flex justify-end">
             <text class="he-user_note">{{ detail.user_note }}</text>
@@ -236,14 +193,7 @@
       <view class="he-voucher-picture he-box" v-if="detail.images.length > 0">
         <view class="he-top">凭证图片</view>
         <view class="he-bottom flex">
-          <image
-            class="he-image"
-            @click="$utils.doPreviewImage(item, detail.images)"
-            :src="item"
-            mode="aspectFill"
-            v-for="(item, index) in detail.images"
-            :key="index"
-          ></image>
+          <image class="he-image" @click="$utils.doPreviewImage(item, detail.images)" :src="item" mode="aspectFill" v-for="(item, index) in detail.images" :key="index"></image>
         </view>
       </view>
       <!--订单信息-->
@@ -260,61 +210,39 @@
           </view>
           <view class="he-item flex align-center justify-between">
             <view class="he-item__label">申请时间</view>
-            <view class="he-item__value"
-              >{{ detail.created_time | timeFormat("yyyy-mm-dd hh:MM:ss") }}
+            <view class="he-item__value">{{ detail.created_time | timeFormat("yyyy-mm-dd hh:MM:ss") }}
             </view>
           </view>
-          <view
-            class="he-item flex align-center justify-between"
-            v-if="detail.audit_time"
-          >
+          <view class="he-item flex align-center justify-between" v-if="detail.audit_time">
             <view class="he-item__label">审核时间</view>
             <view class="he-item__value">{{
               detail.audit_time | timeFormat("yyyy-mm-dd hh:MM:ss")
-            }}</view>
+              }}</view>
           </view>
-          <view
-            class="he-item flex align-center justify-between"
-            v-if="
+          <view class="he-item flex align-center justify-between" v-if="
               detail.return_time && (detail.type === 1 || detail.type === 0)
-            "
-          >
+            ">
             <view class="he-item__label">退款时间</view>
             <view class="he-item__value">{{
               detail.return_time | timeFormat("yyyy-mm-dd hh:MM:ss")
-            }}</view>
+              }}</view>
           </view>
-          <view
-            class="he-item flex align-center justify-between"
-            v-if="detail.exchange_time && detail.type === 2"
-          >
+          <view class="he-item flex align-center justify-between" v-if="detail.exchange_time && detail.type === 2">
             <view class="he-item__label">换货时间</view>
-            <view class="he-item__value"
-              >{{ detail.exchange_time | timeFormat("yyyy-mm-dd hh:MM:ss") }}
+            <view class="he-item__value">{{ detail.exchange_time | timeFormat("yyyy-mm-dd hh:MM:ss") }}
             </view>
           </view>
         </view>
         <view class="he-bottom flex justify-between">
           <!-- #ifndef H5 -->
           <view class="he-line"></view>
-          <button
-            class="cu-btn flex-sub he-btn__left"
-            hover-class=""
-            open-type="contact"
-          >
-            <view
-              class="iconfont iconproductdetails_tab_customerservice_online"
-            ></view>
+          <button class="cu-btn flex-sub he-btn__left" hover-class="" open-type="contact">
+            <view class="iconfont iconproductdetails_tab_customerservice_online"></view>
             <text>联系卖家</text>
           </button>
           <!-- #endif -->
-          <button
-            class="cu-btn flex-sub he-btn__right"
-            @click.stop="makePhoneCall"
-          >
-            <view
-              class="iconfont iconproductdetails_tab_customerservice_telephone"
-            ></view>
+          <button class="cu-btn flex-sub he-btn__right" @click.stop="makePhoneCall">
+            <view class="iconfont iconproductdetails_tab_customerservice_telephone"></view>
             <text>呼叫卖家</text>
           </button>
         </view>
@@ -327,46 +255,29 @@
         <!--操作-->
         <view class="he-bottom-btn safe-area-inset-bottom">
           <view class="he-height flex justify-end">
-            <button
-              v-if="detail.status === 100 || detail.status === 102"
-              class="cu-btn"
-              @click="isApplication = true"
-            >
+            <button v-if="detail.status === 100 || detail.status === 102" class="cu-btn" @click="isApplication = true">
               撤回申请
             </button>
-            <button
-              v-if="detail.status === 101"
-              class="cu-btn"
-              @click="reapply"
-            >
+            <button v-if="detail.status === 101" class="cu-btn" @click="reapply">
               再次申请
             </button>
-            <button
-              v-if="detail.status === 121 || detail.status === 131"
-              class="cu-btn he-btn"
-              @tap="
+            <button v-if="detail.status === 121 || detail.status === 131" class="cu-btn he-btn" @tap="
                 navigateTo(
                   '/pages/order/fill-return-information?id=' +
                     detail.id +
                     '&mobile=' +
                     detail.return_address.mobile
                 )
-              "
-            >
+              ">
               填写退货信息
             </button>
           </view>
         </view>
-        <after-sales-detail-application
-          v-model="isApplication"
-          :detail-id="detail.id"
-          @submit="cancelAfter"
-        ></after-sales-detail-application>
+        <after-sales-detail-application v-model="isApplication" :detail-id="detail.id" @submit="cancelAfter"></after-sales-detail-application>
       </template>
     </template>
   </view>
 </template>
-
 <script>
 import afterSalesDetailApplication from "./components/afterSalesDetail-application.vue";
 import heLoading from "../../components/he-loading.vue";
@@ -392,7 +303,7 @@ export default {
     };
   },
   computed: {
-    isBottom: function () {
+    isBottom: function() {
       let status = this.detail.status;
       return (
         status === 100 ||
@@ -408,19 +319,17 @@ export default {
   },
   onLoad(options) {
     this.orderId = parseInt(options.id);
-    this.behavior = options.behavior
-      ? {
-          behavior: options.behavior,
-        }
-      : {};
+    this.behavior = options.behavior ? {
+      behavior: options.behavior,
+    } : {};
     this.getDetail(this.orderId, this.behavior);
   },
   methods: {
-    cancelAfter: function (id) {
+    cancelAfter: function(id) {
       let _this = this;
       this.$heshop
         .orderafter("put", { id, behavior: "cancel" })
-        .then(function () {
+        .then(function() {
           //撤回售后相当于删除,撤回后返回列表
           _this.$store.commit("after/cancelAfter", {
             bool: true,
@@ -430,30 +339,32 @@ export default {
             delta: 1,
           });
         })
-        .catch(function (err) {
+        .catch(function(err) {
           if (err.status === 403 || err.status === 422) {
             this.getDetail(this.orderId, this.behavior);
           }
         });
     },
-    reapply: function () {
+    reapply: function() {
       let _this = this;
       this.$heshop
         .orderafter("post", this.detail)
-        .then(function (res) {
+        .then(function(res) {
           _this.detail.status = res.status;
         })
-        .catch(function (err) {
+        .catch(function(err) {
           _this.$toError(err);
         });
     },
-    navigateTo: function (url) {
+    navigateTo: function(url) {
+      if (this.detail.order_type && this.detail.order_type == "task") {
+        url = url + "&is_task=1"
+      }
       uni.navigateTo({ url: url });
     },
-    navigateToLogistics: function (no, mobile, name, title) {
+    navigateToLogistics: function(no, mobile, name, title) {
       uni.navigateTo({
-        url:
-          "/pages/order/logistics?no=" +
+        url: "/pages/order/logistics?no=" +
           no +
           "&name=" +
           name +
@@ -463,95 +374,95 @@ export default {
           title,
       });
     },
-    getDetail: function (id, behavior) {
+    getDetail: function(id, behavior) {
       let _this = this;
-      this.$heshop.orderafter("get", id, behavior).then(function (res) {
-          _this.detail = res;
-          // 换货物流
-          if (res.type === 2 && res.status === 200) {
-            if (res.merchant_freight_info.type === 1) {
-              let no = res.merchant_freight_info.freight_sn;
-              let mobile = res.return_address.mobile;
-              let name = res.merchant_freight_info.logistics_company;
-              _this.$heshop.express("post", {
-                  no,
-                  mobile,
-                  name,
-                }).then(function (res) {
-                  if (res.state === 0) {
-                    _this.exchangeFlow = res.list[res.list.length - 1];
-                  } else {
-                    _this.exchangeFlow.message = res.message;
-                  }
-                  _this.exchangeFlow.no = no;
-                  _this.exchangeFlow.mobile = mobile;
-                  _this.exchangeFlow.name = name;
-                  _this.exchangeFlow.state = res.state;
-                  _this.loading = false;
-                }).catch(function (err) {
-                  if (err.status === 403) {
-                    _this.exchangeFlow.status = 403;
-                  }
-                  _this.loading = false;
-                });
-            }
-          }
-          if (res.status === 122 ||res.status === 132 ||((res.type === 2 || res.type === 1) && res.status === 200)) {
-            // 退货物流
-            _this.loading = true;
-            let no = res.user_freight_info.freight_sn;
-            let mobile = res.buyer.mobile;
-            let name = res.user_freight_info.logistics_company;
-            _this.$heshop
-              .express("post", {
-                no,
-                mobile,
-                name,
-              })
-              .then(function (res) {
-                if (res.state === 0) {
-                  _this.returnFlow = res.list[res.list.length - 1];
-                } else {
-                  _this.returnFlow.message = res.message;
-                }
-                _this.returnFlow.no = no;
-                _this.returnFlow.mobile = mobile;
-                _this.returnFlow.name = name;
-                _this.returnFlow.state = res.state;
-                _this.loading = false;
-              })
-              .catch(function (err) {
-                _this.returnFlow.status = err.status;
-                _this.loading = false;
-              });
-          } else {
-            _this.loading = false;
-          }
-        }).catch(function (err) {
-          if (err.status === 403 || err.status === 422) {
-            uni.showToast({
-              title: "售后订单不存在",
-              icon: "none",
+      this.$heshop.orderafter("get", id, behavior).then(function(res) {
+        _this.detail = res;
+        // 换货物流
+        if (res.type === 2 && res.status === 200) {
+          if (res.merchant_freight_info.type === 1) {
+            let no = res.merchant_freight_info.freight_sn;
+            let mobile = res.return_address.mobile;
+            let name = res.merchant_freight_info.logistics_company;
+            _this.$heshop.express("post", {
+              no,
+              mobile,
+              name,
+            }).then(function(res) {
+              if (res.state === 0) {
+                _this.exchangeFlow = res.list[res.list.length - 1];
+              } else {
+                _this.exchangeFlow.message = res.message;
+              }
+              _this.exchangeFlow.no = no;
+              _this.exchangeFlow.mobile = mobile;
+              _this.exchangeFlow.name = name;
+              _this.exchangeFlow.state = res.state;
+              _this.loading = false;
+            }).catch(function(err) {
+              if (err.status === 403) {
+                _this.exchangeFlow.status = 403;
+              }
+              _this.loading = false;
             });
-            setTimeout(() => {
-              uni.navigateBack({
-                delta: 1,
-              });
-            }, 1000);
           }
-        });
+        }
+        if (res.status === 122 || res.status === 132 || ((res.type === 2 || res.type === 1) && res.status === 200)) {
+          // 退货物流
+          _this.loading = true;
+          let no = res.user_freight_info.freight_sn;
+          let mobile = res.buyer.mobile;
+          let name = res.user_freight_info.logistics_company;
+          _this.$heshop
+            .express("post", {
+              no,
+              mobile,
+              name,
+            })
+            .then(function(res) {
+              if (res.state === 0) {
+                _this.returnFlow = res.list[res.list.length - 1];
+              } else {
+                _this.returnFlow.message = res.message;
+              }
+              _this.returnFlow.no = no;
+              _this.returnFlow.mobile = mobile;
+              _this.returnFlow.name = name;
+              _this.returnFlow.state = res.state;
+              _this.loading = false;
+            })
+            .catch(function(err) {
+              _this.returnFlow.status = err.status;
+              _this.loading = false;
+            });
+        } else {
+          _this.loading = false;
+        }
+      }).catch(function(err) {
+        if (err.status === 403 || err.status === 422) {
+          uni.showToast({
+            title: "售后订单不存在",
+            icon: "none",
+          });
+          setTimeout(() => {
+            uni.navigateBack({
+              delta: 1,
+            });
+          }, 1000);
+        }
+      });
     },
-    makePhoneCall: function () {
+    makePhoneCall: function() {
       uni.makePhoneCall({
         phoneNumber: this.storeSetting.contact.phone.value,
       });
     },
-    copy: function (content) {
+    copy: function(content) {
       this.uniCopy({ content });
     },
   },
   filters: {
-    getStatusText: function (status, detail) {
+    getStatusText: function(status, detail) {
       let str = "";
       let type = detail.type;
       switch (status) {
@@ -592,7 +503,7 @@ export default {
       }
       return str;
     },
-    getStatusTime: function (status, detail) {
+    getStatusTime: function(status, detail) {
       function getTime(dateTime) {
         if (!dateTime) return;
         return uni.$h.timeFormat(dateTime, "yyyy-mm-dd hh:MM:ss");
@@ -620,7 +531,7 @@ export default {
   },
   watch: {
     getShip: {
-      handler: function (val) {
+      handler: function(val) {
         if (val.bool) {
           this.loading = true;
           this.getDetail(parseInt(val.id));
@@ -633,8 +544,8 @@ export default {
     },
   }
 };
-</script>
 
+</script>
 <style scoped lang="scss">
 .he-image {
   display: block;
@@ -768,11 +679,14 @@ export default {
 .he-product-info .he-content {
   padding-top: 8px;
   width: 478px;
+
   .he-content-left {
     width: 284px;
   }
+
   .he-content-right {
     text-align: right;
+
     .he-weak-text {
       font-size: 20px;
       font-family: PingFang SC;
@@ -909,18 +823,21 @@ export default {
   font-weight: 500;
   color: #999999;
 }
+
 .he-item-payAmount {
   font-size: 26px;
   font-family: PingFang SC;
   font-weight: 500;
   color: #222222;
 }
+
 .he-item-price-prompt {
   font-size: 20px;
   font-family: PingFang SC;
   font-weight: 500;
   color: #999999;
 }
+
 .he-copy {
   height: 34px;
   background: #ffffff;
@@ -1037,4 +954,5 @@ export default {
     color: #bebebe;
   }
 }
+
 </style>

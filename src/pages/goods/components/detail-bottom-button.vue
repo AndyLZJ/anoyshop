@@ -16,7 +16,13 @@
                 <view class="iconfont iconnav_shoppingcart_normal"></view>
                 <text class="he-icon__text">购物车</text>
             </view>
-            <view class="flex-sub he-buy__button flex align-center">
+            <view class="flex-sub he-buy__button flex align-center" v-if="is_task">
+                <template v-if="task.task_stock > 0">
+                    <button class="cu-btn flex-sub he-button he-buy" @click="shopping('buy')">立即兑换</button>
+                </template>
+                <button v-else class="cu-btn flex-sub he-button he-buy" disabled>商品已售罄</button>
+            </view>
+            <view class="flex-sub he-buy__button flex align-center" v-else>
                 <template v-if="stocks > 0">
                     <button class="cu-btn flex-sub he-button he-cart" @click="shopping('cart')">
                         加入购物车
@@ -57,6 +63,8 @@ export default {
     props: {
         value: Boolean,
         name: String,
+        is_task: Boolean,
+        task: [Object, Array],
         slideShow: Array,
         shoppingType: String,
         stocks: Number,
@@ -124,13 +132,13 @@ export default {
                 this.isNaNBool = false;
             }
             this.badge = response + "";
-            console.log(this.isNaNBool);
+        
         });
     },
     watch: {
         "$store.state.cart.cart_num": {
             handler(val) {
-                console.log(val);
+            
                 if (val) {
                     this.$store.dispatch("cart/getCartNumber").then((response) => {
                         if (response !== 0) {
@@ -139,9 +147,9 @@ export default {
                             this.isNaNBool = false;
                         }
                         this.badge = response + "";
-                        console.log(this.badge);
+                      
                         this.$store.commit("cart/cartNum", false);
-                        console.log(this.isNaNBool);
+                    
                     });
                 }
             },

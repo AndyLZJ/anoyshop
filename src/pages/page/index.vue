@@ -14,6 +14,7 @@
             <component v-if="item.name == 'notice'" is="notice" :facade="item.facade" :content="item.content" :data-index="index"></component>
             <component v-if="item.name == 'separate'" is="separate" :facade="item.facade" :content="item.content" :data-index="index"></component>
             <component v-if="item.name == 'coupon'" is="coupon" :facade="item.facade" :content="item.content" :data-index="index"></component>
+            <component v-if="item.name == 'task'" is="task" :facade="item.facade" :content="item.content" :data-index="index"></component>
         </view>
     </scroll-view>
 </template>
@@ -32,7 +33,7 @@ import tabs from '../fitment/tabs/tabs.vue';
 import rubik from "../fitment/rubik/rubik.vue";
 import notice from "../fitment/notice/notice.vue";
 import coupon from "../fitment/coupon/coupon.vue";
-
+import task from "../fitment/task/task.vue";
 export default {
     components: {
         videos,
@@ -47,7 +48,8 @@ export default {
         titles,
         rubik,
         notice,
-        coupon
+        coupon,
+        task
     },
     data() {
         return {

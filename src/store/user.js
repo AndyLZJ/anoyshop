@@ -1,4 +1,3 @@
-
 const user = {
     namespaced: true,
     state: {
@@ -49,6 +48,7 @@ const user = {
         }) {
             let $heshop = this._vm.$heshop;
             let $pageURL = this._vm.$pageURL;
+            let _this = this._vm;
             return new Promise((resolve, reject) => {
                 // #ifndef H5
                 uni.login({

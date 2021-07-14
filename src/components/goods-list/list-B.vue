@@ -2,13 +2,23 @@
     <view>
         <view class="list-B flex justify-between" :data-theme="theme">
             <view class="he-column" id="u-left-column">
-                <view class="he-item" v-for="(item) in leftList"  :key="item.id" @tap="navigateTo(item)">
+                <view class="he-item" v-for="(item) in leftList" :key="item.id" @tap="navigateTo(item)">
                     <he-image :height="347" :width="347" :src="item.slideshow[0]"></he-image>
                     <view class="he-item__name he-line-2">{{item.name}}</view>
-                    <view class="he-item__footer flex justify-between align-center">
+                    <view class="he-item__footer flex justify-between align-center" v-if="!is_task">
                         <text class="he-item__price">{{item.price}}</text>
-                        <view class="he-cart"  @click.stop="shopping(item)">
+                        <view class="he-cart" @click.stop="shopping(item)">
                             <text class="iconfont iconbtn_addtocart"></text>
+                        </view>
+                    </view>
+                    <view class="__goods-info" v-if="is_task">
+                        <view class="__goods-info-price">
+                            <view class="iconfont iconjifen"></view>
+                            <view class="__goods-info-number" :style="{color: themeColor}">{{item.task.task_number}}+</view>
+                            <view class="__goods-info-money" :style="{color: themeColor}">¥{{item.task.task_price}}</view>
+                        </view>
+                        <view class="__goods-info-button" @click.stop="shopping(item)" :style="{backgroundColor: themeColor}">
+                            兑换
                         </view>
                     </view>
                 </view>
@@ -17,16 +27,26 @@
                 <view class="he-item" v-for="(item) in rightList" :key="item.id" @tap="navigateTo(item)">
                     <he-image :height="347" :width="347" :src="item.slideshow[0]"></he-image>
                     <view class="he-item__name he-line-2">{{item.name}}</view>
-                    <view class="he-item__footer flex justify-between align-center">
+                    <view class="he-item__footer flex justify-between align-center" v-if="!is_task">
                         <text class="he-item__price">{{item.price}}</text>
                         <view class="he-cart" @click.stop="shopping(item)">
                             <text class="iconfont iconbtn_addtocart"></text>
                         </view>
                     </view>
+                    <view class="__goods-info" v-if="is_task">
+                        <view class="__goods-info-price">
+                            <view class="iconfont iconjifen"></view>
+                            <view class="__goods-info-number" :style="{color: themeColor}">{{item.task.task_number}}+</view>
+                            <view class="__goods-info-money" :style="{color: themeColor}">¥{{item.task.task_price}}</view>
+                        </view>
+                        <view class="__goods-info-button" @click.stop="shopping(item)" :style="{backgroundColor: themeColor}">
+                            兑换
+                        </view>
+                    </view>
                 </view>
             </view>
         </view>
-        <he-cart :show.sync="isShopping" :goods="goods" ></he-cart>
+        <he-cart :show.sync="isShopping" :is_task="is_task" :shopping-type="is_task?'buy':'cart'" :goods="goods"></he-cart>
     </view>
 </template>
 
@@ -36,12 +56,21 @@ import heImage from "../../components/he-image.vue";
 export default {
     name: "list-B",
     components: {
-        heCart,heImage
+        heCart,
+        heImage
     },
     props: {
         list: {
             type: Array,
             default: []
+        },
+        is_task: {
+            type: [Boolean, Number],
+            default: 0
+        },
+        sort: {
+          type: String,
+          default: 'ascending'
         }
     },
     data() {
@@ -51,7 +80,8 @@ export default {
             tempList: [],
             isShopping: false,
             goods: {},
-            select: {}
+            select: {},
+          isRightLeft: true
         }
     },
     computed: {
@@ -73,21 +103,47 @@ export default {
             let leftRect = await this.$hGetRect('#u-left-column');
             let rightRect = await this.$hGetRect('#u-right-column');
             let item = this.tempList[0];
-            if(!item) return;
-            if (leftRect.height < rightRect.height) {
-                this.leftList.push(item);
-            } else if (leftRect.height > rightRect.height) {
-                this.rightList.push(item);
+            if (!item) return;
+            if (this.isRightLeft) {
+              this.leftList.push(item);
+              this.isRightLeft = false;
             } else {
-                if (this.leftList.length <= this.rightList.length) {
-                    this.leftList.push(item);
-                } else {
-                    this.rightList.push(item);
-                }
+              this.rightList.push(item);
+              this.isRightLeft = true;
             }
+            // if (this.leftList.length <= this.rightList.length) {
+            //   this.leftList.push(item);
+            // } else {
+            //   this.rightList.push(item);
+            // }
+            // if (this.sort === 'ascending') {
+            //   if (leftRect.height < rightRect.height) {
+            //     this.leftList.push(item);
+            //   } else if (leftRect.height > rightRect.height) {
+            //     this.rightList.push(item);
+            //   } else {
+            //     if (this.leftList.length <= this.rightList.length) {
+            //       this.leftList.push(item);
+            //     } else {
+            //       this.rightList.push(item);
+            //     }
+            //   }
+            // } else {
+            //   if (leftRect.height < rightRect.height) {
+            //     this.rightList.push(item);
+            //   } else if (leftRect.height > rightRect.height) {
+            //     this.leftList.push(item);
+            //   } else {
+            //     if (this.leftList.length <= this.rightList.length) {
+            //       this.rightList.push(item);
+            //     } else {
+            //       this.leftList.push(item);
+            //     }
+            //   }
+            // }
             this.tempList.splice(0, 1);
             if (this.tempList.length) {
-                this.splitData();
+                await this.splitData();
             }
         },
         navigateTo: function(item) {
@@ -100,6 +156,7 @@ export default {
                 type: 'param'
             }).then(function(res) {
                 _this.goods = Object.assign(item, res);
+
                 _this.isShopping = true;
             }).catch(function(err) {
                 _this.$toError(err);
@@ -115,7 +172,6 @@ export default {
     },
 }
 </script>
-
 <style scoped lang="scss">
 .list-B {
     display: flex;
@@ -123,10 +179,12 @@ export default {
     align-items: flex-start;
     padding: 17px 20px 0 20px;
 }
+
 .he-column {
     width: 347px;
     height: auto;
 }
+
 .he-item {
     width: 347px;
     background: #FFFFFF;
@@ -136,6 +194,7 @@ export default {
     margin-bottom: 13px;
     position: relative;
 }
+
 .he-item__name {
     font-size: 28px;
     font-family: PingFang SC;
@@ -145,6 +204,7 @@ export default {
     padding: 19px 26px 0 26px;
     margin-bottom: 8px;
 }
+
 .he-cart {
     width: 80px;
     height: 80px;
@@ -152,6 +212,7 @@ export default {
     bottom: 0;
     right: 0;
 }
+
 .iconbtn_addtocart {
     font-size: 36px;
     position: absolute;
@@ -159,10 +220,12 @@ export default {
     right: 24px;
     @include font_color('font_color');
 }
+
 .he-item__footer {
     padding: 0 18px 0 26px;
     margin-bottom: 12px;
 }
+
 .he-item__price {
     font-size: 32px;
     font-family: PingFang SC;
@@ -170,24 +233,90 @@ export default {
     @include font_color('font_color');
     line-height: 1.8;
 }
+
 .he-item__price:before {
     content: "￥";
     font-size: 24px;
 }
+
 .he-img__box {
     width: 347px;
     height: 347px;
     position: relative;
     background: #ECEDF1;
 }
+
 .iconimago_defaultproduct {
     width: 120px;
     height: 120px;
     font-size: 120px;
     position: absolute;
-    top:50%;
-    left:50%;
+    top: 50%;
+    left: 50%;
     color: #DFE0E6;
     transform: translate(-50%, -50%);
+}
+
+
+.__goods-info {
+    .__goods-info-title {
+        font-size: 28px;
+        font-family: PingFang SC;
+        font-weight: 500;
+        color: #222222;
+        line-height: 36px;
+        padding: 19px 26px;
+    }
+
+
+    .__goods-info-price {
+        margin-left: 24px;
+        width: 100%;
+        height: 32px;
+        text-align: left;
+
+        .iconfont {
+            display: inline-block;
+            color: #FBAD15;
+            font-size: 24px;
+            width: 24px;
+            height: 24px;
+        }
+
+        .__goods-info-number {
+            display: inline-block;
+            font-size: 32px;
+            font-family: PingFang SC;
+            font-weight: 500;
+            color: #E60B30;
+            line-height: 32px;
+            padding-left: 8px;
+
+        }
+
+        .__goods-info-money {
+            display: inline-block;
+            font-size: 24px;
+            font-family: PingFang SC;
+            font-weight: 500;
+            color: #E60B30;
+
+        }
+    }
+
+    .__goods-info-button {
+        width: 300px;
+        height: 56px;
+        background: #E60B30;
+        border-radius: 28px;
+        font-size: 24px;
+        font-family: PingFang SC;
+        font-weight: 500;
+        color: #FFFFFF;
+        text-align: center;
+        line-height: 56px;
+        margin: 20px auto;
+    }
+
 }
 </style>

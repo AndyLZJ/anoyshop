@@ -5,6 +5,8 @@ import cart from "./cart.js";
 import order from "./order.js";
 import goods from "./goods.js";
 import after from "./after.js";
+import plugins from "./plugins.js";
+import task from "@/plugins/task/store.js";
 import components from "./components.js";
 
 export default {
@@ -15,5 +17,7 @@ export default {
     order,
     goods,
     after,
+    plugins,
+    task,
     components
 }

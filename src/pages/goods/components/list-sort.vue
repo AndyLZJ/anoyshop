@@ -12,7 +12,6 @@
         <view class="he-item he-text" @tap="setActive('id')" :class="key === 'id' ? 'he-item-1' : 'he-item-0'">最新</view>
     </view>
 </template>
-
 <script>
 export default {
     name: "list-sort",
@@ -23,7 +22,7 @@ export default {
         }
     },
     methods: {
-        setActive: function (data) {
+        setActive: function(data) {
             this.key = data;
             if (data === 'price') {
                 if (this.sort === 'ASC') {
@@ -42,7 +41,6 @@ export default {
     }
 }
 </script>
-
 <style scoped lang="scss">
 .list-sort {
     height: 70px;
@@ -50,32 +48,40 @@ export default {
     background-color: #FFFFFF;
     padding-bottom: 20px;
 }
+
 .he-item-0.he-text {
     color: #353535;
 }
+
 .he-item-1.he-text {
     @include font_color('font_color');
 }
+
 .he-item-1 .he-text {
     @include font_color('font_color');
 }
+
 .he-price-1 {
     color: #E60B30;
 }
+
 .he-text {
     font-size: 28px;
     font-family: PingFang SC;
     font-weight: 400;
 }
+
 .he-price {
     width: 18px;
     height: 18px;
     font-size: 18px;
     margin-left: 4px;
 }
+
 .he-default-icon {
     color: #CCCCCC;
 }
+
 .he-icon {
     @include font_color('font_color');
 }

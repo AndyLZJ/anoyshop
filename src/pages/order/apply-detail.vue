@@ -1,28 +1,16 @@
 <template>
   <view class="he-page-content" :data-theme="theme">
     <view class="he-box he-goods flex">
-      <he-image
-        :width="120"
-        :height="120"
-        :src="goods.goods_image"
-        :image-style="{ borderRadius: '8rpx', marginRight: '24rpx' }"
-      ></he-image>
+      <he-image :width="120" :height="120" :src="goods.goods_image" :image-style="{ borderRadius: '8rpx', marginRight: '24rpx' }"></he-image>
       <view class="he-goods__content">
         <view class="he-goods__name he-line-1">{{ goods.goods_name }}</view>
         <view class="he-goods__attr">{{ goods.show_goods_param }}</view>
         <view class="he-goods__number">x{{ goods.goods_number }}</view>
       </view>
     </view>
-    <apply-detail-operating
-      v-model="data"
-      :goods="goods"
-    ></apply-detail-operating>
-    <apply-detail-description
-      v-model="data.user_note"
-    ></apply-detail-description>
-    <apply-detail-upload-certificate
-      :list.sync="data.images"
-    ></apply-detail-upload-certificate>
+    <apply-detail-operating v-model="data" :goods="goods"></apply-detail-operating>
+    <apply-detail-description v-model="data.user_note"></apply-detail-description>
+    <apply-detail-upload-certificate :list.sync="data.images"></apply-detail-upload-certificate>
     <!-- #ifdef MP-WEIXIN -->
     <button class="cu-btn he-submit-btn" :disabled="isSubmit" @click="submit">
       提交
@@ -44,16 +32,20 @@ import heOpenSubscribe from "../../components/he-open-subscribe.vue";
 export default {
   name: "apply-after-sales-detail",
   computed: {
-    isSubmit: function () {
+    isSubmit: function() {
       return this.data.type !== 2 && !this.data.return_reason;
     },
-    tmplIds: function () {
+    tmplIds: function() {
       let tmplIds = [
         this.$store.getters["setting/subscribe"].order_sale_verify,
       ];
       if (this.data.type !== 2) {
         tmplIds.push(this.$store.getters["setting/subscribe"].order_refund_tpl);
       }
+      if (this.$manifest('task', 'status')) {
+        tmplIds.push(this.$store.getters["setting/subscribe"].task_refund_tpl);
+      }
+      console.log("tmplIds", tmplIds)
       return tmplIds;
     },
   },
@@ -65,6 +57,7 @@ export default {
   },
   data() {
     return {
+      is_task: 0,
       goods: {
         goods_name: "",
         goods_image: "",
@@ -84,31 +77,37 @@ export default {
   },
   onLoad(options) {
     this.goods = JSON.parse(decodeURIComponent(options.good));
+    //此处一定要做类型转换，否则判断会错误的
+    this.is_task = Number(options.is_task);
     this.data = {
+      order_type: this.is_task ? "task" : "base",
       order_goods_id: parseInt(options.id),
       type: parseInt(options.type),
       return_number: this.goods.goods_number,
       return_amount: this.goods.pay_amount,
+      return_score: this.goods.score_amount || 0,
       return_reason: "",
       images: [],
       user_note: "",
     };
+
   },
   methods: {
-    submit: function () {
+    submit: function() {
       let _this = this;
       // #ifdef MP_WEIXIN
+      console.log("获取订阅消息列表", _this.tmplIds)
       wx.requestSubscribeMessage({
         tmplIds: _this.tmplIds,
-        success: function () {},
-        fail: function (e) {},
-        complete: function () {
+        success: function() {},
+        fail: function(e) {},
+        complete: function() {
           _this.$heshop
             .orderafter("post", _this.data)
-            .then(function () {
+            .then(function() {
               uni.redirectTo({ url: "/pages/order/after-sales-records" });
             })
-            .catch(function (err) {
+            .catch(function(err) {
               _this.$toError(err);
             });
         },
@@ -117,16 +116,17 @@ export default {
       // #ifdef H5
       this.$heshop
         .orderafter("post", this.data)
-        .then(function () {
+        .then(function() {
           uni.redirectTo({ url: "/pages/order/after-sales-records" });
         })
-        .catch(function (err) {
+        .catch(function(err) {
           _this.$toError(err);
         });
       // #endif
     },
   },
 };
+
 </script>
 <style scoped lang="scss">
 .he-page-content {
@@ -191,4 +191,5 @@ export default {
   background: #cccccc !important;
   color: #ffffff;
 }
+
 </style>

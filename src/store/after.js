@@ -1,18 +1,18 @@
 const after = {
-    namespaced: true,
-    state: {
-        cancel_after: {
-            boole: false,
-            order_id: null
-        }
+  namespaced: true,
+  state: {
+    cancel_after: {
+      boole: false,
+      order_id: null,
     },
-    mutations: {
-        cancelAfter: function (state, data) {
-            state.cancel_after = data;
-        }
+  },
+  mutations: {
+    cancelAfter: function (state, data) {
+      state.cancel_after = data;
     },
-    getters: {},
-    actions: {}
+  },
+  getters: {},
+  actions: {},
 };
 
 export default after;

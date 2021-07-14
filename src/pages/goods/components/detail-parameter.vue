@@ -26,7 +26,7 @@
         <view class="he-bottom" v-if="services.length > 0">
             <view class="flex justify-between align-center" @click="isService = true;">
                 <view class="flex flex-wrap he-bottom__item">
-                    <view v-for="(item, index) in services" class="he-service" :key="index" >
+                    <view v-for="(item, index) in services" class="he-service" :key="index">
                         <text class="iconfont iconproductdetails_goodsservices"></text>
                         <text class="he-item__label he-serve__value">{{item.title}}</text>
                     </view>
@@ -40,7 +40,6 @@
         <detail-shipping-address @select="selectAddress" v-model="isSd" :is-address.sync="isAddress"></detail-shipping-address>
     </view>
 </template>
-
 <script>
 import detailFreeShipping from "./detail-free-shipping.vue";
 import detailService from "./detail-service.vue";
@@ -94,9 +93,9 @@ export default {
             this.$heshop.goods('get', this.goodsId, {
                 "address[province]": data[0].name,
                 "address[city]": data[1].name,
-                "address[district]" : data[2].name
+                "address[district]": data[2].name
             }).then(function(res) {
-                _this.shipping = data[0].name + data[1].name + data[2].name+ ' ￥' + res.freight_price;
+                _this.shipping = data[0].name + data[1].name + data[2].name + ' ￥' + res.freight_price;
             }).catch(function(err) {
                 _this.$toError(err);
             });
@@ -106,7 +105,7 @@ export default {
             this.$heshop.goods('get', this.goodsId, {
                 "address[province]": item.province,
                 "address[city]": item.city,
-                "address[district]" : item.district
+                "address[district]": item.district
             }).then(function(res) {
                 _this.shipping = item.province + item.city + item.district + ' ￥' + res.freight_price;
             }).catch(function(err) {
@@ -116,7 +115,6 @@ export default {
     }
 }
 </script>
-
 <style scoped>
 .detail-parameter {
     margin: 20px 20px 0 20px;
@@ -124,24 +122,29 @@ export default {
     border-radius: 16px;
     padding: 16px 24px 8px 24px;
 }
+
 .he-bottom {
     border-top: 1px solid #E5E5E5;
 }
+
 .iconbtn_arrow {
     font-size: 22px;
     width: 22px;
     height: 22px;
     color: RGBA(190, 190, 190, 1);
 }
+
 .he-item {
     height: 72px;
 }
+
 .he-item__label {
     font-size: 24px;
     font-family: PingFang SC;
     font-weight: 500;
     color: #999999;
 }
+
 .he-item__value {
     font-size: 24px;
     font-family: PingFang SC;
@@ -149,17 +152,21 @@ export default {
     color: #222222;
     margin-left: 20px;
 }
+
 .he-item__value-0 {
     color: #999999;
 }
+
 .iconproductdetails_goodsservices {
     font-size: 22px;
     color: RGBA(162, 162, 162, 1);
 }
+
 .he-serve__value {
     font-size: 22px;
     margin: 0 0 0 7px;
 }
+
 .he-service {
     margin: 10px 31px 10px 0;
     padding: 8px 0;

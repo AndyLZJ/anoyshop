@@ -1,7 +1,6 @@
 <template>
     <view class="he-clear-storage">
-        <he-empty-popup v-model="showModal" title="清除缓存可能需要一些时间，清除过程中请耐心等待" @confirm="confirm"
-                        :empty-style="emptyStyle"></he-empty-popup>
+        <he-empty-popup v-model="showModal" title="清除缓存可能需要一些时间，清除过程中请耐心等待" @confirm="confirm" :empty-style="emptyStyle"></he-empty-popup>
         <he-toast v-model="showClear">
             <view class="he-clear-toast flex flex-direction align-center">
                 <template v-if="loading">
@@ -16,7 +15,6 @@
         </he-toast>
     </view>
 </template>
-
 <script>
 import heToast from "./he-toast.vue";
 import heEmptyPopup from "./he-empty-popup.vue";
@@ -54,7 +52,7 @@ export default {
         }
     },
     methods: {
-        open: function () {
+        open: function() {
             let _this = this;
             for (let key in this.$storageKey) {
                 uni.removeStorageSync(key);
@@ -64,22 +62,25 @@ export default {
             _this.$store.dispatch('goods/emptyShareGoods');
             _this.$store.dispatch('setting/getTheme');
             _this.$store.dispatch('setting/getTabBar');
-            setTimeout(function () {
+            /**
+             * 处理清除缓存后重新加载插件信息
+             */
+            _this.$store.dispatch("plugins/getPlugins");
+            setTimeout(function() {
                 _this.loading = false;
-                setTimeout(function () {
+                setTimeout(function() {
                     _this.showClear = false;
                     _this.loading = true;
                 }, 1000);
             }, 3000);
         },
-        confirm: function () {
+        confirm: function() {
             this.showClear = true;
             this.open();
         }
     }
 }
 </script>
-
 <style scoped lang="scss">
 .he-clear-toast {
     width: 100%;

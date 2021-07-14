@@ -1,7 +1,6 @@
 <template>
-    <he-cart :show.sync="isShopping" :goods="goods"></he-cart>
+    <he-cart :show.sync="isShopping" :goods="goods" :is_task="is_task"></he-cart>
 </template>
-
 <script>
 import heCart from "./he-cart.vue";
 
@@ -14,7 +13,14 @@ export default {
         }
     },
     props: {
-        goodsId: [Number]
+        goodsId: [Number],
+        is_task: {
+            tyoe: Number,
+            default: 0
+        }
+    },
+    computed: {
+
     },
     components: {
         heCart
@@ -25,19 +31,24 @@ export default {
                 val && this.shopping(val);
             }
         },
-        isShopping: function (val) {
+        isShopping: function(val) {
             if (!val) this.$emit('update:goodsId', null);
         }
     },
     methods: {
-        shopping: function (id) {
+        /**
+         * 处理积分商品信息兼容
+         * @param  {[type]} id [description]
+         * @return {[type]}    [description]
+         */
+        shopping: function(id) {
             let _this = this;
-            this.$heshop.goods('get', id).then(function (res) {
+            this.$heshop.goods('get', id, { is_task: this.is_task }).then(function(res) {
                 if (!res.hasOwnProperty('empty_status')) {
                     _this.goods = res;
                     _this.isShopping = true;
                 }
-            }).catch(function (err) {
+            }).catch(function(err) {
                 _this.$toError(err);
             });
         }

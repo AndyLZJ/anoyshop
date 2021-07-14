@@ -44,7 +44,7 @@ export default {
   methods: {
     navigateBack: function () {
       const eventChannel = this.getOpenerEventChannel();
-      console.log(this.current);
+   
       eventChannel.emit("setEvent", {
         current: this.current,
         col: this.pic[this.current],

@@ -7,8 +7,8 @@
                 <view class="he-order-detail">
                     <detail-logistics v-if="detail.status >= 202 && detail.freight" :mobile="detail.buyer.mobile" :freight-obj="freight" :freight="detail.freight"></detail-logistics>
                     <detail-receipt :consignee-info="detail.buyer"></detail-receipt>
-                    <detail-product-info :goods="detail.goods" :status="detail.status"></detail-product-info>
-                    <detail-price :goods-amount="detail.goods_amount" :freight-amount="detail.freight_amount" :pay-amount="detail.pay_amount" :coupon-reduced="detail.coupon_reduced" :status="detail.status" :store-reduced="detail.store_reduced"></detail-price>
+                    <detail-product-info :goods="detail.goods" :status="detail.status" :detail="detail"></detail-product-info>
+                    <detail-price :goods-amount="detail.goods_amount" :freight-amount="detail.freight_amount" :pay-amount="detail.pay_amount" :coupon-reduced="detail.coupon_reduced" :status="detail.status" :store-reduced="detail.store_reduced" :detail="detail"></detail-price>
                     <detail-order-info :order-sn="detail.order_sn" :created-time="detail.created_time" :pay-time="detail.pay_time" :send-time="detail.send_time" :received-time="detail.received_time" :finish-time="detail.finish_time" :note="detail.buyer.note" :status="detail.status"></detail-order-info>
                 </view>
                 <he-products-featured v-if="goodsSetting.recommend_showpage.orderinfo.value"></he-products-featured>

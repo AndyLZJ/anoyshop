@@ -4,6 +4,8 @@
       <view class="he-status-bar" :style="{ height: statusBarHeight + navbarHeight + 'px' }"></view>
       <view class="user-content">
             <view class="he-avatar">
+<!--              <image class="he-default" v-if="$h.test.isEmpty(userInfo)" :src="ipAddress + '/user-defatul-avatar.png'"></image>-->
+<!--              <open-data v-else style="border-radius: 50%"  type="userAvatarUrl"></open-data>-->
                 <image class="he-default" :src="!$h.test.isEmpty(userInfo) ? userInfo.avatar : ipAddress + '/user-defatul-avatar.png'"></image>
             </view>
             <button v-if="$h.test.isEmpty(userInfo)" class="he-name cu-btn he-text he-sign" @click="navigateTo">立即登录</button>
@@ -69,6 +71,8 @@ export default {
       position: absolute;
       top: 56px;
       left: 40px;
+      //overflow: hidden;
+      //border: 5px solid #ffffff;
   }
   .he-default {
       width: 104px;
@@ -77,6 +81,7 @@ export default {
       position: absolute;
       top:50%;
       left: 50%;
+      display: block;
       transform: translate(-50%, -50%);
   }
   .he-text {

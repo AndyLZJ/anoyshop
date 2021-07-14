@@ -80,9 +80,9 @@ export default {
                     _array.push(item);
                 }
             }
-            if (_array.length === 0) {
-                this.toSkip();
-            }
+            // if (_array.length === 0) {
+            //     this.toSkip();
+            // }
             return _array;
         },
         margin() {
@@ -107,11 +107,14 @@ export default {
                     }
                 )
                 .then((res) => {
-                    console.log("res", res)
+
                     if (res && res.content) {
                         this.display = true;
                         this.content = res.content.content;
                         this.facade = res.content.facade;
+                        if (res.content.content.length === 0) {
+                            this.toSkip();
+                        }
                     } else {
                         this.toSkip();
                     }
@@ -156,6 +159,7 @@ export default {
          * @return {[type]} [description]
          */
         toSkip() {
+
             uni.setStorageSync('openingad', '1');
             this.display = false
             this.$emit("confirm", true);

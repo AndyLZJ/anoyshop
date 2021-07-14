@@ -1,5 +1,5 @@
 <template>
-  <view class="he-page-content flex" scroll-y>
+  <view class="he-page-content flex" scroll-y :style="{height: height}">
     <scroll-view
       class="index-scroll"
       :scroll-top="scrollTop"
@@ -17,7 +17,7 @@
         <text class="he-item__text">{{ item.name }}</text>
       </view>
     </scroll-view>
-    <view class="flex-sub">
+    <view class="flex-sub he-right">
       <view class="index-small-search">
         <view class="he-input flex align-center" @click="navigateTo">
           <text class="iconfont iconsearchbar_search"></text>
@@ -63,6 +63,7 @@ export default {
         goods_show: null,
       },
       goodsLoading: false,
+      height: '100vh'
     };
   },
   methods: {
@@ -131,6 +132,14 @@ export default {
     },
   },
   onLoad() {
+    // #ifdef H5
+    let self = this;
+    uni.getSystemInfo({
+      success: function(res) {
+        self.height = res.windowHeight + res.windowTop + 'px'
+      }
+    });
+    // #endif
     this.getCatList();
   },
   watch: {
@@ -150,12 +159,14 @@ export default {
 <style scoped lang="scss">
 .he-page-content {
   background: #ffffff;
-  height: 100vh;
+  min-height: auto;
 }
-
+.he-right {
+  height: 100%;
+}
 .index-scroll {
   width: 180px;
-  height: 100vh;
+  height: 100%;
   background: #f5f5f5;
 }
 

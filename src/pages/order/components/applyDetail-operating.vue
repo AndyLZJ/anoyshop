@@ -17,13 +17,33 @@
             <view class="he-item__label">{{value.type === 2 ? '换货数量' : '退款数量'}}</view>
             <he-number-box :disabled-input="true" v-model="value.return_number" :min="1" :max="goods.goods_number"></he-number-box>
         </view>
-        <view class="he-item he-item__other" v-if="value.type !== 2">
-            <view class="flex align-center justify-between">
-                <view class="he-item__label">退款金额</view>
-                <view class="he-refund-amount">¥{{value.return_amount}}</view>
+        <template v-if="value.order_type=='task'">
+            <view class="he-item he-item__other" v-if="value.type !== 2">
+                <view class="flex align-center justify-between">
+                    <view class="he-item__label">退款金额</view>
+                    <view class="he-refund-amount">¥{{value.return_amount}}</view>
+                </view>
+                <view class="he-max-refund">最多可退¥{{value.return_amount}}</view>
             </view>
-            <view class="he-max-refund">最多可退¥{{value.return_amount}}</view>
-        </view>
+            <template v-if="this.$manifest('task', 'config.integral_return')">
+                <view class="he-item he-item__other" v-if="value.type !== 2">
+                    <view class="flex align-center justify-between">
+                        <view class="he-item__label">退还积分</view>
+                        <view class="he-refund-amount">{{value.return_score}}积分</view>
+                    </view>
+                    <view class="he-max-refund">最多可退{{value.return_score}}积分</view>
+                </view>
+            </template>
+        </template>
+        <template v-else>
+            <view class="he-item he-item__other" v-if="value.type !== 2">
+                <view class="flex align-center justify-between">
+                    <view class="he-item__label">退款金额</view>
+                    <view class="he-refund-amount">¥{{value.return_amount}}</view>
+                </view>
+                <view class="he-max-refund">最多可退¥{{value.return_amount}}</view>
+            </view>
+        </template>
         <he-popup v-model="showModal" :border-radius="16" mode="bottom">
             <view class="he-box">
                 <view class="he-header flex justify-center">
@@ -56,7 +76,7 @@ export default {
     },
     props: {
         value: Object,
-        goods:Object
+        goods: Object
     },
     computed: {
 
@@ -105,13 +125,17 @@ export default {
     watch: {
         "value.return_number": {
             handler(newVal) {
-                this.value.return_amount = Math.floor(parseFloat(this.goods.pay_amount/this.goods.goods_number) * newVal*100)/100;
+                this.value.return_amount = Math.floor(parseFloat(this.goods.pay_amount / this.goods.goods_number) * newVal * 100) / 100;
+                this.value.return_score = Math.floor(parseFloat(this.goods.score_amount / this.goods.goods_number) * newVal * 100) / 100;
                 this.$emit('input', this.value);
             },
             deep: true,
             immediate: true
         }
-    }
+    },
+    mounted() {
+
+    },
 }
 </script>
 <style scoped lang="scss">

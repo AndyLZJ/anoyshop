@@ -359,7 +359,7 @@ parser.prototype.onOpenTag = function (selfClose) {
 
 
         var styleObj = this.parseStyle(node); // 处理图片
-        console.log('处理图片')
+    
         if (node.name == 'img') {
             if (attrs.src) {
                 // 标记 webp
@@ -441,7 +441,7 @@ parser.prototype.onOpenTag = function (selfClose) {
             }
 
             if (styleObj.display == 'inline') styleObj.display = ''; // #ifndef APP-PLUS-NVUE
-            console.log(attrs)
+           
             if (attrs.ignore) {
                 styleObj['max-width'] = '100%';
                 attrs.style += ';-webkit-touch-callout:none';

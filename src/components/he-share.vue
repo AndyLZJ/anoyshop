@@ -28,7 +28,7 @@
                 </button>
             </view>
         </he-popup>
-        <he-poster v-model="isPoster" :post-data="postData" :coupon-type="couponType"></he-poster>
+        <he-poster v-model="isPoster" :post-data="postData" :coupon-type="couponType" :is_task="is_task"></he-poster>
         <!--#ifdef H5-->
         <view class="le-share" v-if="isWeChat">
             <img class="le-one" src="@/static/img/one.png" alt="" />
@@ -39,18 +39,22 @@
     </view>
 </template>
 <script>
-import HePopup from "../components/he-popup.vue";
+import HePopup from "./he-popup.vue";
 import hePoster from "./he-poster.vue";
 
 export default {
     name: "he-share",
     props: {
         value: Boolean,
+        is_task: {
+            type: [Boolean, Number],
+            default: 0
+        },
         postData: {
             type: Object,
         },
         couponType: {
-            type: String,
+            type: [Object, String],
         },
     },
     data() {
@@ -76,6 +80,9 @@ export default {
         },
     },
     methods: {
+        onTaskLog() {
+
+        },
         openPoster: function() {
             let _this = this;
             _this.isPoster = true;

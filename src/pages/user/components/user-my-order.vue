@@ -66,7 +66,7 @@ export default {
 
 <style scoped lang="scss">
     .user-my-order {
-        margin: 20px 20px 0 20px;
+        margin: -10rpx 20px 0 20px;
         background: #FFFFFF;
         border-radius: 16px;
         position: relative;

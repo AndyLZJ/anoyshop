@@ -22,34 +22,33 @@
         </view>
     </view>
 </template>
-
 <script>
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
     name: "detail-top",
     props: {
         status: {
             type: Number,
-            default: function () {
+            default: function() {
                 return 0;
             }
         },
         createdTime: {
             type: Number,
-            default: function () {
+            default: function() {
                 return 0;
             }
         },
         afterSales: {
             type: Number,
-            default: function () {
+            default: function() {
                 return 0;
             }
         },
         receivedTime: {
             type: Number,
-            default: function () {
+            default: function() {
                 return 0;
             }
         }
@@ -60,7 +59,7 @@ export default {
             h: '00', // 小时的默认值
             i: '00', // 分钟的默认值
             timestamp: 0,
-            timer: null ,// 定时器
+            timer: null, // 定时器
             seconds: 0
         }
     },
@@ -96,31 +95,31 @@ export default {
                 switch (this.status) {
                     case 100:
                         // 支付
-                        return ip+ 'order-image-pay.png';
+                        return ip + 'order-image-pay.png';
                     case 201:
                         // 发货
-                        return ip+ 'order-image-ship.png';
+                        return ip + 'order-image-ship.png';
                     case 202:
                         // 收货
-                        return ip+ 'order-image-receipt.png';
+                        return ip + 'order-image-receipt.png';
                     case 203:
                         // 完成
-                        return ip+ 'order-image-success.png';
+                        return ip + 'order-image-success.png';
                     case 204:
-                        return ip+ 'order-image-success.png';
+                        return ip + 'order-image-success.png';
                     case 101:
-                        return ip+ 'order-image-close.png';
+                        return ip + 'order-image-close.png';
                     case 102:
-                        return ip+ 'order-image-close.png';
+                        return ip + 'order-image-close.png';
                     case 103:
-                        return ip+ 'order-image-close.png';
+                        return ip + 'order-image-close.png';
                     default:
-                        return ip+ 'order-image-close.png';
+                        return ip + 'order-image-close.png';
                 }
             } else if (this.afterSales === 1) {
                 switch (this.status) {
                     case 203:
-                        return ip+ "order-image-complete.png";
+                        return ip + "order-image-complete.png";
                 }
             }
 
@@ -141,7 +140,7 @@ export default {
             if (this.timestamp <= 0) return;
             this.seconds = Number(this.timestamp);
             this.formatTime(this.seconds);
-            this.timer = setInterval(function()  {
+            this.timer = setInterval(function() {
                 _this.seconds--;
                 if (_this.seconds < 0) {
                     return _this.end();
@@ -173,7 +172,7 @@ export default {
         },
         // 清除定时器
         clearTimer() {
-            if(this.timer) {
+            if (this.timer) {
                 // 清除定时器
                 clearInterval(this.timer);
                 this.timer = null;
@@ -204,20 +203,21 @@ export default {
     }
 }
 </script>
-
 <style scoped lang="scss">
 .detail-top {
     width: 100%;
     height: 240px;
     @include background_linear('background_color', 0deg, 0%, 100%);
-    padding:0 80px 54px 44px;
+    padding: 0 80px 54px 44px;
     position: absolute;
     top: 0;
 }
+
 .he-icon {
     width: 120px;
     height: 120px;
 }
+
 .he-status__text {
     font-size: 32px;
     font-family: PingFang SC;
@@ -226,6 +226,7 @@ export default {
     line-height: 1.3;
     margin-bottom: 7px;
 }
+
 .he-countdown {
     font-size: 24px;
     font-family: PingFang SC;

@@ -1,7 +1,6 @@
 <template>
     <view class="index-list" :data-theme="theme">
-        <view class="he-item" v-for="(item, index) in list" :key="index"
-              @click="navigateTo('/pages/order/detail?id=' + item.id)">
+        <view class="he-item" v-for="(item, index) in list" :key="index" @click="navigateTo('/pages/order/detail?id=' + item.id)">
             <view class="he-item__header flex align-center justify-between">
                 <text class="he-order__number">订单号 {{ item.order_sn }}</text>
                 <text class="he-order__status">{{ item.status | getStatus }}</text>
@@ -10,8 +9,7 @@
                 <template v-if="item.goods.length > 1">
                     <scroll-view :scroll-x="true" class="he-order__scroll">
                         <view class="he-order__image" v-for="(good, goodIndex) in item.goods" :key="goodIndex">
-                            <he-image
-                                :image-style="{
+                            <he-image :image-style="{
                                     borderRadius: '8rpx'
                                 }" :src="good.goods_image" :width="160" :height="160"></he-image>
                             <view class="he-order__after" v-if="good.after_sales === 1">{{ good.after | afterStatus }}
@@ -28,8 +26,7 @@
                 </template>
                 <template v-else>
                     <view class="he-order__image">
-                        <he-image
-                            :image-style="{
+                        <he-image :image-style="{
                                 borderRadius: '8rpx'
                             }" :src="item.goods[0].goods_image" :width="160" :height="160"></he-image>
                         <view class="he-order__after" v-if="item.goods[0].after_sales === 1">
@@ -41,7 +38,8 @@
                         <view class="he-order__attr he-line-2">{{ item.goods[0].show_goods_param }}</view>
                         <view class="he-goods__buy">
                             <text class="he-goods__number">{{ item.goods[0].goods_number }}</text>
-                            <text class="he-goods__price">¥{{ item.goods[0].goods_price }}</text>
+                            <text class="he-goods__price" v-if="item.type=='task'">{{ item.goods[0].goods_score }}积分 + ¥{{ item.goods[0].goods_price }}</text>
+                            <text class="he-goods__price" v-else> ¥{{ item.goods[0].goods_price }}</text>
                         </view>
                     </view>
                 </template>
@@ -50,48 +48,41 @@
                 <view class="he-order__price">
                     <view class="fr">
                         <text class="he-total he-light__text">合计</text>
-                        <text class="he-price">¥{{ item.pay_amount }}</text>
+                        <text class="he-price" v-if="item.type=='task'"> {{ item.score_amount}}积分 + ¥{{ item.pay_amount }}</text>
+                        <text class="he-price" v-else> ¥{{ item.pay_amount }}</text>
                         <text class="he-light__text">(含运费¥{{ item.freight_amount }})</text>
                     </view>
                 </view>
-                <view class="he-order__button"
-                      v-if="(item.status === 203 && item.is_evaluate === 0) || item.status === 202 || item.status === 100">
+                <view class="he-order__button" v-if="(item.status === 203 && item.is_evaluate === 0) || item.status === 202 || item.status === 100">
                     <view class="fr flex align-center">
                         <template v-if="item.status === 100">
                             <button class="cu-btn he-btn he-btn-0" @click.stop="setOrder(item, 'cancel')">取消订单</button>
                             <!-- #ifdef MP-WEIXIN -->
-                            <button class="cu-btn he-btn he-btn-1" v-if="getBasicSetting.run_status === 1"
-                                    @click.stop="submit(item)">立即支付
+                            <button class="cu-btn he-btn he-btn-1" v-if="getBasicSetting.run_status === 1" @click.stop="submit(item)">立即支付
                             </button>
                             <!-- #endif -->
                             <!-- #ifdef H5 -->
                             <he-open-subscribe :digital="item" @open-subscribe-success="submit" :template-id="tmplIds" v-if="getBasicSetting.run_status === 1">
-                                <button class="cu-btn he-btn he-btn-1" >
-                                        立即支付
+                                <button class="cu-btn he-btn he-btn-1">
+                                    立即支付
                                 </button>
                             </he-open-subscribe>
                             <!-- #endif -->
                             <button class="cu-btn he-btn he-btn-3" v-else>已打样</button>
                         </template>
-                        <button class="cu-btn he-btn he-btn-1" v-else-if="item.status === 202"
-                                @click.stop="setOrder(item, 'receipt')">确认收货
+                        <button class="cu-btn he-btn he-btn-1" v-else-if="item.status === 202" @click.stop="setOrder(item, 'receipt')">确认收货
                         </button>
-                        <button class="cu-btn he-btn he-btn-1"
-                                v-else-if="item.status === 203 && item.is_evaluate === 0"
-                                @click.stop="navigateTo('/pages/order/evaluation?id=' + item.id)">评价晒单
+                        <button class="cu-btn he-btn he-btn-1" v-else-if="item.status === 203 && item.is_evaluate === 0" @click.stop="navigateTo('/pages/order/evaluation?id=' + item.id)">评价晒单
                         </button>
                     </view>
                 </view>
             </view>
         </view>
         <after-receipt v-model="isAfterReceipt" :order-id="setItem && setItem.id"></after-receipt>
-        <he-empty-popup :empty-style="{height: '146rpx', lineHeight: '146rpx'}" v-model="cancel" title="确认要取消这个订单吗？"
-                        :item="setItem" @confirm="cancelConfirm"></he-empty-popup>
-        <he-empty-popup :empty-style="{height: '146rpx', lineHeight: '146rpx'}" v-model="receipt" title="确认收到货了吗？"
-                        :item="setItem" @confirm="receiptConfirm"></he-empty-popup>
+        <he-empty-popup :empty-style="{height: '146rpx', lineHeight: '146rpx'}" v-model="cancel" title="确认要取消这个订单吗？" :item="setItem" @confirm="cancelConfirm"></he-empty-popup>
+        <he-empty-popup :empty-style="{height: '146rpx', lineHeight: '146rpx'}" v-model="receipt" title="确认收到货了吗？" :item="setItem" @confirm="receiptConfirm"></he-empty-popup>
     </view>
 </template>
-
 <script>
 import heEmptyPopup from "../../../components/he-empty-popup.vue";
 import afterReceipt from "./after-receipt.vue";
@@ -115,7 +106,7 @@ export default {
     props: {
         value: {
             type: Array,
-            default: function () {
+            default: function() {
                 return [];
             }
         },
@@ -125,31 +116,35 @@ export default {
     },
     computed: {
         list: {
-            get: function () {
+            get: function() {
+
                 return this.value;
             },
-            set: function (val) {
+            set: function(val) {
                 this.$emit('input', val);
             }
         },
-        tmplIds: function () {
-            return [this.$store.getters['setting/subscribe'].order_pay, this.$store.getters['setting/subscribe'].order_send]
+        tmplIds: function() {
+            let tpl = [this.$store.getters['setting/subscribe'].order_pay, this.$store.getters['setting/subscribe'].order_send]
+            if (this.$manifest('task', 'status')) {
+
+                tpl.push(this.$store.getters["setting/subscribe"].task_refund_tpl);
+            }
+            return tpl;
         }
     },
     methods: {
-        navigateTo: function (url) {
-            uni.navigateTo({url});
+        navigateTo: function(url) {
+            uni.navigateTo({ url });
         },
-        submit: function (value) {
+        submit: function(value) {
             let _this = this;
             // #ifdef MP_WEIXIN
             wx.requestSubscribeMessage({
                 tmplIds: _this.tmplIds,
-                success: function () {
-                },
-                fail: function (e) {
-                },
-                complete: function () {
+                success: function() {},
+                fail: function(e) {},
+                complete: function() {
                     _this.onPay(value)
                 }
             });
@@ -158,11 +153,11 @@ export default {
             this.onPay(value);
             // #endif
         },
-        onPay: function (value) {
+        onPay: function(value) {
             let _this = this;
             this.$heshop.pay({
                 order_sn: value.order_sn
-            }).then(function (data) {
+            }).then(function(data) {
                 // #ifdef MP_WEIXIN
                 value.status = 201;
                 uni.navigateTo({
@@ -176,24 +171,23 @@ export default {
                     paySign: data.paySign,
                     signType: data.signType,
                     timestamp: data.timeStamp,
-                    success: function () {
+                    success: function() {
                         value.status = 201;
                         uni.navigateTo({
                             url: '/pages/order/successful?order_id=' + value.id + '&order_sn=' + value.order_sn
                         });
                     },
-                    fail: function (err) {
+                    fail: function(err) {
                         _this.$toError(err);
                     },
-                    cancel: function () {
-                    }
+                    cancel: function() {}
                 });
                 // #endif
-            }).catch(function (err) {
+            }).catch(function(err) {
                 if (err.status === 403) {
                     _this.$h.toast(err.data.message);
                     _this.$store.dispatch('setting/resetting');
-                    setTimeout(function () {
+                    setTimeout(function() {
                         uni.navigateBack({
                             delta: 1
                         });
@@ -201,32 +195,32 @@ export default {
                 }
             });
         },
-        setOrder: function (item, key) {
+        setOrder: function(item, key) {
             this[key] = true;
             this.setItem = item;
         },
         // 取消订单操作
-        cancelConfirm: function (data) {
+        cancelConfirm: function(data) {
             let _this = this;
             this.$heshop.order('put', {
                 id: data.id,
                 behavior: 'cancel'
-            }).then(function () {
+            }).then(function() {
                 for (let i = 0; i < _this.list.length; i++) {
                     if (_this.list[i].id === data.id) _this.list[i].status = 101;
                 }
                 _this.navigateTo('/pages/order/detail?id=' + data.id);
-            }).catch(function (err) {
+            }).catch(function(err) {
                 _this.$toError(err);
             });
         },
         // 收货订单操作
-        receiptConfirm: function (data) {
+        receiptConfirm: function(data) {
             let _this = this;
             this.$heshop.order('put', {
                 id: data.id,
                 behavior: 'received'
-            }).then(function () {
+            }).then(function() {
                 _this.isAfterReceipt = true;
                 _this.setItem = data;
                 // 确认收货 unreceived 待收货栏 203 确认收货
@@ -239,13 +233,13 @@ export default {
                 } else {
                     data.status = 203;
                 }
-            }).catch(function (err) {
+            }).catch(function(err) {
                 _this.$toError(err);
             });
         }
     },
     filters: {
-        getStatus: function (status) {
+        getStatus: function(status) {
             switch (status) {
                 case 100:
                     return "待买家付款";
@@ -266,7 +260,7 @@ export default {
                 default:
             }
         },
-        afterStatus: function (after) {
+        afterStatus: function(after) {
             if (after.status === 200) {
                 if (after.type === 0) {
                     return "已退款";
@@ -286,7 +280,6 @@ export default {
     }
 }
 </script>
-
 <style scoped lang="scss">
 .index-list {
     padding: 0 20px;
