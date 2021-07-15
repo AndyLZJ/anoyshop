@@ -5,24 +5,53 @@
     <template v-else-if="!isLoading && !emptyStatus">
       <he-navbar :is-back="true" :background="barBackground">
         <view class="flex he-tabs justify-center" v-if="isBar">
-          <view class="he-tab" @click="pageScrollTo('banner', 1, top.banner)">商品
+          <view class="he-tab" @click="pageScrollTo('banner', 1, top.banner)"
+            >商品
             <view class="he-tab-line" v-if="tab === 1"></view>
           </view>
-          <view class="he-tab" @click="pageScrollTo('evaluation', 2, top.evaluation)">评价
+          <view class="he-tab" @click="pageScrollTo('evaluation', 2, top.evaluation)"
+            >评价
             <view class="he-tab-line" v-if="tab === 2"></view>
           </view>
-          <view class="he-tab" @click="pageScrollTo('rich', 3, top.rich)">详情
+          <view class="he-tab" @click="pageScrollTo('rich', 3, top.rich)"
+            >详情
             <view class="he-tab-line" v-if="tab === 3"></view>
           </view>
-          <view class="he-tab" @click="pageScrollTo('featured', 4, top.featured)" v-if="isProductsFeatured">推荐
+          <view class="he-tab" @click="pageScrollTo('featured', 4, top.featured)" v-if="isProductsFeatured"
+            >推荐
             <view class="he-tab-line" v-if="tab === 4"></view>
           </view>
         </view>
       </he-navbar>
       <view id="banner"></view>
-      <detail-banner id="detail-banner" :video="detail.video" :is-video="detail.is_video" :video-cover="detail.video_cover" :list="detail.slideshow" :goods-id="detail.id"></detail-banner>
-      <detail-basic-information :task="detail.task" :is_task="is_task" :name="detail.name" :price="detail.price" :unit="detail.unit" :sales="detail.sales" :goods="detail" :goods-id="detail.id" :virtual_sales="detail.virtual_sales" :line-price="detail.line_price"></detail-basic-information>
-      <detail-parameter :unit="detail.unit" :package="detail.package" @shopping="shopping" :select="select" :goods-id="detail.id" :services="detail.services">
+      <detail-banner
+        id="detail-banner"
+        :video="detail.video"
+        :is-video="detail.is_video"
+        :video-cover="detail.video_cover"
+        :list="detail.slideshow"
+        :goods-id="detail.id"
+      ></detail-banner>
+      <detail-basic-information
+        :task="detail.task"
+        :is_task="is_task"
+        :name="detail.name"
+        :price="detail.price"
+        :unit="detail.unit"
+        :sales="detail.sales"
+        :goods="detail"
+        :goods-id="detail.id"
+        :virtual_sales="detail.virtual_sales"
+        :line-price="detail.line_price"
+      ></detail-basic-information>
+      <detail-parameter
+        :unit="detail.unit"
+        :package="detail.package"
+        @shopping="shopping"
+        :select="select"
+        :goods-id="detail.id"
+        :services="detail.services"
+      >
       </detail-parameter>
       <detailTask v-if="$manifest('task', 'status')"></detailTask>
       <view class="el-float" :style="[floatStyle]" id="evaluation"></view>
@@ -31,9 +60,31 @@
       <detail-rich id="detail-rich" :content="detail.body.content"></detail-rich>
       <view class="el-float" :style="[floatStyle]" id="featured"></view>
       <he-products-featured id="products-featured" v-if="isProductsFeatured"></he-products-featured>
-      <detail-bottom-button :task="detail.task" :is_task="is_task" :slide-show="detail.slideshow" :name="detail.name" :stocks="detail.stocks" :shopping-type.sync="shoppingType" :goods-id="detail.id" v-model="isShopping"></detail-bottom-button>
-      <he-cart v-if="is_task" :is_task="is_task" :show.sync="isShopping" shopping-type="buy" @setSelect="setSelect" :goods="detail"></he-cart>
-      <he-cart v-else :show.sync="isShopping" :shopping-type="shoppingType" @setSelect="setSelect" :goods="detail"></he-cart>
+      <detail-bottom-button
+        :task="detail.task"
+        :is_task="is_task"
+        :slide-show="detail.slideshow"
+        :name="detail.name"
+        :stocks="detail.stocks"
+        :shopping-type.sync="shoppingType"
+        :goods-id="detail.id"
+        v-model="isShopping"
+      ></detail-bottom-button>
+      <he-cart
+        v-if="is_task"
+        :is_task="is_task"
+        :show.sync="isShopping"
+        shopping-type="buy"
+        @setSelect="setSelect"
+        :goods="detail"
+      ></he-cart>
+      <he-cart
+        v-else
+        :show.sync="isShopping"
+        :shopping-type="shoppingType"
+        @setSelect="setSelect"
+        :goods="detail"
+      ></he-cart>
       <view class="safe-area-inset-bottom">
         <view class="he-bottom-height"></view>
       </view>
@@ -43,31 +94,37 @@
       <he-products-featured></he-products-featured>
     </template>
     <!-- 优化展现形式 -->
-    <taskpopups v-model="item.display" :title="item.remark" :index="index" v-for="(item, index) in popupsList" :key="index"></taskpopups>
-    <template v-if='task_browse'>
+    <taskpopups
+      v-model="item.display"
+      :title="item.remark"
+      :index="index"
+      v-for="(item, index) in popupsList"
+      :key="index"
+    ></taskpopups>
+    <template v-if="task_browse">
       <taskbrowse :display="is_browse" :goods_id="goods_id" ref="taskbrowse"></taskbrowse>
     </template>
   </view>
 </template>
 <script>
-import detailBanner from "./components/detail-banner.vue";
-import detailBasicInformation from "./components/detail-basic-information.vue";
-import detailParameter from "./components/detail-parameter.vue";
-import detailTask from "./components/detail-task.vue";
-import detailEvaluation from "./components/detail-evaluation.vue";
-import detailRich from "./components/detail-rich.vue";
-import detailBottomButton from "./components/detail-bottom-button.vue";
-import detailSkeleton from "./components/detail-skeleton.vue";
-import detailBar from "./components/detail-bar.vue";
-import heProductsFeatured from "../../components/he-products-featured.vue";
-import heCart from "../../components/he-cart.vue";
-import heNoContentYet from "../../components/he-no-content-yet.vue";
-import heNavbar from "../../components/he-navbar.vue";
-import { mapGetters } from "vuex";
-import taskpopups from "@/plugins/task/components/popups.vue";
-import taskbrowse from "@/plugins/task/components/browse.vue";
+import detailBanner from './components/detail-banner.vue';
+import detailBasicInformation from './components/detail-basic-information.vue';
+import detailParameter from './components/detail-parameter.vue';
+import detailTask from './components/detail-task.vue';
+import detailEvaluation from './components/detail-evaluation.vue';
+import detailRich from './components/detail-rich.vue';
+import detailBottomButton from './components/detail-bottom-button.vue';
+import detailSkeleton from './components/detail-skeleton.vue';
+import detailBar from './components/detail-bar.vue';
+import heProductsFeatured from '../../components/he-products-featured.vue';
+import heCart from '../../components/he-cart.vue';
+import heNoContentYet from '../../components/he-no-content-yet.vue';
+import heNavbar from '../../components/he-navbar.vue';
+import { mapGetters } from 'vuex';
+import taskpopups from '@/plugins/task/components/popups.vue';
+import taskbrowse from '@/plugins/task/components/browse.vue';
 export default {
-  name: "detail",
+  name: 'detail',
   components: {
     detailBanner,
     detailBasicInformation,
@@ -86,47 +143,45 @@ export default {
     taskbrowse
   },
   computed: {
-    ...mapGetters("setting", {
-      address: "getLocation",
-      goodsSetting: "goodsSetting",
-      navbarHeight: "getNavBarHeight",
-      statusBarHeight: "statusBarHeight",
+    ...mapGetters('setting', {
+      address: 'getLocation',
+      goodsSetting: 'goodsSetting',
+      navbarHeight: 'getNavBarHeight',
+      statusBarHeight: 'statusBarHeight'
     }),
-    isProductsFeatured: function() {
+    isProductsFeatured: function () {
       return this.goodsSetting.recommend_showpage.goodsinfo.value;
     },
-    emptyText: function() {
+    emptyText: function () {
       if (this.emptyStatus === 1) {
-        return "商品不存在";
+        return '商品不存在';
       } else if (this.emptyStatus === 2) {
-        return "商品已下架";
+        return '商品已下架';
       }
     },
-    shareData: function() {
+    shareData: function () {
       return {
         title: this.detail.name,
-        path: "/pages/goods/detail?id=" + this.detail.id,
-        imageUrl: this.detail.slideshow[0],
+        path: '/pages/goods/detail?id=' + this.detail.id,
+        imageUrl: this.detail.slideshow[0]
       };
     },
-    floatStyle: function() {
+    floatStyle: function () {
       return {
-        transform: `translateY(-${
-          this.navbarHeight + this.statusBarHeight - uni.upx2px(24)
-        }px)`,
+        transform: `translateY(-${this.navbarHeight + this.statusBarHeight - uni.upx2px(24)}px)`
       };
     },
-    barBackground: function() {
+    barBackground: function () {
       if (this.isBar) {
         return {
-          background: "#ffffff",
+          background: '#ffffff'
         };
       } else {
         return {
-          background: "transparent",
+          background: 'transparent'
         };
       }
-    },
+    }
   },
   onShow() {
     this.handleTaskBrowseLog();
@@ -136,7 +191,7 @@ export default {
       isLoading: true,
       isShopping: false,
       select: null,
-      shoppingType: "cart",
+      shoppingType: 'cart',
       emptyStatus: null,
       isBar: false,
       tab: 1,
@@ -145,11 +200,11 @@ export default {
         banner: 0,
         evaluation: 0,
         rich: 0,
-        featured: 0,
+        featured: 0
       },
       isTouch: false,
       detail: {
-        slideshow: [],
+        slideshow: []
       },
       /**
        * 判断是否从积分任务过来
@@ -165,13 +220,13 @@ export default {
     };
   },
   onHide() {
-    console.log("执行清理", this.$refs['taskbrowse'].timeoutID)
+    console.log('执行清理', this.$refs['taskbrowse'].timeoutID);
     if (this.$refs['taskbrowse'] && this.$refs['taskbrowse'].timeoutID) {
       clearTimeout(this.$refs['taskbrowse'].timeoutID);
     }
   },
   onUnload() {
-    console.log("执行清理", this.$refs['taskbrowse'].timeoutID)
+    console.log('执行清理', this.$refs['taskbrowse'].timeoutID);
     if (this.$refs['taskbrowse'] && this.$refs['taskbrowse'].timeoutID) {
       clearTimeout(this.$refs['taskbrowse'].timeoutID);
     }
@@ -187,51 +242,53 @@ export default {
        * @param  {[type]} res [description]
        * @return {[type]}     [description]
        */
-      this.$heshop.plugin("get", { include: "task", model: "log", keyword: 'browse', number: this.goods_id, status: 0 }).then(res => {
-        if (res.length) {
-          this.is_browse = false
-        } else {
-          this.is_browse = true
-        }
-      }).catch(err => {
-        console.log("查看错误信息")
-      })
+      this.$heshop
+        .plugin('get', { include: 'task', model: 'log', keyword: 'browse', number: this.goods_id, status: 0 })
+        .then(res => {
+          if (res.length) {
+            this.is_browse = false;
+          } else {
+            this.is_browse = true;
+          }
+        })
+        .catch(err => {
+          console.log('查看错误信息');
+        });
     },
     getDetail: function getDetail(id, callback) {
       let _this = this;
       _this.$heshop
-        .goods("get", id, { "is_task": this.is_task })
-        .then(function(res) {
-
-          if (!res.hasOwnProperty("empty_status")) {
+        .goods('get', id, { is_task: this.is_task })
+        .then(function (res) {
+          if (!res.hasOwnProperty('empty_status')) {
             _this.detail = res;
           } else {
             _this.emptyStatus = res.empty_status;
             uni.setNavigationBarTitle({
-              title: _this.emptyText,
+              title: _this.emptyText
             });
           }
           callback();
         })
-        .catch(function(err) {
+        .catch(function (err) {
           _this.$toError(err);
           _this.isLoading = false;
         });
     },
-    shopping: function() {
+    shopping: function () {
       this.isShopping = true;
-      this.shoppingType = "";
+      this.shoppingType = '';
     },
-    setSelect: function(select) {
+    setSelect: function (select) {
       this.select = select;
     },
-    selectEval: function(id) {
+    selectEval: function (id) {
       let _this = this;
-      return new Promise(function(resolve) {
+      return new Promise(function (resolve) {
         uni
           .createSelectorQuery()
           .select(id)
-          .boundingClientRect(function(rect) {
+          .boundingClientRect(function (rect) {
             if (rect) {
               resolve(rect.top - _this.navbarHeight - _this.statusBarHeight);
             } else {
@@ -241,27 +298,27 @@ export default {
           .exec();
       });
     },
-    catchtouchmove: function() {},
+    catchtouchmove: function () {},
     // #ifdef H5
     async pageScrollTo(str, num, top) {
       let _this = this;
       _this.isScroll = true;
       await uni.pageScrollTo({
         scrollTop: top + 10,
-        duration: 200,
+        duration: 200
       });
     },
     // #endif
     // #ifndef H5
-    pageScrollTo: function(str, num, top) {
+    pageScrollTo: function (str, num, top) {
       let _this = this;
       _this.isScroll = true;
       uni.pageScrollTo({
-        selector: "#" + str,
+        selector: '#' + str,
         duration: 200,
-        success: function() {
+        success: function () {
           _this.isScroll = false;
-        },
+        }
       });
     },
     // #endif
@@ -269,24 +326,25 @@ export default {
       this.taskShare = true;
       //用于延时测试数据
       setTimeout(res => {
-        let task_status = this.$manifest("task", "status");
+        let task_status = this.$manifest('task', 'status');
         let that = this;
         if (task_status) {
-          this.$store.dispatch("plugins/onShare").then(res => {
-            console.log("执行了商品详情也分享")
-            setTimeout(res => {
-              this.taskShare = false;
-            }, 5000)
-          }).catch(error => {
-
-          });
+          this.$store
+            .dispatch('plugins/onShare')
+            .then(res => {
+              console.log('执行了商品详情也分享');
+              setTimeout(res => {
+                this.taskShare = false;
+              }, 5000);
+            })
+            .catch(error => {});
         }
-      }, 1000)
+      }, 1000);
     }
   },
   onLoad(options) {
     this.task_browse = options.task_browse ? options.task_browse : null;
-    console.log("查看浏览装袋", this.task_browse)
+    console.log('查看浏览装袋', this.task_browse);
     this.popupsList = [];
     //判断是否积分商品
     if (options && options.is_task) {
@@ -295,17 +353,17 @@ export default {
     this.isTouch = true;
     // #ifdef H5
     uni.setNavigationBarTitle({
-      title: "商品详情",
+      title: '商品详情'
     });
     // #endif
     // #ifdef MP-WEIXIN
     uni.showShareMenu({
-      withShareTicket: true,
+      withShareTicket: true
     });
     // #endif
     let id = 0;
     if (options.scene) {
-      id = parseInt(decodeURIComponent(options.scene).split("=")[1]);
+      id = parseInt(decodeURIComponent(options.scene).split('=')[1]);
     } else {
       id = parseInt(options.id);
     }
@@ -318,28 +376,27 @@ export default {
     //         remark: "消费100元获得10积分"
     //     })
     // }, 3000)
-    this.getDetail(id, function() {
+    this.getDetail(id, function () {
       _this.isLoading = false;
       // #ifdef H5
       _this.$wechat.updateShareData(_this.shareData);
       setTimeout(() => {
-        let array = [
-          _this.selectEval("#detail-evaluation"),
-          _this.selectEval("#detail-rich"),
-        ];
+        let array = [_this.selectEval('#detail-evaluation'), _this.selectEval('#detail-rich')];
         if (_this.isProductsFeatured) {
-          array.push(_this.selectEval("#products-featured"));
+          array.push(_this.selectEval('#products-featured'));
         }
-        Promise.all(array).then(function(res) {
-          _this.top.evaluation = res[0];
-          _this.top.rich = res[1];
-          if (_this.isProductsFeatured) {
-            _this.top.featured = res[2];
-          }
-          _this.isTouch = false;
-        }).catch(err => {
-          _this.isTouch = false;
-        });
+        Promise.all(array)
+          .then(function (res) {
+            _this.top.evaluation = res[0];
+            _this.top.rich = res[1];
+            if (_this.isProductsFeatured) {
+              _this.top.featured = res[2];
+            }
+            _this.isTouch = false;
+          })
+          .catch(err => {
+            _this.isTouch = false;
+          });
       }, 800);
       // #endif
       // #ifndef H5
@@ -350,14 +407,11 @@ export default {
   onPageScroll(e) {
     let _this = this;
     _this.isBar = e.scrollTop > 150;
-    let array = [
-      _this.selectEval("#detail-evaluation"),
-      _this.selectEval("#detail-rich"),
-    ];
+    let array = [_this.selectEval('#detail-evaluation'), _this.selectEval('#detail-rich')];
     if (_this.isProductsFeatured) {
-      array.push(_this.selectEval("#products-featured"));
+      array.push(_this.selectEval('#products-featured'));
     }
-    Promise.all(array).then(function(res) {
+    Promise.all(array).then(function (res) {
       if (res[0] < 0) {
         _this.tab = 2;
       } else {
@@ -382,11 +436,11 @@ export default {
   },
   onShareTimeline() {
     return this.$shareAppMessage(this.shareData);
-  },
+  }
   // #endif
 };
-
 </script>
+
 <style scoped lang="scss">
 .he-bottom-height {
   height: 115px;
@@ -422,7 +476,7 @@ export default {
     bottom: 8px;
     left: 50%;
     transform: translateX(-50%);
-    @include background_color("background_color");
+    @include background_color('background_color');
     border-radius: 2px;
   }
 }
@@ -433,5 +487,4 @@ export default {
   height: 100vh;
   z-index: 1000;
 }
-
 </style>

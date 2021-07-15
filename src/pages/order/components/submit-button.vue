@@ -25,6 +25,7 @@
     </view>
 </template>
 <script>
+
 // #ifdef H5
 import heOpenSubscribe from "../../../components/he-open-subscribe.vue";
 // #endif

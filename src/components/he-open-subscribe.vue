@@ -23,11 +23,6 @@
 <script>
 export default {
     name: "he-open-subscribe",
-    data() {
-        return {
-            isShow: true,
-        };
-    },
     props: {
         templateId: {
             type: Array,
@@ -45,6 +40,7 @@ export default {
     data() {
         return {
             subscribeId: this.$h.guid() + "_subscribe",
+            isShow: true,
         };
     },
     methods: {
@@ -64,9 +60,10 @@ export default {
             _this.$emit("open-subscribe-success", _this.digital);
         });
         btn.addEventListener("error", function(error) {
-            console.log("error", error)
+            console.log("error", error);
             _this.isShow = false;
-            btn.style.display = "none";
+            // btn.style.display = "none";
+            _this.$emit("open-subscribe-success", _this.digital);
         });
     },
 };

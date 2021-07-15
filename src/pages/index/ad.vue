@@ -112,7 +112,14 @@ export default {
                         this.display = true;
                         this.content = res.content.content;
                         this.facade = res.content.facade;
-                        if (res.content.content.length === 0) {
+                        let _array = [];
+                        for (let index in this.content) {
+                          let item = this.content[index];
+                          if (item.url) {
+                            _array.push(item);
+                          }
+                        }
+                        if (_array.length === 0) {
                             this.toSkip();
                         }
                     } else {
