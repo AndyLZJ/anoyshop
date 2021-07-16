@@ -3,7 +3,9 @@
     <view class="detail-basic-information">
       <view class="he-top flex align-center justify-between">
         <view>
-          <text class="he-price he-price_task" v-if="is_task">{{task.task_number}}<text style="font-size: 12px">积分+¥</text>{{ task.task_price }}</text>
+          <text class="he-price he-price_task" v-if="is_task"
+            >{{ task.task_number }}<text style="font-size: 12px">积分+¥</text>{{ task.task_price }}</text
+          >
           <text class="he-price" v-else>{{ price }}</text>
           <text class="he-old-price">¥{{ linePrice }}</text>
         </view>
@@ -44,97 +46,103 @@
   </view>
 </template>
 <script>
-import heShare from "../../../components/he-share.vue";
-import detailCoupon from "./detail-coupon.vue";
+import heShare from '../../../components/he-share.vue';
+import detailCoupon from './detail-coupon.vue';
 
 export default {
-  name: "detail-basic-information",
+  name: 'detail-basic-information',
   components: {
     heShare,
-    detailCoupon,
+    detailCoupon
   },
   props: {
-    is_task: Boolean,
+    is_task: {
+      type: Boolean,
+      default: function () {
+        return false;
+      }
+    },
     task: [Object, Array],
     name: {
       type: String,
-      default: function() {
-        return "";
-      },
+      default: function () {
+        return '';
+      }
     },
     price: {
       type: String,
-      default: function() {
-        return "";
-      },
+      default: function () {
+        return '';
+      }
     },
     unit: {
       type: String,
-      default: function() {
-        return "";
-      },
+      default: function () {
+        return '';
+      }
     },
     linePrice: {
       type: String,
-      default: function() {
-        return "";
-      },
+      default: function () {
+        return '';
+      }
     },
     sales: {
       type: Number,
-      default: function() {
+      default: function () {
         return 0;
-      },
+      }
     },
     virtual_sales: {
       type: Number,
-      default: function() {
+      default: function () {
         return 0;
-      },
+      }
     },
     goodsId: {
       type: Number,
-      default: function() {
+      default: function () {
         return 0;
-      },
+      }
     },
     goods: {
       type: Object,
-      default: function() {
+      default: function () {
         return {};
-      },
-    },
+      }
+    }
   },
   data() {
     return {
       isShare: false,
       isCoupon: false,
       newCoupon: [],
-      coupon: [],
+      coupon: []
     };
   },
   methods: {
-    setShare: function() {
+    setShare: function () {
       this.isShare = true;
       this.toTaskonShare();
     },
     toTaskonShare() {
       //用于延时测试数据
       setTimeout(res => {
-        let task_status = this.$manifest("task", "status");
+        let task_status = this.$manifest('task', 'status');
         let that = this;
         if (task_status) {
-          this.$store.dispatch("plugins/onShare").then(res => {
-            console.log("执行了分享接口", res)
-          }).catch(error => {
-
-          });
+          this.$store
+            .dispatch('plugins/onShare')
+            .then(res => {
+              console.log('执行了分享接口', res);
+            })
+            .catch(error => {});
         }
-      }, 1000)
+      }, 1000);
     },
-    getLen: function(list) {
-      let str = "";
-      list.forEach((item) => {
+    getLen: function (list) {
+      let str = '';
+      list.forEach(item => {
         item.min_price = Number(item.min_price);
         item.sub_price = Number(item.sub_price);
         if (item.min_price > 0) {
@@ -143,34 +151,39 @@ export default {
           str += `${item.sub_price}无门槛`;
         }
       });
-      if (uni.upx2px(550) - str.length * uni.upx2px(24) - list.length * uni.upx2px(24) - ((list.length - 1) * uni.upx2px(12)) < 0) {
+      if (
+        uni.upx2px(550) -
+          str.length * uni.upx2px(24) -
+          list.length * uni.upx2px(24) -
+          (list.length - 1) * uni.upx2px(12) <
+        0
+      ) {
         this.coupon.pop();
         this.getLen(this.coupon);
       }
     },
-    getCoupon: function() {
+    getCoupon: function () {
       let _this = this;
       this.$heshop
-        .coupon("get", {
-          behavior: "coupon",
+        .coupon('get', {
+          behavior: 'coupon',
           goods_id: this.goodsId,
-          type: "all",
+          type: 'all'
         })
-        .then(function(response) {
+        .then(function (response) {
           _this.newCoupon = response;
           _this.coupon = JSON.parse(JSON.stringify(response));
           _this.getLen(_this.coupon);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           _this.$toError(error);
         });
-    },
+    }
   },
   mounted() {
     this.getCoupon();
-  },
+  }
 };
-
 </script>
 <style scoped lang="scss">
 .detail-basic-information {
@@ -188,16 +201,16 @@ export default {
   font-size: 40px;
   font-family: DINPro;
   font-weight: bold;
-  @include font_color("font_color");
+  @include font_color('font_color');
 }
 
 .he-price:before {
-  content: "￥";
+  content: '￥';
   font-size: 30px;
 }
 
 .he-price.he-price_task:before {
-  content: "";
+  content: '';
   font-size: 30px;
 }
 
@@ -267,9 +280,9 @@ export default {
       font-size: 24px;
       font-family: PingFang SC;
       font-weight: 500;
-      @include font_color("font_color");
+      @include font_color('font_color');
       transform: rotateZ(360deg);
-      @include border_color("border_color");
+      @include border_color('border_color');
     }
 
     .he-coupon-edge {
@@ -278,7 +291,7 @@ export default {
       transform: rotateZ(360deg);
       border-top: 1px solid transparent;
       border-bottom: 1px solid transparent;
-      @include border_color("border_color");
+      @include border_color('border_color');
       position: relative;
     }
 
@@ -303,7 +316,7 @@ export default {
       z-index: 10;
       border: 1px solid transparent;
       background: #ffffff;
-      @include border_color("border_color");
+      @include border_color('border_color');
     }
 
     .he-coupon-item-left .he-edge-doc {
@@ -324,7 +337,7 @@ export default {
     .iconbtn_arrow {
       font-size: 22px;
       margin-left: 4px;
-      color: #BEBEBE;
+      color: #bebebe;
     }
 
     .he-coupon-right-text {
@@ -335,5 +348,4 @@ export default {
     }
   }
 }
-
 </style>

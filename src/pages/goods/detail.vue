@@ -101,7 +101,7 @@
       v-for="(item, index) in popupsList"
       :key="index"
     ></taskpopups>
-    <template v-if="task_browse">
+    <template v-if="task_browse && copy_task_browse">
       <taskbrowse :display="is_browse" :goods_id="goods_id" ref="taskbrowse"></taskbrowse>
     </template>
   </view>
@@ -184,6 +184,7 @@ export default {
     }
   },
   onShow() {
+    console.log(this.task_browse);
     this.handleTaskBrowseLog();
   },
   data() {
@@ -216,19 +217,24 @@ export default {
       is_task: 0,
       is_browse: 0,
       popupsList: [],
-      taskShare: false
+      taskShare: false,
+      copy_task_browse: 0
     };
   },
   onHide() {
-    console.log('执行清理', this.$refs['taskbrowse'].timeoutID);
+    console.log(this.$refs['taskbrowse']);
+    // console.log('执行清理', this.$refs['taskbrowse'].timeoutID);
     if (this.$refs['taskbrowse'] && this.$refs['taskbrowse'].timeoutID) {
       clearTimeout(this.$refs['taskbrowse'].timeoutID);
+      this.copy_task_browse = 0;
     }
   },
   onUnload() {
-    console.log('执行清理', this.$refs['taskbrowse'].timeoutID);
+    console.log(this.$refs['taskbrowse']);
+    // console.log('执行清理', this.$refs['taskbrowse'].timeoutID);
     if (this.$refs['taskbrowse'] && this.$refs['taskbrowse'].timeoutID) {
       clearTimeout(this.$refs['taskbrowse'].timeoutID);
+      this.copy_task_browse = 0;
     }
   },
   methods: {
@@ -250,6 +256,8 @@ export default {
           } else {
             this.is_browse = true;
           }
+          this.copy_task_browse = this.is_browse;
+          console.log(this.is_browse);
         })
         .catch(err => {
           console.log('查看错误信息');
@@ -344,11 +352,12 @@ export default {
   },
   onLoad(options) {
     this.task_browse = options.task_browse ? options.task_browse : null;
+    this.copy_task_browse = this.task_browse;
     console.log('查看浏览装袋', this.task_browse);
     this.popupsList = [];
     //判断是否积分商品
     if (options && options.is_task) {
-      this.is_task = options.is_task;
+      this.is_task = JSON.parse(options.is_task);
     }
     this.isTouch = true;
     // #ifdef H5
