@@ -1,10 +1,7 @@
 <template>
   <view class="he-up-load-image flex flex-wrap">
     <view class="he-list-item" v-for="(item, index) in lists" :key="index">
-      <view
-        @tap.stop="deleteItem(index)"
-        class="he-delete-icon iconfont iconevaluate_uploadpictures_deleto"
-      ></view>
+      <view @tap.stop="deleteItem(index)" class="he-delete-icon iconfont iconevaluate_uploadpictures_deleto"></view>
       <image
         @tap.stop="doPreviewImage(item.url || item.path, index)"
         class="he-preview-image"
@@ -15,17 +12,14 @@
     <button
       @tap="selectFile"
       v-if="maxCount > lists.length"
-      class="cu-btn he-list-item lex flex-direction ustify-center align-center "
+      class="cu-btn he-list-item lex flex-direction ustify-center align-center"
     >
       <view class="iconfont iconevaluate_uploadpictures"></view>
       <view class="he-add-text">添加图片</view>
     </button>
     <he-toast v-model="loading">
       <view class="he-loading flex flex-direction align-center">
-        <image
-          :src="ipAddress + '/upload-loading.gif'"
-          class="he-loading__image"
-        ></image>
+        <image :src="ipAddress + '/upload-loading.gif'" class="he-loading__image"></image>
         <text>图片上传中...</text>
       </view>
     </he-toast>
@@ -33,115 +27,115 @@
 </template>
 
 <script>
-import heToast from "@/components/he-toast.vue";
-import { mapGetters } from "vuex";
+import heToast from '@/components/he-toast.vue';
+import { mapGetters } from 'vuex';
 
 export default {
-  name: "he-upload-image",
+  name: 'he-upload-image',
   components: {
-    heToast,
+    heToast
   },
   computed: {
-    ...mapGetters("setting", {
-      storagePicLimit: "storagePicLimit",
-    }),
+    ...mapGetters('setting', {
+      storagePicLimit: 'storagePicLimit'
+    })
   },
   props: {
     // 是否开启图片多选，部分安卓机型不支持
     multiple: {
       type: Boolean,
-      default: true,
+      default: true
     },
     // 预览上传的图片时的裁剪模式，和image组件mode属性一致
     imageMode: {
       type: String,
-      default: "aspectFill",
+      default: 'aspectFill'
     },
     // 最大上传数量
     maxCount: {
       type: [String, Number],
-      default: 9,
+      default: 9
     },
     // album 从相册选图，camera 使用相机，默认二者都有。如需直接开相机或直接选相册，请只使用一个选项
     sourceType: {
       type: Array,
       default() {
-        return ["album", "camera"];
-      },
+        return ['album', 'camera'];
+      }
     },
     // 是否自动上传
     autoUpload: {
       type: Boolean,
-      default: true,
+      default: true
     },
     // 允许上传的图片后缀
     limitType: {
       type: Array,
       default() {
         // 支付宝小程序真机选择图片的后缀为"image"
-        return ["png", "jpg", "jpeg", "webp", "gif", "image"];
-      },
+        return ['png', 'jpg', 'jpeg', 'webp', 'gif', 'image'];
+      }
     },
     // 上传前的钩子，每个文件上传前都会执行
     beforeUpload: {
       type: Function,
-      default: null,
+      default: null
     },
     // 是否在点击预览图后展示全屏图片预览
     previewFullImage: {
       type: Boolean,
-      default: true,
+      default: true
     },
     // 所选的图片的尺寸, 可选值为original compressed
     sizeType: {
       type: Array,
       default() {
-        return ["original", "compressed"];
-      },
+        return ['original', 'compressed'];
+      }
     },
     // 上传的文件字段名
     name: {
       type: String,
-      default: "file",
+      default: 'file'
     },
     // 额外携带的参数
     formData: {
       type: Object,
       default() {
         return {};
-      },
+      }
     },
     // 头部信息
     header: {
       type: Object,
       default() {
         return {};
-      },
+      }
     },
     // 在各个回调事件中的最后一个参数返回，用于区别是哪一个组件的事件
     index: {
       type: [Number, String],
-      default: "",
+      default: ''
     },
     // 文件大小限制，单位为byte
     maxSize: {
       type: [String, Number],
       default: function () {
         return 2097152;
-      },
-    },
+      }
+    }
   },
   data() {
     return {
       lists: [],
       uploading: false,
-      loading: false,
+      loading: false
     };
   },
   methods: {
     selectFile: function () {
       const {
-        name = "",
+        name = '',
         maxCount,
         multiple,
         maxSize,
@@ -150,7 +144,7 @@ export default {
         camera,
         compressed,
         maxDuration,
-        sourceType,
+        sourceType
       } = this;
       let chooseFile = null;
       const newMaxCount = maxCount - lists.length;
@@ -160,11 +154,11 @@ export default {
           sourceType: sourceType,
           sizeType,
           success: resolve,
-          fail: reject,
+          fail: reject
         });
       });
       chooseFile
-        .then((res) => {
+        .then(res => {
           let file = null;
           let listOldLength = this.lists.length;
           res.tempFiles.map((val, index) => {
@@ -172,31 +166,31 @@ export default {
             if (!this.checkFileExt(val)) return;
             // 如果是非多选，index大于等于1或者超出最大限制数量时，不处理
             if (!multiple && index >= 1) return;
-         
+
             if (val.size > maxSize) {
-              this.$h.toast("超出允许的文件大小");
+              this.$h.toast('超出允许的文件大小');
             } else {
               if (maxCount <= lists.length) {
-                this.$h.toast("超出最大允许的文件个数");
+                this.$h.toast('超出最大允许的文件个数');
                 return;
               }
               lists.push({
                 url: val.path,
                 progress: 0,
                 error: false,
-                file: val,
+                file: val
               });
             }
           });
           // 每次图片选择完，抛出一个事件，并将当前内部选择的图片数组抛出去
-          this.$emit("on-choose-complete", this.lists, this.index);
+          this.$emit('on-choose-complete', this.lists, this.index);
 
           if (this.autoUpload) {
             this.loading = true;
             this.uploadFile(listOldLength);
           }
         })
-        .catch((err) => {});
+        .catch(err => {});
     },
     async uploadFile(index = 0) {
       let _this = this;
@@ -204,7 +198,7 @@ export default {
       // 全部上传完成
       if (index >= this.lists.length) {
         this.loading = false;
-        this.$emit("on-uploaded", this.lists, this.index);
+        this.$emit('on-uploaded', this.lists, this.index);
         return;
       }
       this.lists[index].error = false;
@@ -215,7 +209,7 @@ export default {
           .then(function (data) {
             _this.uploading = false;
             _this.lists[index].response = data;
-            _this.$emit("on-success", data, index, _this.lists, _this.index);
+            _this.$emit('on-success', data, index, _this.lists, _this.index);
             _this.uploadFile(index + 1);
           })
           .catch(function (err) {
@@ -230,27 +224,27 @@ export default {
       this.lists[index].progress = 0;
       this.lists[index].error = true;
       this.lists[index].response = null;
-   
+
       this.$h.toast(err.data.message);
-      this.$emit("on-error", err, index, this.lists, this.index);
+      this.$emit('on-error', err, index, this.lists, this.index);
     },
     // 判断文件后缀是否允许
     checkFileExt(file) {
       // 检查是否在允许的后缀中
       let noArrowExt = false;
       // 获取后缀名
-      let fileExt = "";
+      let fileExt = '';
       const reg = /.+\./;
       // 如果是H5，需要从name中判断
       // #ifdef H5
-      fileExt = file.name.replace(reg, "").toLowerCase();
+      fileExt = file.name.replace(reg, '').toLowerCase();
       // #endif
       // 非H5，需要从path中读取后缀
       // #ifndef H5
-      fileExt = file.path.replace(reg, "").toLowerCase();
+      fileExt = file.path.replace(reg, '').toLowerCase();
       // #endif
       // 使用数组的some方法，只要符合limitType中的一个，就返回true
-      noArrowExt = this.limitType.some((ext) => {
+      noArrowExt = this.limitType.some(ext => {
         // 转为小写
         return ext.toLowerCase() === fileExt;
       });
@@ -259,16 +253,16 @@ export default {
     },
     deleteItem: function (index) {
       this.lists.splice(index, 1);
-      this.$emit("on-remove", index, this.lists, this.index);
-      this.$h.toast("移除成功");
+      this.$emit('on-remove', index, this.lists, this.index);
+      this.$h.toast('移除成功');
     },
     // 预览图片
-    doPreviewImage: function (url, index) {
+    doPreviewImage: function (url) {
       if (!this.previewFullImage) return;
-      const images = this.lists.map((item) => item.url || item.path);
+      const images = this.lists.map(item => item.url || item.path);
       this.$utils.doPreviewImage(url, images);
-    },
-  },
+    }
+  }
 };
 </script>
 

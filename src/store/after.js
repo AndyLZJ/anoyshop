@@ -3,16 +3,16 @@ const after = {
   state: {
     cancel_after: {
       boole: false,
-      order_id: null,
-    },
+      order_id: null
+    }
   },
   mutations: {
     cancelAfter: function (state, data) {
       state.cancel_after = data;
-    },
+    }
   },
   getters: {},
-  actions: {},
+  actions: {}
 };
 
 export default after;

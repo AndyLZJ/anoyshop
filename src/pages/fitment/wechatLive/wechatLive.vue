@@ -1,77 +1,76 @@
-<!--
- * @Author: fjt
- * @Date: 2021-06-24 22:31:48
- * @LastEditors: fjt
- * @LastEditTime: 2021-06-24 23:21:34
--->
 <template>
-    <view class="wechatLive" :style="[backgroundColor]">
-        <view class="le-head flex justify-between">
-          <view class="le-title">直播间</view>
-          <view class="flex align-center" :style="[arrowRightColor]" @click="routerMoreLive" v-if="content.more.isShow">
-            <span class="le-more-text">{{content.more.text}}</span>
-            <i class="iconfont iconbtn_arrow"></i>
-          </view>
-        </view>
-        <view class="le-body" :style="[bodyStyle]" :class="listStyle === 2 ? 'flex flex-wrap' : ''">
-            <view
-              class="le-item flex  "
-               :class="[listStyle === 1 ? 'le-item-one'
-               : listStyle === 2 ? 'le-item-two' : 'le-item-three']"
-               :key="index"
-              :style="[itemMarinBottom]"
-               v-for="(item, index) in list" @click="routerLive(item)">
-              <view class="le-item--box flex" :style="[itemStyle(index)]"
-                    :class="[listStyle === 1 ? 'flex-direction'
-               : listStyle === 2 ? 'flex-direction' : '']">
-                <view class="le-image-box">
-                  <image class="le-live--picture" mode="aspectFill" :src="item.cover_img"/>
-                  <view class="le-tag-box flex">
-                    <view class="le-status-tag" :class="[filterStatusBackground(item.live_status)]">
-                      <image v-if="item.live_status === 101"
-                             src="./../../static/mp-weixin/img/live.gif"
-                             class="le-live--icon"/>
-                      <span>{{item.live_status | filterStatusText}}</span>
-                    </view>
-                    <view class="le-notice--text" v-if="item.live_status === 102">
-                      {{item.text_time}}
-                    </view>
-                  </view>
-                  <view class="le-user" v-if="listStyle !== 3">
-                    <view class="le-user-box flex align-center">
-                      <image :src="item.anchor_img" class="le-user-avatar"/>
-                      <span class="le-user-name">{{item.anchor_name}}</span>
-                    </view>
-                  </view>
-                </view>
-                <view class="le-content" :class="listStyle === 3 ? 'flex-sub' : ''">
-                  <view class="le-live-name he-line-2">{{item.name}}</view>
-                  <view class="le-user flex align-center" v-if="listStyle === 3">
-                    <image :src="item.anchor_img" class="le-user-avatar"/>
-                    <span class="le-user-name">{{item.anchor_name}}</span>
-                  </view>
-                  <div class="le-goods flex" v-if="showGoods && item.goods[0]">
-                    <image class="le-img" :src="item.goods[0].cover_img" />
-                    <view class="le-goods--content">
-                      <view class="le-name he-line-1">{{ item.goods[0].name }}</view>
-                      <view class="le-price">{{item.goods[0] | priceText}}</view>
-                    </view>
-                  </div>
-                </view>
+  <view class="wechatLive" :style="[backgroundColor]">
+    <view class="le-head flex justify-between">
+      <view class="le-title">直播间</view>
+      <view class="flex align-center" :style="[arrowRightColor]" @click="routerMoreLive" v-if="content.more.isShow">
+        <span class="le-more-text">{{ content.more.text }}</span>
+        <i class="iconfont iconbtn_arrow"></i>
+      </view>
+    </view>
+    <view class="le-body" :style="[bodyStyle]" :class="listStyle === 2 ? 'flex flex-wrap' : ''">
+      <view
+        class="le-item flex"
+        :class="[listStyle === 1 ? 'le-item-one' : listStyle === 2 ? 'le-item-two' : 'le-item-three']"
+        :key="index"
+        :style="[itemMarinBottom]"
+        v-for="(item, index) in list"
+        @click="routerLive(item)"
+      >
+        <view
+          class="le-item--box flex"
+          :style="[itemStyle(index)]"
+          :class="[listStyle === 1 ? 'flex-direction' : listStyle === 2 ? 'flex-direction' : '']"
+        >
+          <view class="le-image-box">
+            <image class="le-live--picture" mode="aspectFill" :src="item.cover_img" />
+            <view class="le-tag-box flex">
+              <view class="le-status-tag" :class="[filterStatusBackground(item.live_status)]">
+                <image
+                  v-if="item.live_status === 101"
+                  src="./../../static/mp-weixin/img/live.gif"
+                  class="le-live--icon"
+                />
+                <span>{{ item.live_status | filterStatusText }}</span>
+              </view>
+              <view class="le-notice--text" v-if="item.live_status === 102">
+                {{ item.text_time }}
               </view>
             </view>
+            <view class="le-user" v-if="listStyle !== 3">
+              <view class="le-user-box flex align-center">
+                <image :src="item.anchor_img" class="le-user-avatar" />
+                <span class="le-user-name">{{ item.anchor_name }}</span>
+              </view>
+            </view>
+          </view>
+          <view class="le-content" :class="listStyle === 3 ? 'flex-sub' : ''">
+            <view class="le-live-name he-line-2">{{ item.name }}</view>
+            <view class="le-user flex align-center" v-if="listStyle === 3">
+              <image :src="item.anchor_img" class="le-user-avatar" />
+              <span class="le-user-name">{{ item.anchor_name }}</span>
+            </view>
+            <div class="le-goods flex" v-if="showGoods && item.goods[0]">
+              <image class="le-img" :src="item.goods[0].cover_img" />
+              <view class="le-goods--content">
+                <view class="le-name he-line-1">{{ item.goods[0].name }}</view>
+                <view class="le-price">{{ item.goods[0] | priceText }}</view>
+              </view>
+            </div>
+          </view>
         </view>
+      </view>
     </view>
+  </view>
 </template>
 <script type="text/javascript">
 export default {
   props: {
     facade: {
-      type: [Object, Array],
+      type: [Object, Array]
     },
     content: {
-      type: [Object, Array],
-    },
+      type: [Object, Array]
+    }
   },
   data() {
     return {
@@ -81,36 +80,36 @@ export default {
   computed: {
     backgroundColor() {
       return {
-        backgroundColor: this.facade.background_color,
+        backgroundColor: this.facade.background_color
       };
     },
     arrowRightColor() {
       return {
-        color: this.content.more.color,
+        color: this.content.more.color
       };
     },
     listStyle() {
       return this.facade.list_style;
     },
     itemStyle() {
-      return function(index) {
-        let style = {}
-        if (this.listStyle === 2 && index%2 === 0) {
-          style.marginRight = this.facade.cardSpacing  + 'px';
+      return function (index) {
+        let style = {};
+        if (this.listStyle === 2 && index % 2 === 0) {
+          style.marginRight = this.facade.cardSpacing + 'px';
         }
-        if (this.listStyle === 2 && index%2 === 1) {
-          style.marginLeft = this.facade.cardSpacing  + 'px';
+        if (this.listStyle === 2 && index % 2 === 1) {
+          style.marginLeft = this.facade.cardSpacing + 'px';
         }
         return style;
-      }
+      };
     },
     showGoods() {
       return this.content.isShowGoods;
     },
     bodyStyle() {
       return {
-        paddingLeft: this.facade.leftRightMargins * 2 + "rpx",
-        paddingRight: this.facade.leftRightMargins * 2 + "rpx",
+        paddingLeft: this.facade.leftRightMargins * 2 + 'rpx',
+        paddingRight: this.facade.leftRightMargins * 2 + 'rpx'
       };
     },
     filterStatusBackground() {
@@ -122,25 +121,28 @@ export default {
           return 'le-tag-notice';
         }
         return 'le-tag--end';
-      }
+      };
     },
     itemMarinBottom() {
       return {
-        marginBottom: this.facade.cardSpacing * 2  + 'px'
-      }
-    },
+        marginBottom: this.facade.cardSpacing * 2 + 'px'
+      };
+    }
   },
   methods: {
-      routerMoreLive() {
-          uni.navigateTo({
-              url: '/pages/live/index'
-          });
-      },
-    getLiveList() {
-      this.$heshop.live('get').page(1, this.content.number).then(response => {
-        this.list = response.list;
-      }).catch(error => {
+    routerMoreLive() {
+      uni.navigateTo({
+        url: '/pages/live/index'
       });
+    },
+    getLiveList() {
+      this.$heshop
+        .live('get')
+        .page(1, this.content.number)
+        .then(response => {
+          this.list = response.list;
+        })
+        .catch(error => {});
     },
     routerLive(item) {
       const roomId = [item.roomid];
@@ -163,7 +165,6 @@ export default {
       return '已结束';
     },
     priceText(item) {
-  
       if (item.price_type === 1) {
         return `￥${item.price}`;
       }
@@ -221,7 +222,7 @@ export default {
         .le-user {
           width: 100%;
           height: 120px;
-          background: linear-gradient(to top, rgba(0,0,0, 0.5), transparent);
+          background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
           bottom: 0;
           left: 0;
           .le-user-box {
@@ -240,8 +241,8 @@ export default {
           font-size: 20px;
           font-family: PingFang SC;
           font-weight: 500;
-          color: #FFFFFF;
-          padding:0 15px;
+          color: #ffffff;
+          padding: 0 15px;
           line-height: 46px;
         }
       }
@@ -295,7 +296,7 @@ export default {
             border-radius: 8px;
             width: 80px;
             height: 80px;
-            flex-shrink:0;
+            flex-shrink: 0;
           }
           .le-name {
             font-size: 24px;
@@ -381,11 +382,11 @@ export default {
     }
   }
   .le-tag--end {
-    background: linear-gradient(90deg, #B8BBCE 0%, #97A8BD 100%);
+    background: linear-gradient(90deg, #b8bbce 0%, #97a8bd 100%);
     padding: 0 24px 0 24px;
   }
   .le-tag-notice {
-    background: linear-gradient(90deg, #5CB1FF 0%, #3F8DF2 100%);
+    background: linear-gradient(90deg, #5cb1ff 0%, #3f8df2 100%);
     padding: 0 24px 0 24px;
   }
   .le-tag--live {

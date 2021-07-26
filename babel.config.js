@@ -29,6 +29,7 @@ if (
 }
 
 process.UNI_LIBRARIES = process.UNI_LIBRARIES || ['@dcloudio/uni-ui'];
+
 process.UNI_LIBRARIES.forEach(libraryName => {
   plugins.push([
     'import',

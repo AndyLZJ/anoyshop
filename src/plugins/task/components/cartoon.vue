@@ -6,14 +6,14 @@
       </view>
       <view class="icon">
         <view class="bg">
-          <img src="./img/bg.png" alt="">
+          <img src="./img/bg.png" alt="" />
         </view>
         <view class="gold">
-          <img src="./img/icon.png" alt="">
+          <img src="./img/icon.png" alt="" />
         </view>
       </view>
       <view class="text">
-        <view class="score">+{{score}}积分</view>
+        <view class="score">+{{ score }}积分</view>
         <view class="tip">
           <!--{{title}} -->
         </view>
@@ -35,19 +35,17 @@ export default {
     title: {
       type: [String, Number],
       default: '领取成功'
-    },
+    }
   },
   /**
    * 数据监听
    * @type {Object}
    */
-  watch: {
-
-  },
+  watch: {},
   computed: {
     display: {
       get() {
-        return this.value
+        return this.value;
       },
       set() {
         this.$emit('input', 0);
@@ -58,29 +56,24 @@ export default {
    * 页面加载执行
    * @return {[type]} [description]
    */
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
     /**
      * 执行关闭
      * @return {[type]} [description]
      */
     toclose() {
-      console.log("功能执行", this)
       this.display = false;
-      // this.$parent.display = false;
-
     }
   }
-}
-
+};
 </script>
+
 <style lang="less" scoped>
 .wrap {
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, .5);
+  background: rgba(0, 0, 0, 0.5);
 
   .wrap-box {
     width: 600px;
@@ -106,7 +99,7 @@ export default {
       height: 52px;
       font-size: 52px;
       line-height: 52px;
-      color: #FFFFFF;
+      color: #ffffff;
     }
   }
 
@@ -176,7 +169,7 @@ export default {
       font-size: 48px;
       font-family: PingFang SC;
       font-weight: 800;
-      color: #FEB805;
+      color: #feb805;
       color: #e29c04;
       font-weight: 800;
     }
@@ -185,7 +178,7 @@ export default {
       font-size: 26px;
       font-family: PingFang SC;
       font-weight: 500;
-      color: #FFFFFF;
+      color: #ffffff;
       line-height: 36px;
       color: #fff;
     }
@@ -250,5 +243,4 @@ export default {
     opacity: 1;
   }
 }
-
 </style>

@@ -15,16 +15,16 @@
 </template>
 
 <script>
-import HePopup from "@/components/he-popup";
+import HePopup from '@/components/he-popup';
 export default {
-  name: "he-tell",
+  name: 'he-tell',
   props: {
     value: {
-      type: Boolean,
+      type: Boolean
     },
     phoneNumber: {
-      type: String,
-    },
+      type: String
+    }
   },
   computed: {
     showModal: {
@@ -32,19 +32,19 @@ export default {
         return this.value;
       },
       set(val) {
-        this.$emit("input", val);
-      },
-    },
+        this.$emit('input', val);
+      }
+    }
   },
   methods: {
     makePhone: function () {
       uni.makePhoneCall({
-        phoneNumber: this.phoneNumber,
+        phoneNumber: this.phoneNumber
       });
       this.showModal = false;
-    },
+    }
   },
-  components: { HePopup },
+  components: { HePopup }
 };
 </script>
 
@@ -85,7 +85,7 @@ export default {
   color: #666666;
 }
 .cu-btn.fr {
-  @include font_color("font_color");
+  @include font_color('font_color');
 }
 .he-line {
   height: 89px;

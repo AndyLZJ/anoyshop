@@ -1,13 +1,14 @@
 <template>
-  <view class="he-open-subscribe" @click.stop="subscribe">
+  <view class="he-open-launch-weapp">
     <slot></slot>
-    <wx-open-subscribe
+    <wx-open-launch-weapp
       style="position: absolute; width: 100%; height: 100%; top: 0; left: 0"
-      :template="templateId"
+      :username="appid"
+      :path="url"
       :id="subscribeId"
     >
       <script type="text/wxtag-template">
-                <style>
+        <style>
           .btn {
             width: 100%;
             height: 500px;
@@ -15,50 +16,51 @@
         </style>
         <div class="btn"></div>
       </script>
-    </wx-open-subscribe>
+    </wx-open-launch-weapp>
   </view>
 </template>
 <script>
 export default {
-  name: 'he-open-subscribe',
+  name: 'he-open-launch-weapp',
   props: {
-    templateId: {
-      type: Array,
-      default: function () {
-        return [];
-      }
-    },
     digital: {
       type: [Array, Object, Number],
       default: function () {
         return {};
       }
+    },
+    username: {
+      type: String,
+      default: ''
+    },
+    path: {
+      type: String,
+      default: ''
+    }
+  },
+  computed: {
+    appid({ username }) {
+      return username;
+    },
+    url({ path }) {
+      return path;
     }
   },
   data() {
     return {
-      subscribeId: this.$h.guid() + '_subscribe',
-      isShow: true
+      subscribeId: this.$h.guid() + '_subscribe'
     };
-  },
-  methods: {
-    subscribe: function () {
-      if (!this.isShow) {
-        this.$emit('open-subscribe-success', this.digital);
-      } else {
-        return;
-      }
-    }
   },
   mounted() {
     let _this = this;
     let btn = document.getElementById(_this.subscribeId);
-    btn.addEventListener('success', function () {
+    btn.addEventListener('ready', function () {
       _this.$emit('open-subscribe-success', _this.digital);
     });
-    btn.addEventListener('error', function (error) {
-      console.log('error', error);
-      _this.isShow = false;
+    btn.addEventListener('launch', function () {
+      _this.$emit('open-subscribe-success', _this.digital);
+    });
+    btn.addEventListener('error', function () {
       _this.$emit('open-subscribe-success', _this.digital);
     });
   }
@@ -66,7 +68,7 @@ export default {
 </script>
 
 <style scoped>
-.he-open-subscribe {
+.he-open-launch-weapp {
   position: relative;
   overflow: hidden;
 }

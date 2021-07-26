@@ -296,17 +296,19 @@ export default {
    * @return {[type]} [description]
    */
   onShow() {
-    let is_ad = uni.getStorageSync('openingad');
-    if (!is_ad) {
-      uni.hideTabBar();
-      setTimeout(() => {
-        //设置延迟执行
+    this.$nextTick().then(() => {
+      let is_ad = uni.getStorageSync('openingad');
+      if (!is_ad) {
+        uni.hideTabBar();
+        setTimeout(() => {
+          //设置延迟执行
+          this.handlePageLoading();
+        }, 1000);
+      } else {
+        uni.showTabBar();
         this.handlePageLoading();
-      }, 1000);
-    } else {
-      uni.showTabBar();
-      this.handlePageLoading();
-    }
+      }
+    });
     // #ifndef H5
     // 是否显示收藏小程序
     this.isFavorites = !uni.getStorageSync('isfavorites');
@@ -451,6 +453,7 @@ export default {
       }, 1000);
     }
   },
+  watch: {},
   onLoad(options) {
     console.log(options);
     // #ifdef H5

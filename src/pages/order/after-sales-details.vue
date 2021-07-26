@@ -14,29 +14,19 @@
         <view class="detail-logistics flex align-center">
           <template v-if="exchangeFlow.status">
             <text class="he-company">
-              {{
-              detail.merchant_freight_info.type === 1
-              ? detail.merchant_freight_info.logistics_company
-              : "无物流"
-              }}
+              {{ detail.merchant_freight_info.type === 1 ? detail.merchant_freight_info.logistics_company : '无物流' }}
             </text>
             <template v-if="detail.merchant_freight_info.type === 1">
               <text>{{ detail.merchant_freight_info.freight_sn }}</text>
-              <button class="cu-btn he-copy" @click="copy(detail.merchant_freight_info.freight_sn)">
-                复制
-              </button>
+              <button class="cu-btn he-copy" @click="copy(detail.merchant_freight_info.freight_sn)">复制</button>
             </template>
           </template>
           <template v-else>
             <text class="iconfont iconorderdetails_logistics"></text>
-            <view class="flex-sub flex align-center" @click="
-                navigateToLogistics(
-                  exchangeFlow.no,
-                  exchangeFlow.mobile,
-                  exchangeFlow.name,
-                  '换货物流'
-                )
-              ">
+            <view
+              class="flex-sub flex align-center"
+              @click="navigateToLogistics(exchangeFlow.no, exchangeFlow.mobile, exchangeFlow.name, '换货物流')"
+            >
               <view class="flex-sub he-text" v-if="exchangeFlow.state !== 0">
                 {{ exchangeFlow.message }}
               </view>
@@ -50,32 +40,27 @@
         </view>
       </view>
       <!--退货物流-->
-      <view class="he-box he-logistics" v-if="
+      <view
+        class="he-box he-logistics"
+        v-if="
           detail.status == 122 ||
           detail.status == 132 ||
           ((detail.type == 2 || detail.type == 1) && detail.status == 200)
-        ">
+        "
+      >
         <view class="he-top">退货物流</view>
         <view class="detail-logistics flex align-center">
           <template v-if="returnFlow.status">
-            <text class="he-company">{{
-              detail.user_freight_info.logistics_company
-              }}</text>
+            <text class="he-company">{{ detail.user_freight_info.logistics_company }}</text>
             <text>{{ detail.user_freight_info.freight_sn }}</text>
-            <button class="cu-btn he-copy" @click="copy(detail.user_freight_info.freight_sn)">
-              复制
-            </button>
+            <button class="cu-btn he-copy" @click="copy(detail.user_freight_info.freight_sn)">复制</button>
           </template>
           <template v-else>
             <text class="iconfont iconorderdetails_logistics"></text>
-            <view class="flex-sub flex align-center" @click="
-                navigateToLogistics(
-                  returnFlow.no,
-                  returnFlow.mobile,
-                  returnFlow.name,
-                  '退货物流'
-                )
-              ">
+            <view
+              class="flex-sub flex align-center"
+              @click="navigateToLogistics(returnFlow.no, returnFlow.mobile, returnFlow.name, '退货物流')"
+            >
               <view class="flex-sub he-text" v-if="returnFlow.state !== 0">
                 {{ returnFlow.message }}
               </view>
@@ -96,8 +81,7 @@
           <text>{{ detail.return_address.mobile }}</text>
         </view>
         <view class="he-footer">
-          {{ detail.return_address.province }}{{ detail.return_address.city
-          }}{{ detail.return_address.district
+          {{ detail.return_address.province }}{{ detail.return_address.city }}{{ detail.return_address.district
           }}{{ detail.return_address.address }}
         </view>
       </view>
@@ -109,37 +93,36 @@
       <!--商品信息-->
       <view class="he-product-info he-box">
         <view class="he-top"> 商品信息 </view>
-        <view class="he-bottom flex" @click="navigateTo('/pages/goods/detail?id=' + detail.goods.goods_id)">
-          <he-image :width="160" :height="160" :src="detail.goods.goods_image" :image-style="{ borderRadius: '8rpx', marginRight: '24rpx' }"></he-image>
-          <view class="he-content flex">
-            <view class="he-content-left">
-              <view class="he-name he-line-1">{{
-                detail.goods.goods_name
-                }}</view>
-              <view class="he-attr">{{ detail.goods.show_goods_param }}</view>
-              <view class="he-number-price">
-                <text class="he-number">x{{ detail.goods.goods_number }}</text>
-              </view>
-            </view>
-            <view class="he-content-right flex-sub">
-              <template v-if="
-                  Number(detail.goods.total_amount) >
-                  Number(detail.goods.pay_amount)
-                ">
-                <view class="flex align-center justify-end">
-                  <text class="he-item-price-prompt">优惠后</text>
-                  <text class="he-item-payAmount">￥{{
-                    Math.floor(
-                    (detail.goods.pay_amount / detail.goods.goods_number) *
-                    100
-                    ) / 100
-                    }}</text>
+        <view class="he-bottom" @click="navigateTo('/pages/goods/detail?id=' + detail.goods.goods_id)">
+          <view class="he-good flex" v-for="(item, index) in detail.goods">
+            <he-image
+              :width="160"
+              :height="160"
+              :src="item.goods_image"
+              :image-style="{ borderRadius: '8rpx', marginRight: '24rpx' }"
+            ></he-image>
+            <view class="he-content flex">
+              <view class="he-content-left">
+                <view class="he-name he-line-1">{{ item.goods_name }}</view>
+                <view class="he-attr he-line-2">{{ item.show_goods_param }}</view>
+                <view class="he-number-price">
+                  <text class="he-number">x{{ item.goods_number }}</text>
                 </view>
-                <view class="he-item-price-prompt">￥{{ detail.goods.goods_price }}</view>
-              </template>
-              <template v-else>
-                <view class="he-item-payAmount">￥{{ detail.goods.goods_price }}</view>
-              </template>
+              </view>
+              <view class="he-content-right flex-sub">
+                <template v-if="Number(item.total_amount) > Number(item.pay_amount)">
+                  <view class="flex align-center justify-end">
+                    <text class="he-item-price-prompt">优惠后</text>
+                    <text class="he-item-payAmount"
+                      >￥{{ Math.floor((item.pay_amount / item.goods_number) * 100) / 100 }}</text
+                    >
+                  </view>
+                  <view class="he-item-price-prompt">￥{{ item.goods_price }}</view>
+                </template>
+                <template v-else>
+                  <view class="he-item-payAmount">￥{{ item.goods_price }}</view>
+                </template>
+              </view>
             </view>
           </view>
         </view>
@@ -149,33 +132,28 @@
         <view class="he-item flex align-center justify-between">
           <view class="he-item__label">售后方式</view>
           <view class="he-item__value">
-            {{
-            detail.type === 0
-            ? "仅退款"
-            : detail.type === 1
-            ? "退货退款"
-            : detail.type === 2
-            ? "换货"
-            : ""
-            }}
+            {{ detail.type === 0 ? '仅退款' : detail.type === 1 ? '退货退款' : detail.type === 2 ? '换货' : '' }}
           </view>
         </view>
         <view class="he-item flex align-center justify-between">
-          <view class="he-item__label">{{
-            detail.type === 2 ? "换货数量" : "退款数量"
-            }}</view>
+          <view class="he-item__label">{{ detail.type === 2 ? '换货数量' : '退款数量' }}</view>
           <view class="he-item__value">{{ detail.return_number }}</view>
         </view>
         <template v-if="detail.type !== 2">
           <template v-if="$manifest('task', 'config.integral_return')">
-            <view class="he-item flex align-center justify-between" v-if="detail.order_type=='task'">
+            <view class="he-item flex align-center justify-between" v-if="detail.order_type == 'task'">
               <view class="he-item__label">退还积分</view>
               <view class="he-item__value he-price">{{ detail.return_score }}积分</view>
             </view>
           </template>
-          <view class="he-item flex align-center justify-between">
+          <view class="he-item flex align-start justify-between he-order--price">
             <view class="he-item__label">退款金额</view>
-            <view class="he-item__value he-price">¥{{ detail.return_amount }}</view>
+            <view class="he-item__value flex flex-direction align-end">
+              <view class="he-price">¥{{ detail.return_amount }}</view>
+              <view class="he-freight" v-if="Number(detail.return_freight) > 0"
+                >(包含运费￥{{ detail.return_freight }})</view
+              >
+            </view>
           </view>
           <view class="he-item flex align-center justify-between">
             <view class="he-item__label">退款原因</view>
@@ -193,7 +171,14 @@
       <view class="he-voucher-picture he-box" v-if="detail.images.length > 0">
         <view class="he-top">凭证图片</view>
         <view class="he-bottom flex">
-          <image class="he-image" @click="$utils.doPreviewImage(item, detail.images)" :src="item" mode="aspectFill" v-for="(item, index) in detail.images" :key="index"></image>
+          <image
+            class="he-image"
+            @click="$utils.doPreviewImage(item, detail.images)"
+            :src="item"
+            mode="aspectFill"
+            v-for="(item, index) in detail.images"
+            :key="index"
+          ></image>
         </view>
       </view>
       <!--订单信息-->
@@ -203,34 +188,27 @@
             <view class="he-item__label">售后订单号</view>
             <view class="flex align-center">
               <view class="he-item__value">{{ detail.after_sn }}</view>
-              <button class="cu-btn he-copy" @click="copy(detail.after_sn)">
-                复制
-              </button>
+              <button class="cu-btn he-copy" @click="copy(detail.after_sn)">复制</button>
             </view>
           </view>
           <view class="he-item flex align-center justify-between">
             <view class="he-item__label">申请时间</view>
-            <view class="he-item__value">{{ detail.created_time | timeFormat("yyyy-mm-dd hh:MM:ss") }}
-            </view>
+            <view class="he-item__value">{{ detail.created_time | timeFormat('yyyy-mm-dd hh:MM:ss') }} </view>
           </view>
           <view class="he-item flex align-center justify-between" v-if="detail.audit_time">
             <view class="he-item__label">审核时间</view>
-            <view class="he-item__value">{{
-              detail.audit_time | timeFormat("yyyy-mm-dd hh:MM:ss")
-              }}</view>
+            <view class="he-item__value">{{ detail.audit_time | timeFormat('yyyy-mm-dd hh:MM:ss') }}</view>
           </view>
-          <view class="he-item flex align-center justify-between" v-if="
-              detail.return_time && (detail.type === 1 || detail.type === 0)
-            ">
+          <view
+            class="he-item flex align-center justify-between"
+            v-if="detail.return_time && (detail.type === 1 || detail.type === 0)"
+          >
             <view class="he-item__label">退款时间</view>
-            <view class="he-item__value">{{
-              detail.return_time | timeFormat("yyyy-mm-dd hh:MM:ss")
-              }}</view>
+            <view class="he-item__value">{{ detail.return_time | timeFormat('yyyy-mm-dd hh:MM:ss') }}</view>
           </view>
           <view class="he-item flex align-center justify-between" v-if="detail.exchange_time && detail.type === 2">
             <view class="he-item__label">换货时间</view>
-            <view class="he-item__value">{{ detail.exchange_time | timeFormat("yyyy-mm-dd hh:MM:ss") }}
-            </view>
+            <view class="he-item__value">{{ detail.exchange_time | timeFormat('yyyy-mm-dd hh:MM:ss') }} </view>
           </view>
         </view>
         <view class="he-bottom flex justify-between">
@@ -258,36 +236,39 @@
             <button v-if="detail.status === 100 || detail.status === 102" class="cu-btn" @click="isApplication = true">
               撤回申请
             </button>
-            <button v-if="detail.status === 101" class="cu-btn" @click="reapply">
-              再次申请
-            </button>
-            <button v-if="detail.status === 121 || detail.status === 131" class="cu-btn he-btn" @tap="
+            <button v-if="detail.status === 101" class="cu-btn" @click="reapply">再次申请</button>
+            <button
+              v-if="detail.status === 121 || detail.status === 131"
+              class="cu-btn he-btn"
+              @tap="
                 navigateTo(
-                  '/pages/order/fill-return-information?id=' +
-                    detail.id +
-                    '&mobile=' +
-                    detail.return_address.mobile
+                  '/pages/order/fill-return-information?id=' + detail.id + '&mobile=' + detail.return_address.mobile
                 )
-              ">
+              "
+            >
               填写退货信息
             </button>
           </view>
         </view>
-        <after-sales-detail-application v-model="isApplication" :detail-id="detail.id" @submit="cancelAfter"></after-sales-detail-application>
+        <after-sales-detail-application
+          v-model="isApplication"
+          :detail-id="detail.id"
+          @submit="cancelAfter"
+        ></after-sales-detail-application>
       </template>
     </template>
   </view>
 </template>
 <script>
-import afterSalesDetailApplication from "./components/afterSalesDetail-application.vue";
-import heLoading from "../../components/he-loading.vue";
-import { mapGetters } from "vuex";
+import afterSalesDetailApplication from './components/afterSalesDetail-application.vue';
+import heLoading from '../../components/he-loading.vue';
+import { mapGetters } from 'vuex';
 
 export default {
-  name: "after-sale-details",
+  name: 'after-sale-details',
   components: {
     afterSalesDetailApplication,
-    heLoading,
+    heLoading
   },
   data() {
     return {
@@ -295,218 +276,213 @@ export default {
       isApplication: false,
       loading: true,
       returnFlow: {
-        status: 0,
+        status: 0
       },
       exchangeFlow: {
-        status: 0,
-      },
+        status: 0
+      }
     };
   },
   computed: {
-    isBottom: function() {
+    isBottom: function () {
       let status = this.detail.status;
-      return (
-        status === 100 ||
-        status === 101 ||
-        status === 102 ||
-        status === 121 ||
-        status === 131
-      );
+      return status === 100 || status === 101 || status === 102 || status === 121 || status === 131;
     },
     ...mapGetters({
-      getShip: "order/getShip",
-    }),
+      getShip: 'order/getShip'
+    })
   },
   onLoad(options) {
     this.orderId = parseInt(options.id);
-    this.behavior = options.behavior ? {
-      behavior: options.behavior,
-    } : {};
+    this.behavior = options.behavior
+      ? {
+          behavior: options.behavior
+        }
+      : {};
     this.getDetail(this.orderId, this.behavior);
   },
   methods: {
-    cancelAfter: function(id) {
+    cancelAfter: function (id) {
       let _this = this;
       this.$heshop
-        .orderafter("put", { id, behavior: "cancel" })
-        .then(function() {
+        .orderafter('put', { id, behavior: 'cancel' })
+        .then(function () {
           //撤回售后相当于删除,撤回后返回列表
-          _this.$store.commit("after/cancelAfter", {
+          _this.$store.commit('after/cancelAfter', {
             bool: true,
-            order_id: id,
+            order_id: id
           });
           uni.navigateBack({
-            delta: 1,
+            delta: 1
           });
         })
-        .catch(function(err) {
+        .catch(function (err) {
           if (err.status === 403 || err.status === 422) {
             this.getDetail(this.orderId, this.behavior);
           }
         });
     },
-    reapply: function() {
+    reapply: function () {
       let _this = this;
       this.$heshop
-        .orderafter("post", this.detail)
-        .then(function(res) {
+        .orderafter('post', this.detail)
+        .then(function (res) {
           _this.detail.status = res.status;
         })
-        .catch(function(err) {
+        .catch(function (err) {
           _this.$toError(err);
         });
     },
-    navigateTo: function(url) {
-      if (this.detail.order_type && this.detail.order_type == "task") {
-        url = url + "&is_task=1"
+    navigateTo: function (url) {
+      if (this.detail.order_type && this.detail.order_type == 'task') {
+        url = url + '&is_task=1';
       }
       uni.navigateTo({ url: url });
     },
-    navigateToLogistics: function(no, mobile, name, title) {
+    navigateToLogistics: function (no, mobile, name, title) {
       uni.navigateTo({
-        url: "/pages/order/logistics?no=" +
-          no +
-          "&name=" +
-          name +
-          "&mobile=" +
-          mobile +
-          "&title=" +
-          title,
+        url: '/pages/order/logistics?no=' + no + '&name=' + name + '&mobile=' + mobile + '&title=' + title
       });
     },
-    getDetail: function(id, behavior) {
+    getDetail: function (id, behavior) {
       let _this = this;
-      this.$heshop.orderafter("get", id, behavior).then(function(res) {
-        _this.detail = res;
-        // 换货物流
-        if (res.type === 2 && res.status === 200) {
-          if (res.merchant_freight_info.type === 1) {
-            let no = res.merchant_freight_info.freight_sn;
-            let mobile = res.return_address.mobile;
-            let name = res.merchant_freight_info.logistics_company;
-            _this.$heshop.express("post", {
-              no,
-              mobile,
-              name,
-            }).then(function(res) {
-              if (res.state === 0) {
-                _this.exchangeFlow = res.list[res.list.length - 1];
-              } else {
-                _this.exchangeFlow.message = res.message;
-              }
-              _this.exchangeFlow.no = no;
-              _this.exchangeFlow.mobile = mobile;
-              _this.exchangeFlow.name = name;
-              _this.exchangeFlow.state = res.state;
-              _this.loading = false;
-            }).catch(function(err) {
-              if (err.status === 403) {
-                _this.exchangeFlow.status = 403;
-              }
-              _this.loading = false;
-            });
+      this.$heshop
+        .orderafter('get', id, behavior)
+        .then(function (res) {
+          _this.detail = res;
+          // 换货物流
+          if (res.type === 2 && res.status === 200) {
+            if (res.merchant_freight_info.type === 1) {
+              let no = res.merchant_freight_info.freight_sn;
+              let mobile = res.return_address.mobile;
+              let name = res.merchant_freight_info.logistics_company;
+              _this.$heshop
+                .express('post', {
+                  no,
+                  mobile,
+                  name
+                })
+                .then(function (res) {
+                  if (res.state === 0) {
+                    _this.exchangeFlow = res.list[res.list.length - 1];
+                  } else {
+                    _this.exchangeFlow.message = res.message;
+                  }
+                  _this.exchangeFlow.no = no;
+                  _this.exchangeFlow.mobile = mobile;
+                  _this.exchangeFlow.name = name;
+                  _this.exchangeFlow.state = res.state;
+                  _this.loading = false;
+                })
+                .catch(function (err) {
+                  if (err.status === 403) {
+                    _this.exchangeFlow.status = 403;
+                  }
+                  _this.loading = false;
+                });
+            }
           }
-        }
-        if (res.status === 122 || res.status === 132 || ((res.type === 2 || res.type === 1) && res.status === 200)) {
-          // 退货物流
-          _this.loading = true;
-          let no = res.user_freight_info.freight_sn;
-          let mobile = res.buyer.mobile;
-          let name = res.user_freight_info.logistics_company;
-          _this.$heshop
-            .express("post", {
-              no,
-              mobile,
-              name,
-            })
-            .then(function(res) {
-              if (res.state === 0) {
-                _this.returnFlow = res.list[res.list.length - 1];
-              } else {
-                _this.returnFlow.message = res.message;
-              }
-              _this.returnFlow.no = no;
-              _this.returnFlow.mobile = mobile;
-              _this.returnFlow.name = name;
-              _this.returnFlow.state = res.state;
-              _this.loading = false;
-            })
-            .catch(function(err) {
-              _this.returnFlow.status = err.status;
-              _this.loading = false;
+          if (res.status === 122 || res.status === 132 || ((res.type === 2 || res.type === 1) && res.status === 200)) {
+            // 退货物流
+            _this.loading = true;
+            let no = res.user_freight_info.freight_sn;
+            let mobile = res.buyer.mobile;
+            let name = res.user_freight_info.logistics_company;
+            _this.$heshop
+              .express('post', {
+                no,
+                mobile,
+                name
+              })
+              .then(function (res) {
+                if (res.state === 0) {
+                  _this.returnFlow = res.list[res.list.length - 1];
+                } else {
+                  _this.returnFlow.message = res.message;
+                }
+                _this.returnFlow.no = no;
+                _this.returnFlow.mobile = mobile;
+                _this.returnFlow.name = name;
+                _this.returnFlow.state = res.state;
+                _this.loading = false;
+              })
+              .catch(function (err) {
+                _this.returnFlow.status = err.status;
+                _this.loading = false;
+              });
+          } else {
+            _this.loading = false;
+          }
+        })
+        .catch(function (err) {
+          if (err.status === 403 || err.status === 422) {
+            uni.showToast({
+              title: '售后订单不存在',
+              icon: 'none'
             });
-        } else {
-          _this.loading = false;
-        }
-      }).catch(function(err) {
-        if (err.status === 403 || err.status === 422) {
-          uni.showToast({
-            title: "售后订单不存在",
-            icon: "none",
-          });
-          setTimeout(() => {
-            uni.navigateBack({
-              delta: 1,
-            });
-          }, 1000);
-        }
-      });
+            setTimeout(() => {
+              uni.navigateBack({
+                delta: 1
+              });
+            }, 1000);
+          }
+        });
     },
-    makePhoneCall: function() {
+    makePhoneCall: function () {
       uni.makePhoneCall({
-        phoneNumber: this.storeSetting.contact.phone.value,
+        phoneNumber: this.storeSetting.contact.phone.value
       });
     },
-    copy: function(content) {
+    copy: function (content) {
       this.uniCopy({ content });
-    },
+    }
   },
   filters: {
-    getStatusText: function(status, detail) {
-      let str = "";
+    getStatusText: function (status, detail) {
+      let str = '';
       let type = detail.type;
       switch (status) {
         case 100:
-          str = "待卖家审核";
+          str = '待卖家审核';
           break;
         case 101:
-          str = "卖家已拒绝售后申请";
+          str = '卖家已拒绝售后申请';
           break;
         case 102:
-          str = "待卖家审核";
+          str = '待卖家审核';
           break;
         case 111:
-          str = "售后申请已通过，等待退款";
+          str = '售后申请已通过，等待退款';
           break;
         case 121:
-          str = "售后申请已通过，请填写退货信息";
+          str = '售后申请已通过，请填写退货信息';
           break;
         case 122:
-          str = "等待卖家收货且退款";
+          str = '等待卖家收货且退款';
           break;
         case 131:
-          str = "售后申请已通过，请填写退货信息";
+          str = '售后申请已通过，请填写退货信息';
           break;
         case 132:
-          str = "等待卖家收货且发货";
+          str = '等待卖家收货且发货';
           break;
         case 200:
           if (type === 2) {
-            str = "换货成功";
+            str = '换货成功';
           } else if (type === 0 || type === 1) {
-            str = "退款成功";
+            str = '退款成功';
           }
           break;
         case 201:
-          str = "已完成(已拒绝)";
+          str = '已完成(已拒绝)';
           break;
       }
       return str;
     },
-    getStatusTime: function(status, detail) {
+    getStatusTime: function (status, detail) {
       function getTime(dateTime) {
         if (!dateTime) return;
-        return uni.$h.timeFormat(dateTime, "yyyy-mm-dd hh:MM:ss");
+        return uni.$h.timeFormat(dateTime, 'yyyy-mm-dd hh:MM:ss');
       }
 
       switch (status) {
@@ -527,25 +503,25 @@ export default {
         case 201:
           return getTime(detail.finish_time);
       }
-    },
+    }
   },
   watch: {
     getShip: {
-      handler: function(val) {
+      handler: function (val) {
         if (val.bool) {
           this.loading = true;
           this.getDetail(parseInt(val.id));
-          this.$store.commit("order/setShip", {
+          this.$store.commit('order/setShip', {
             bool: false,
-            id: null,
+            id: null
           });
         }
-      },
-    },
+      }
+    }
   }
 };
-
 </script>
+
 <style scoped lang="scss">
 .he-image {
   display: block;
@@ -655,6 +631,9 @@ export default {
 
 .he-product-info {
   padding: 32px 24px;
+  .he-good {
+    margin-bottom: 24px;
+  }
 }
 
 .he-product-info .he-top {
@@ -838,6 +817,17 @@ export default {
   color: #999999;
 }
 
+.he-order--price {
+  height: auto !important;
+  margin: 5px 0;
+  .he-freight {
+    font-size: 22px;
+    font-family: PingFang SC;
+    font-weight: 500;
+    color: #999999;
+  }
+}
+
 .he-copy {
   height: 34px;
   background: #ffffff;
@@ -906,10 +896,10 @@ export default {
 }
 
 .he-bottom-btn .he-btn {
-  @include font_color("font_color");
+  @include font_color('font_color');
   border-style: solid;
   border-width: 1px;
-  @include border_color("border_color");
+  @include border_color('border_color');
 }
 
 .he-bottom-btn .cu-btn:not(:last-child) {
@@ -954,5 +944,4 @@ export default {
     color: #bebebe;
   }
 }
-
 </style>

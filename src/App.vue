@@ -1,14 +1,7 @@
-<!--
- * @Description:
- * @Author: fjt
- * @Date: 2021-05-24 13:22:32
- * @LastEditTime: 2021-06-16 10:04:58
- * @LastEditors: fjt
--->
 <script>
 export default {
   globalData: {},
-  onLaunch: function() {
+  onLaunch: function () {
     return new Promise(() => {
       let _this = this;
       // #ifdef H5
@@ -18,7 +11,7 @@ export default {
       // 获取设备设置
       this.$store.dispatch('setting/getSys');
       this.$store.dispatch('setting/subscribe');
-      this.$store.dispatch('setting/getTabBar').then(function() {
+      this.$store.dispatch('setting/getTabBar').then(function () {
         let index = _this.$store.getters['setting/getCartIndex'];
         let is_login = uni.getStorageSync('token');
         if (is_login) {
@@ -38,7 +31,7 @@ export default {
       });
     });
   },
-  onShow: function() {
+  onShow: function () {
     //获取插件设置
     this.$store.dispatch('plugins/getPlugins');
     //用户相关配置
@@ -55,9 +48,8 @@ export default {
       this.$manifest('task', 'status');
     }, 2000);
   },
-  onHide: function() {}
+  onHide: function () {}
 };
-
 </script>
 <style lang="scss">
 @import 'colorui/main.css';
@@ -79,5 +71,4 @@ uni-modal {
 }
 
 // #endif
-
 </style>

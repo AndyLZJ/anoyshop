@@ -3,7 +3,17 @@
     <view class="he-search flex align-center">
       <view class="he-search__input flex align-center">
         <view class="he-search__icon iconfont iconsearchbar_search"></view>
-        <input v-model.trim="keyword" type="text" focus class="flex-sub" confirm-type="search" @confirm="search" placeholder-class="he-placeholder" :maxlength="40" placeholder="输入商品名称搜索" />
+        <input
+          v-model.trim="keyword"
+          type="text"
+          focus
+          class="flex-sub"
+          confirm-type="search"
+          @confirm="search"
+          placeholder-class="he-placeholder"
+          :maxlength="40"
+          placeholder="输入商品名称搜索"
+        />
       </view>
       <text class="flex-sub he-search__text" @tap="search">搜索</text>
     </view>
@@ -24,61 +34,60 @@
 </template>
 <script>
 export default {
-  name: "search",
+  name: 'search',
   data() {
     return {
-      keyword: "",
+      keyword: '',
       keywordList: [],
-      fromStr: "",
-      couponId: null,
+      fromStr: '',
+      couponId: null
     };
   },
   onLoad(options) {
     this.keyword = options.keyword;
     this.fromStr = options.from;
     this.couponId = options.coupon_id;
-    this.keywordList = this.getStorageSync("keyword_list") ?
-      this.getStorageSync("keyword_list") : [];
+    this.keywordList = this.getStorageSync('keyword_list') ? this.getStorageSync('keyword_list') : [];
   },
   methods: {
-    search: function() {
+    search: function () {
       if (!this.$h.test.isEmpty(this.keyword)) {
-        uni.setStorageSync("search_key", this.keyword);
-        let list = this.getStorageSync("keyword_list");
+        uni.setStorageSync('search_key', this.keyword);
+        let list = this.getStorageSync('keyword_list');
         list = list ? list : [];
         list.unshift(this.keyword);
-        list = list.filter(function(ele, index, array) {
+        list = list.filter(function (ele, index, array) {
           return array.indexOf(ele) === index;
         });
-        uni.setStorageSync("keyword_list", list);
-        let url = "/plugins/task/search-list";
+        uni.setStorageSync('keyword_list', list);
+        let url = '/plugins/task/search-list';
         if (this.couponId) {
-          url += "?coupon_id=" + this.couponId;
+          url += '?coupon_id=' + this.couponId;
         }
         uni.redirectTo({
-          url,
+          url
         });
       }
     },
-    setKeyword: function(item) {
+    setKeyword: function (item) {
       this.keyword = item;
-      uni.setStorageSync("search_key", item);
-      let url = "/plugins/task/search-list";
+      uni.setStorageSync('search_key', item);
+      let url = '/plugins/task/search-list';
       if (this.couponId) {
-        url += "?coupon_id=" + this.couponId;
+        url += '?coupon_id=' + this.couponId;
       }
       uni.redirectTo({
-        url,
+        url
       });
     },
-    emptyList: function() {
-      uni.removeStorageSync("keyword_list");
+    emptyList: function () {
+      uni.removeStorageSync('keyword_list');
       this.keywordList = [];
-    },
-  },
+    }
+  }
 };
-
 </script>
+
 <style scoped lang="scss">
 .he-page-content {
   background: #ffffff;
@@ -167,5 +176,4 @@ export default {
   border-radius: 32px;
   margin: 0 16px 16px 0;
 }
-
 </style>

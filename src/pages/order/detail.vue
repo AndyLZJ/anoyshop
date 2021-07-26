@@ -17,7 +17,12 @@
             :freight="detail.freight"
           ></detail-logistics>
           <detail-receipt :consignee-info="detail.buyer"></detail-receipt>
-          <detail-product-info :goods="detail.goods" :status="detail.status" :detail="detail"></detail-product-info>
+          <detail-product-info
+            :order-sn="detail.order_sn"
+            :goods="detail.goods"
+            :status="detail.status"
+            :detail="detail"
+          ></detail-product-info>
           <detail-price
             :goods-amount="detail.goods_amount"
             :freight-amount="detail.freight_amount"
@@ -51,6 +56,9 @@
         :total-amount="detail.total_amount"
         :is-evaluate="detail.is_evaluate"
         :status.sync="detail.status"
+        :goods="detail.goods"
+        :freight-amount="detail.freight_amount"
+        :type="detail.type"
       >
       </detail-bottom-operating>
     </template>
@@ -99,8 +107,13 @@ export default {
   },
   computed: {
     isBottom: function () {
-      let { status, is_evaluate } = this.detail;
-      return status === 100 || status === 202 || (status === 203 && is_evaluate === 0);
+      let { status, is_evaluate, goods, check_after } = this.detail;
+      return (
+        status === 100 ||
+        status === 202 ||
+        (status === 201 && goods.length > 1 && !check_after) ||
+        (status === 203 && is_evaluate === 0)
+      );
     },
     ...mapGetters('setting', {
       goodsSetting: 'goodsSetting'
@@ -159,6 +172,7 @@ export default {
   }
 };
 </script>
+
 <style lang="less">
 .he-page-content {
   overflow: hidden;

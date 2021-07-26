@@ -1,10 +1,9 @@
 <template>
   <view class="he-page-content" :class="isLoading ? 'flex justify-center align-center' : ''" :data-theme="theme">
     <view class="he-touch" v-if="isTouch" @touchmove.stop.prevent="() => {}"></view>
-    <detail-skeleton v-if="isLoading"></detail-skeleton>
-    <template v-else-if="!isLoading && !emptyStatus">
+    <template v-if="!isLoading">
       <he-navbar :is-back="true" :background="barBackground">
-        <view class="flex he-tabs justify-center" v-if="isBar">
+        <view class="flex he-tabs justify-center" v-if="isBar && !emptyStatus">
           <view class="he-tab" @click="pageScrollTo('banner', 1, top.banner)"
             >商品
             <view class="he-tab-line" v-if="tab === 1"></view>
@@ -23,6 +22,9 @@
           </view>
         </view>
       </he-navbar>
+    </template>
+    <detail-skeleton v-if="isLoading"></detail-skeleton>
+    <template v-else-if="!isLoading && !emptyStatus">
       <view id="banner"></view>
       <detail-banner
         id="detail-banner"
@@ -43,6 +45,7 @@
         :goods-id="detail.id"
         :virtual_sales="detail.virtual_sales"
         :line-price="detail.line_price"
+        :goods-introduce="detail.body.goods_introduce"
       ></detail-basic-information>
       <detail-parameter
         :unit="detail.unit"
@@ -51,6 +54,7 @@
         :select="select"
         :goods-id="detail.id"
         :services="detail.services"
+        :goods-args="detail.body.goods_args"
       >
       </detail-parameter>
       <detailTask v-if="$manifest('task', 'status')"></detailTask>
@@ -205,7 +209,8 @@ export default {
       },
       isTouch: false,
       detail: {
-        slideshow: []
+        slideshow: [],
+        goods_args: []
       },
       /**
        * 判断是否从积分任务过来
@@ -269,12 +274,16 @@ export default {
         .goods('get', id, { is_task: this.is_task })
         .then(function (res) {
           if (!res.hasOwnProperty('empty_status')) {
+            if (!res.body.goods_args) {
+              res.body.goods_args = [];
+            }
             _this.detail = res;
           } else {
             _this.emptyStatus = res.empty_status;
             uni.setNavigationBarTitle({
               title: _this.emptyText
             });
+            _this.isTouch = false;
           }
           callback();
         })
@@ -353,7 +362,6 @@ export default {
   onLoad(options) {
     this.task_browse = options.task_browse ? options.task_browse : null;
     this.copy_task_browse = this.task_browse;
-    console.log('查看浏览装袋', this.task_browse);
     this.popupsList = [];
     //判断是否积分商品
     if (options && options.is_task) {
@@ -378,13 +386,6 @@ export default {
     }
     this.goods_id = id;
     let _this = this;
-    //弹出窗口测试用
-    // setTimeout(res => {
-    //     _this.popupsList.push({
-    //         display: true,
-    //         remark: "消费100元获得10积分"
-    //     })
-    // }, 3000)
     this.getDetail(id, function () {
       _this.isLoading = false;
       // #ifdef H5
@@ -403,7 +404,7 @@ export default {
             }
             _this.isTouch = false;
           })
-          .catch(err => {
+          .catch(() => {
             _this.isTouch = false;
           });
       }, 800);
@@ -414,6 +415,7 @@ export default {
     });
   },
   onPageScroll(e) {
+    if (this.emptyStatus) return;
     let _this = this;
     _this.isBar = e.scrollTop > 150;
     let array = [_this.selectEval('#detail-evaluation'), _this.selectEval('#detail-rich')];
