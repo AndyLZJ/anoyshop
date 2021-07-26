@@ -28,25 +28,50 @@
               {{ item.name }}
             </view>
             <view class="he-item__body flex flex-wrap" v-if="!item.image_status">
-              <view v-for="(value, valueIndex) in item.value" class="he-attr__item" @click="setSelect(index, value, valueIndex)" :class="[
+              <view
+                v-for="(value, valueIndex) in item.value"
+                class="he-attr__item"
+                @click="setSelect(index, value, valueIndex)"
+                :class="[
                   value.is_number ? 'he-attr__num-0' : 'he-attr__num-1',
-                  value.is_select ? 'he-attr__select' : '',
-                ]" :key="valueIndex">{{ value.value }}
+                  value.is_select ? 'he-attr__select' : ''
+                ]"
+                :key="valueIndex"
+                >{{ value.value }}
               </view>
             </view>
             <scroll-view v-else scroll-x class="he-item__scroll">
-              <view class="flex" v-for="(rowValue, rowIndex) in imageList" :key="rowIndex" :class="rowIndex === 0 ? 'he-attr__bottom' : ''">
+              <view
+                class="flex"
+                v-for="(rowValue, rowIndex) in imageList"
+                :key="rowIndex"
+                :class="rowIndex === 0 ? 'he-attr__bottom' : ''"
+              >
                 <template v-for="(colValue, valueIndex) in rowValue">
-                  <view class="he-attr__item" @click="setSelect(index, colValue, colValue.index)" :class="[
+                  <view
+                    class="he-attr__item"
+                    @click="setSelect(index, colValue, colValue.index)"
+                    :class="[
                       colValue.is_number ? 'he-attr__num-0' : 'he-attr__num-1',
-                      colValue.is_select ? 'he-attr__select' : '',
-                    ]" :key="valueIndex">
-                    <view class="he-item__close flex justify-center align-center" @click.stop="navigateTo(imageList,rowIndex,valueIndex)">
+                      colValue.is_select ? 'he-attr__select' : ''
+                    ]"
+                    :key="valueIndex"
+                  >
+                    <view
+                      class="he-item__close flex justify-center align-center"
+                      @click.stop="navigateTo(imageList, rowIndex, valueIndex)"
+                    >
                       <text class="iconfont iconproductdetails_popup_enlargethepicture"></text>
                     </view>
-                    <he-image :height="195" :width="192" :image-style="{ borderRadius: '16rpx' }" class="he-attr__img" :src="colValue.image"></he-image>
+                    <he-image
+                      :height="195"
+                      :width="192"
+                      :image-style="{ borderRadius: '16rpx' }"
+                      class="he-attr__img"
+                      :src="colValue.image"
+                    ></he-image>
                     <view class="he-attr__name flex justify-center align-center">
-                      <text class="he-text he-line-2">{{colValue.value}}</text>
+                      <text class="he-text he-line-2">{{ colValue.value }}</text>
                     </view>
                   </view>
                 </template>
@@ -55,14 +80,28 @@
           </view>
         </view>
         <view class="he-number flex justify-between align-center">
-          <view class="he-text" v-if="is_task">数量
+          <view class="he-text" v-if="is_task"
+            >数量
             <span class="he-min-number" v-if="limitTaskNum">（限兑{{ limitTaskNum }}{{ goods.unit }}）</span>
           </view>
-          <view class="he-text" v-else>数量
+          <view class="he-text" v-else
+            >数量
             <span class="he-min-number">（{{ minNumber }}{{ goods.unit }}起购）</span>
           </view>
-          <he-number-box :disabled-input="true" :min="minNumber" :max="limitTaskNum" v-model="number" v-if="is_task&&limitTaskNum"></he-number-box>
-          <he-number-box :disabled-input="true" :min="minNumber" :max="limitBuyValue" v-model="number" v-else></he-number-box>
+          <he-number-box
+            :disabled-input="true"
+            :min="minNumber"
+            :max="limitTaskNum"
+            v-model="number"
+            v-if="is_task && limitTaskNum"
+          ></he-number-box>
+          <he-number-box
+            :disabled-input="true"
+            :min="minNumber"
+            :max="limitBuyValue"
+            v-model="number"
+            v-else
+          ></he-number-box>
         </view>
       </scroll-view>
       <view class="he-cart__footer">
@@ -71,45 +110,35 @@
             <template v-if="$h.test.isEmpty(shoppingType)">
               <!-- 处理判断积分任务情况下 -->
               <template v-if="is_task">
-                <button class="cu-btn he-btn he-sure-btn" @click="buy">
-                  立即兑换
-                </button>
+                <button class="cu-btn he-btn he-sure-btn" @click="buy">立即兑换</button>
               </template>
               <template v-else>
-                <button class="cu-btn he-btn he-btn__left" @click="cart">
-                  加入购物车
-                </button>
-                <button class="cu-btn he-btn he-btn__right" @click="buy">
-                  立即购买
-                </button>
+                <button class="cu-btn he-btn he-btn__left" @click="cart">加入购物车</button>
+                <button class="cu-btn he-btn he-btn__right" @click="buy">立即购买</button>
               </template>
             </template>
-            <button v-else class="cu-btn he-btn he-sure-btn" @click="shopping">
-              确定
-            </button>
+            <button v-else class="cu-btn he-btn he-sure-btn" @click="shopping">确定</button>
           </template>
-          <button v-if="stocks === 0" class="cu-btn he-btn he-sure-btn" disabled>
-            商品已售罄
-          </button>
+          <button v-if="stocks === 0" class="cu-btn he-btn he-sure-btn" disabled>商品已售罄</button>
         </view>
       </view>
     </view>
   </he-popup>
 </template>
 <script>
-import HePopup from "@/components/he-popup.vue";
-import heNumberBox from "./he-number-box.vue";
+import HePopup from '@/components/he-popup.vue';
+import heNumberBox from './he-number-box.vue';
 
 export default {
-  name: "he-cart",
+  name: 'he-cart',
   components: {
     HePopup,
-    heNumberBox,
+    heNumberBox
   },
   props: {
     show: {
       type: Boolean,
-      default: false,
+      default: false
     },
     /**
      * 判断是否积分商品
@@ -117,36 +146,36 @@ export default {
      */
     is_task: {
       type: [Boolean, Number, String],
-      default: false,
+      default: false
     },
     select: {
       type: [Object],
-      default: function() {
+      default: function () {
         return {};
-      },
+      }
     },
     score: {
       type: [String, Number],
-      default: 0,
+      default: 0
     },
     type: {
       type: [String, Number],
-      default: 1,
+      default: 1
     },
     goods: {
       type: Object,
-      default: function() {
+      default: function () {
         return {
-          param: {},
+          param: {}
         };
-      },
+      }
     },
     shoppingType: {
       type: String,
-      default: function() {
-        return "";
-      },
-    },
+      default: function () {
+        return '';
+      }
+    }
   },
   data() {
     return {
@@ -154,36 +183,34 @@ export default {
       showParam: [],
       number: 1,
       imageList: [],
-      showSelect: {},
+      showSelect: {}
     };
   },
   computed: {
     showModal: {
-      get: function() {
+      get: function () {
         this.task_status = this.goods.task_status;
         return this.show;
       },
-      set: function(newVal) {
-        this.$emit("update:show", newVal);
-      },
+      set: function (newVal) {
+        this.$emit('update:show', newVal);
+      }
     },
     /**
      * 库存处理
      * @return {[type]} [description]
      */
-    stocks: function() {
+    stocks: function () {
       if (!this.$h.test.isEmpty(this.showSelect)) {
-        //console.log("1", this.goods, this.showSelect)
         //判断是否为积分商品
         if (this.is_task && this.goods.task) {
-          return this.showSelect.task_stock
+          return this.showSelect.task_stock;
         } else {
           return this.showSelect.stocks;
         }
       } else {
-        //console.log("2", this.goods)
         if (this.is_task && this.goods.task) {
-          return this.goods.task.task_stock
+          return this.goods.task.task_stock;
         } else {
           return this.goods.stocks;
         }
@@ -193,19 +220,19 @@ export default {
      * 积分值计算
      * @return {[type]} [description]
      */
-    task_number: function() {
+    task_number: function () {
       if (!this.$h.test.isEmpty(this.showSelect)) {
         //判断是否为积分商品
         if (this.is_task && this.goods.task) {
-          return this.showSelect.task_number
+          return this.showSelect.task_number;
         } else {
           return 0;
         }
       } else {
         if (this.is_task && this.goods.task) {
-          return this.goods.task.task_number
+          return this.goods.task.task_number;
         } else {
-          return 0
+          return 0;
         }
       }
     },
@@ -213,32 +240,32 @@ export default {
      * 价格计算
      * @return {[type]} [description]
      */
-    price: function() {
+    price: function () {
       if (!this.$h.test.isEmpty(this.showSelect)) {
         //判断是否为积分商品
         if (this.is_task && this.goods.task) {
-          return this.showSelect.task_price
+          return this.showSelect.task_price;
         } else {
           return this.showSelect.price;
         }
       } else {
         if (this.is_task && this.goods.task) {
-          return this.goods.task.task_price
+          return this.goods.task.task_price;
         } else {
           return this.goods.price;
         }
       }
     },
-    imageStatus: function() {
+    imageStatus: function () {
       return this.goods.param && this.goods.param.image_status;
     },
-    pic: function() {
+    pic: function () {
       return this.goods.slideshow && this.goods.slideshow[0];
     },
-    minNumber: function() {
+    minNumber: function () {
       return this.goods.min_number;
     },
-    limitNumber: function() {
+    limitNumber: function () {
       return this.goods.min_number;
     },
     /**
@@ -248,31 +275,31 @@ export default {
     limitTaskNum() {
       if (!this.$h.test.isEmpty(this.showSelect)) {
         if (this.is_task && this.goods.task) {
-          return this.showSelect.task_limit
+          return this.showSelect.task_limit;
         }
       } else {
         if (this.is_task && this.goods.task) {
-          return this.goods.task.task_limit
+          return this.goods.task.task_limit;
         }
       }
       return '';
     },
-    goodsData: function() {
+    goodsData: function () {
       return this.goods.param && this.goods.param.goods_data;
     },
-    limitBuyValue: function() {
+    limitBuyValue: function () {
       if (this.goods.limit_buy_status === 1) {
         return this.goods.limit_buy_value;
       } else {
         return this.stocks;
       }
     },
-    isLogin: function() {
+    isLogin: function () {
       return this.$store.state.apply.is_login;
-    },
+    }
   },
   methods: {
-    setSelect: function(index, value, valueIndex) {
+    setSelect: function (index, value, valueIndex) {
       let that = this;
 
       if (value.is_number) return;
@@ -289,22 +316,21 @@ export default {
       let array = [];
       for (let i = 0; i < showParam.length; i++) {
         let list = showParam[i].value;
-        let item = list.find(function(item) {
+        let item = list.find(function (item) {
           return item.is_select === true;
         });
         array[i] = item ? item.value : null;
       }
       let arrayIndex = 0;
       let nullNum = 0;
-      array.forEach(function(item, index) {
+      array.forEach(function (item, index) {
         if (item === null) {
           nullNum++;
           arrayIndex = index;
         }
       });
       let attrNum_0 = [];
-      goodsData.forEach(function(f) {
-
+      goodsData.forEach(function (f) {
         //此处用于判断库存
         if (that.is_task && f.task_stock) {
           if (f.task_stock === 0) {
@@ -315,37 +341,32 @@ export default {
             Array.prototype.push.apply(attrNum_0, [f.param_value]);
           }
         }
-
-
       });
 
       let newArray = JSON.parse(JSON.stringify(array));
-      showParam.forEach(function(col, rowIndex) {
-        showParam[rowIndex].value.forEach(function(item) {
+      showParam.forEach(function (col, rowIndex) {
+        showParam[rowIndex].value.forEach(function (item) {
           item.is_number = false;
         });
       });
 
       if (nullNum === 1) {
-        showParam.forEach(function(col) {
-          col.value.forEach(function(item) {
+        showParam.forEach(function (col) {
+          col.value.forEach(function (item) {
             newArray[arrayIndex] = item.value;
-            attrNum_0.forEach(function(f) {
-              if (newArray.toString() === f.split("_").toString()) {
+            attrNum_0.forEach(function (f) {
+              if (newArray.toString() === f.split('_').toString()) {
                 item.is_number = true;
               }
             });
           });
         });
       } else if (nullNum === 0) {
-        showParam.forEach(function(col, index) {
-          col.value.forEach(function(item) {
+        showParam.forEach(function (col, index) {
+          col.value.forEach(function (item) {
             newArray[index] = item.value;
-            attrNum_0.forEach(function(f) {
-              if (
-                newArray.toString() === f.split("_").toString() &&
-                !item.is_select
-              ) {
+            attrNum_0.forEach(function (f) {
+              if (newArray.toString() === f.split('_').toString() && !item.is_select) {
                 item.is_number = true;
               }
             });
@@ -354,40 +375,36 @@ export default {
       }
 
       if (array.length === showParam.length) {
-        let str = "";
-        array.forEach(function(item) {
-          str += item + "_";
+        let str = '';
+        array.forEach(function (item) {
+          str += item + '_';
         });
         str = str.substring(0, str.length - 1);
-        this.showSelect = goodsData.find(function(item) {
+        this.showSelect = goodsData.find(function (item) {
           return item.param_value === str;
         });
         if (this.showSelect) {
           this.showSelect.goods_number = this.number;
           this.showSelect.goods_param = this.showSelect.param_value;
-          this.$emit("setSelect", this.showSelect);
+          this.$emit('setSelect', this.showSelect);
         }
       } else {
         this.showSelect = null;
       }
-
     },
-    identifier: function(showParam, newArray, attrNum_0) {
-      showParam.forEach(function(col, index) {
-        col.value.forEach(function(item) {
+    identifier: function (showParam, newArray, attrNum_0) {
+      showParam.forEach(function (col, index) {
+        col.value.forEach(function (item) {
           newArray[index] = item.value;
-          attrNum_0.forEach(function(f) {
-            if (
-              newArray.toString() === f.split("_").toString() &&
-              !item.is_select
-            ) {
+          attrNum_0.forEach(function (f) {
+            if (newArray.toString() === f.split('_').toString() && !item.is_select) {
               item.is_number = true;
             }
           });
         });
       });
     },
-    navigateTo: function(row, rowIndex, valueIndex) {
+    navigateTo: function (row, rowIndex, valueIndex) {
       let index = 0;
       if (rowIndex === 0) {
         index = valueIndex;
@@ -396,12 +413,9 @@ export default {
       }
       let _this = this;
       wx.navigateTo({
-        url: "/pages/other/preview?pic=" +
-          encodeURIComponent(JSON.stringify(row)) +
-          "&index=" +
-          index,
+        url: '/pages/other/preview?pic=' + encodeURIComponent(JSON.stringify(row)) + '&index=' + index,
         events: {
-          setEvent: function(data) {
+          setEvent: function (data) {
             _this.imageList.forEach(row => {
               row.forEach(item => {
                 item.is_select = false;
@@ -411,13 +425,13 @@ export default {
               return data.col.value === item.value;
             });
 
-            _this.setSelect(rowIndex, one, data.col.index)
+            _this.setSelect(rowIndex, one, data.col.index);
           }
         }
       });
     },
-    setRow: function(row) {
-      row.forEach(function(item, index) {
+    setRow: function (row) {
+      row.forEach(function (item, index) {
         item.index = index;
       });
       if (row.length <= 3) {
@@ -429,91 +443,88 @@ export default {
           let len = (row.length - 1) / 2;
           return [row.slice(0, len + 1), row.slice(len + 1, row.length)];
         } else {
-          return [
-            row.slice(0, row.length / 2),
-            row.slice(row.length / 2, row.length),
-          ];
+          return [row.slice(0, row.length / 2), row.slice(row.length / 2, row.length)];
         }
       }
     },
-    shopping: function() {
-      if (!this.isLogin) return uni.navigateTo({ url: "/pages/user/login" });
-      if (this.shoppingType === "cart") {
+    shopping: function () {
+      if (!this.isLogin) return uni.navigateTo({ url: '/pages/user/login' });
+      if (this.shoppingType === 'cart') {
         this.cart();
-      } else if (this.shoppingType === "buy") {
+      } else if (this.shoppingType === 'buy') {
         this.buy();
       } else {
         if (this.isEmpty()) return;
         this.showSelect.goods_number = this.number;
         this.showSelect.cart_id = this.goods.cart_id;
         this.showModal = false;
-        this.$emit("put", this.showSelect);
+        this.$emit('put', this.showSelect);
       }
     },
 
-    cart: function() {
+    cart: function () {
       if (this.isEmpty()) return;
       this.showModal = false;
       let _this = this;
       this.showSelect.goods_number = this.number;
       this.$heshop
-        .cart("post", {
+        .cart('post', {
           goods_id: this.showSelect.goods_id,
           goods_number: this.number,
           goods_param: this.showSelect.param_value,
           goods_name: this.goods.name,
-          goods_image: this.pic,
+          goods_image: this.pic
         })
-        .then(function() {
-          _this.$store.commit("cart/setCartAdd", true);
-          _this.$store.commit("cart/cartNum", true);
-          _this.$h.toast("加入购物车成功");
-          let index = _this.$store.getters["setting/getCartIndex"];
-          _this.$store.dispatch("cart/getCartNumber").then((response) => {
+        .then(function () {
+          _this.$store.commit('cart/setCartAdd', true);
+          _this.$store.commit('cart/cartNum', true);
+          _this.$h.toast('加入购物车成功');
+          let index = _this.$store.getters['setting/getCartIndex'];
+          _this.$store.dispatch('cart/getCartNumber').then(response => {
             if (response !== 0) {
               uni.setTabBarBadge({
                 index: index,
-                text: response + "",
+                text: response + ''
               });
             } else {
               uni.removeTabBarBadge({
-                index: index,
+                index: index
               });
             }
           });
         })
-        .catch(function(err) {
+        .catch(function (err) {
           if (err.status === 401) {
             uni.navigateTo({
-              url: "/pages/user/login",
+              url: '/pages/user/login'
             });
           }
           _this.$h.toast(err.data.message);
         });
     },
-    buy: function() {
+    buy: function () {
       if (this.isEmpty()) return;
       this.showModal = false;
       let _this = this;
       this.showSelect.goods_number = this.number;
       uni.navigateTo({
-        url: "/pages/order/submit?data=" + JSON.stringify([this.showSelect]) + "&is_task=" + this.is_task,
-        success: function(res) {
-          res.eventChannel.emit("acceptDataFromOpenerPage", {
-            data: [_this.showSelect],
+        url: '/pages/order/submit?data=' + JSON.stringify([this.showSelect]) + '&is_task=' + this.is_task,
+        success: function (res) {
+          res.eventChannel.emit('acceptDataFromOpenerPage', {
+            data: [_this.showSelect]
           });
-        },
+        }
       });
     },
-    isEmpty: function() {
+    isEmpty: function () {
       if (this.$h.test.isEmpty(this.showSelect)) {
-        this.$h.toast("请选择规格");
+        this.$h.toast('请选择规格');
         return true;
       }
-    },
+    }
   },
   watch: {
-    "goods.param.param_data": {
+    'goods.param.param_data': {
       handler(data) {
         if (!data) return;
         // 初始
@@ -529,7 +540,7 @@ export default {
           }
         }
         if (!this.$h.test.isEmpty(this.select)) {
-          let array = this.select.param_value.split("_");
+          let array = this.select.param_value.split('_');
           for (let i = 0; i < array.length; i++) {
             for (let j = 0; j < newData[i].value.length; j++) {
               let item = newData[i].value[j];
@@ -553,7 +564,7 @@ export default {
           this.showSelect = this.goodsData[0];
           this.showSelect.goods_number = this.number;
           this.showSelect.goods_param = this.showSelect.param_value;
-          this.$emit("setSelect", this.showSelect);
+          this.$emit('setSelect', this.showSelect);
         }
         if (newData.length > 1) {
           newData[1].image_status = false;
@@ -562,7 +573,7 @@ export default {
         }
         this.showParam = newData;
       },
-      immediate: true,
+      immediate: true
     },
     select: {
       handler(newVal) {
@@ -574,17 +585,16 @@ export default {
         }
         this.number = newVal.goods_number;
       },
-      immediate: true,
+      immediate: true
     },
     minNumber: {
       handler(val) {
         this.number = val ? val : 1;
       },
-      immediate: true,
-    },
-  },
+      immediate: true
+    }
+  }
 };
-
 </script>
 <style scoped lang="scss">
 .he-cart {
@@ -597,7 +607,7 @@ export default {
   font-size: 32px;
   font-family: PingFang SC;
   font-weight: bold;
-  @include font_color("font_color");
+  @include font_color('font_color');
 }
 
 .he-price {
@@ -605,7 +615,7 @@ export default {
   font-size: 32px;
   font-family: PingFang SC;
   font-weight: bold;
-  @include font_color("font_color");
+  @include font_color('font_color');
 }
 
 .he-cart__body {
@@ -638,7 +648,7 @@ export default {
 }
 
 .he-price:before {
-  content: "￥";
+  content: '￥';
 }
 
 .he-stock {
@@ -717,8 +727,8 @@ export default {
     }
 
     .he-attr__select {
-      @include font_color("font_color");
-      @include border_color("border_color");
+      @include font_color('font_color');
+      @include border_color('border_color');
     }
 
     .he-attr__num-0 {
@@ -784,10 +794,10 @@ export default {
     }
 
     .he-attr__select {
-      @include border_color("border_color");
+      @include border_color('border_color');
 
       .he-attr__name text {
-        @include font_color("font_color");
+        @include font_color('font_color');
       }
     }
 
@@ -844,21 +854,20 @@ export default {
   .he-btn__left {
     border-width: 1px;
     border-style: solid;
-    @include font_color("font_color");
-    @include border_color("border_color");
-    @include background_color("opacify_background_0");
+    @include font_color('font_color');
+    @include border_color('border_color');
+    @include background_color('opacify_background_0');
   }
 
   .he-btn__right {
-    @include background_color("background_color");
+    @include background_color('background_color');
     color: #ffffff;
   }
 
   .he-sure-btn {
     width: 100%;
-    @include background_color("background_color");
+    @include background_color('background_color');
     color: #ffffff;
   }
 }
-
 </style>

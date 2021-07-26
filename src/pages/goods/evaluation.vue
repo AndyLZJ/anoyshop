@@ -63,7 +63,7 @@
               :src="img"
             ></he-image>
           </view>
-          <view class="he-item__time">{{ $h.timeFormat(item.deleted_time) }}</view>
+          <view class="he-item__time">{{ $h.timeFormat(item.created_time) }}</view>
         </view>
         <view class="he-item__footer" v-if="item.reply">
           <text>商家：</text>
@@ -210,8 +210,8 @@ export default {
           _this.tabCount = res[1];
           _this.isNothing = _this.list.length === 0;
         })
-        .catch(function (err) {
-          console.error(err);
+        .catch(function () {
+          // Don't do
         });
     } else {
       this.$toError(err);

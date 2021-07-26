@@ -1,19 +1,34 @@
 <template>
-  <view class="he-page-content he-coupon" :data-theme="theme" :class="loading ? 'flex justify-center align-center' : ''">
+  <view
+    class="he-page-content he-coupon"
+    :data-theme="theme"
+    :class="loading ? 'flex justify-center align-center' : ''"
+  >
     <he-loading size="50" mode="flower" v-if="loading"></he-loading>
     <template v-else>
-      <view class="le-coupon-detail" :class="detail.status === 0 || (detail.status === 1 && couponShare) ? 'he-normal' : 'he-invalid'">
+      <view
+        class="le-coupon-detail"
+        :class="detail.status === 0 || (detail.status === 1 && couponShare) ? 'he-normal' : 'he-invalid'"
+      >
         <view class="le-coupon-detail-top">
-          <image class="he-item-image" v-if="!couponShare && detail.status !== 0" :src="detail.status | img(ipAddress)" />
+          <image
+            class="he-item-image"
+            v-if="!couponShare && detail.status !== 0"
+            :src="detail.status | img(ipAddress)"
+          />
           <view class="le-coupon-doc-line flex justify-center">
             <view class="le-coupon-doc-item" v-for="item in 17" :key="item">
               <view class="le-coupon-doc"></view>
             </view>
           </view>
           <view class="le-coupon-heade-body flex flex-direction align-center">
-            <view class="le-coupon-share flex flex-direction align-center justify-between" @click="setShare" v-if="
+            <view
+              class="le-coupon-share flex flex-direction align-center justify-between"
+              @click="setShare"
+              v-if="
                 (detail.enable_share && detail.status === 0 && !couponShare) || (detail.enable_share && !shareReceive)
-              ">
+              "
+            >
               <view class="iconfont iconproductdetails_share"></view>
               <text class="he-share__text">分享</text>
             </view>
@@ -31,7 +46,11 @@
               </button>
               <!-- #endif -->
               <!-- #ifdef H5 -->
-              <he-open-subscribe @open-subscribe-success="receive" :template-id="subTemplateId" v-if="couponShare && shareReceive">
+              <he-open-subscribe
+                @open-subscribe-success="receive"
+                :template-id="subTemplateId"
+                v-if="couponShare && shareReceive"
+              >
                 <button class="cu-btn le-coupon-btn">立即领取</button>
               </he-open-subscribe>
               <!-- #endif -->
@@ -51,7 +70,7 @@
               <template v-if="detail.expire_type === 1"> 领取后{{ detail.expire_day }}天内 </template>
               <template v-else>
                 {{ detail.begin_time | timeFormat('yyyy-mm-dd hh:MM:ss') }}-{{
-                detail.end_time | timeFormat('yyyy-mm-dd hh:MM:ss')
+                  detail.end_time | timeFormat('yyyy-mm-dd hh:MM:ss')
                 }}
               </template>
             </view>
@@ -110,7 +129,7 @@ export default {
     };
   },
   computed: {
-    shareData: function() {
+    shareData: function () {
       let imageUrl = '';
       let title = '';
       let id = null;
@@ -137,7 +156,7 @@ export default {
       };
     },
     // 海报分享ID
-    shareId: function() {
+    shareId: function () {
       let id = null;
       if (!this.couponShare) {
         id = this.detail.coupon_id;
@@ -146,7 +165,7 @@ export default {
       }
       return id;
     },
-    lineColor: function() {
+    lineColor: function () {
       let color = this.themeColor;
       if (!this.couponShare && this.detail.status !== 0) {
         color = '#cccccc';
@@ -155,7 +174,7 @@ export default {
         backgroundImage: `linear-gradient(to right, ${color} 0%, ${color} 50%, transparent 0%)`
       };
     },
-    subTemplateId: function() {
+    subTemplateId: function () {
       return [this.$store.getters['setting/subscribe'].coupon_expire];
     },
     ...mapGetters({
@@ -211,7 +230,7 @@ export default {
     }
   },
   methods: {
-    getQueryVariable: function(options, variable) {
+    getQueryVariable: function (options, variable) {
       let query = decodeURIComponent(options.scene);
       let vars = query.split('&');
       for (let i = 0; i < vars.length; i++) {
@@ -222,16 +241,16 @@ export default {
       }
       return null;
     },
-    setShare: function() {
+    setShare: function () {
       this.isShare = true;
     },
-    getDetail: function() {
+    getDetail: function () {
       let _this = this;
       this.$heshop
         .coupon('get', this.id, {
           behavior: this.behavior
         })
-        .then(function(response) {
+        .then(function (response) {
           _this.detail = response;
           // #ifdef H5
           if (response.enable_share) {
@@ -245,12 +264,12 @@ export default {
           // #endif
           _this.loading = false;
         })
-        .catch(function(error) {
+        .catch(function (error) {
           _this.loading = false;
           _this.$toError(error);
         });
     },
-    receive: function() {
+    receive: function () {
       let _this = this;
       if (this.isLogin) {
         function couponRequire() {
@@ -258,10 +277,10 @@ export default {
             .coupon('post', {
               id: _this.detail.id
             })
-            .then(function() {
+            .then(function () {
               _this.shareReceive = false;
             })
-            .catch(function(error) {
+            .catch(function (error) {
               if (error.status === 403) {
                 _this.invaildStr = error.data.message;
                 _this.isInvaild = true;
@@ -271,9 +290,9 @@ export default {
         // #ifdef MP-WEIXIN
         wx.requestSubscribeMessage({
           tmplIds: _this.subTemplateId,
-          success: function() {},
-          fail: function() {},
-          complete: function() {
+          success: function () {},
+          fail: function () {},
+          complete: function () {
             couponRequire();
           }
         });
@@ -287,17 +306,17 @@ export default {
         });
       }
     },
-    redirectTo: function() {
+    redirectTo: function () {
       uni.redirectTo({
         url: '/pages/goods/search-list?coupon_id=' + this.detail.coupon_id
       });
     }
   },
   filters: {
-    setNumber: function(value) {
+    setNumber: function (value) {
       return Number(value);
     },
-    img: function(type, ipAddress) {
+    img: function (type, ipAddress) {
       let str = ipAddress;
       if (type === 1) {
         str += '/coupon-used-icon.png';
@@ -328,12 +347,11 @@ export default {
   // #endif
   onPullDownRefresh() {
     this.getDetail();
-    setTimeout(function() {
+    setTimeout(function () {
       uni.stopPullDownRefresh();
     }, 1000);
   }
 };
-
 </script>
 <style scoped lang="scss">
 .he-coupon {
@@ -569,5 +587,4 @@ export default {
     border-color: #ccc;
   }
 }
-
 </style>

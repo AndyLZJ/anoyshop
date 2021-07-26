@@ -1,12 +1,18 @@
 <template>
   <view class="user-features">
     <!--#ifndef H5-->
-    <button v-if="!mobile && isLogin" class="he-item he-item__btn flex justify-between" open-type="getPhoneNumber" hover-class="" @getphonenumber="getPhoneNumber">
+    <button
+      v-if="!mobile && isLogin"
+      class="he-item he-item__btn flex justify-between"
+      open-type="getPhoneNumber"
+      hover-class=""
+      @getphonenumber="getPhoneNumber"
+    >
       <view class="flex">
         <view class="iconfont iconpersonalcenter_phone"></view>
         <text class="he-text">绑定手机号</text>
       </view>
-      <view class="task-user-tips">{{binding.remark||''}}</view>
+      <view class="task-user-tips">{{ binding.remark || '' }}</view>
       <view class="iconfont iconbtn_arrow"></view>
     </button>
     <view class="he-item flex justify-between" v-else @click="bindPhone">
@@ -27,7 +33,7 @@
         <text class="he-text">绑定手机号</text>
       </view>
       <view class="flex">
-        <view class="task-user-tips" v-if="!mobile"> {{binding.remark||''}}</view>
+        <view class="task-user-tips" v-if="!mobile"> {{ binding.remark || '' }}</view>
         <text class="he-mobile" v-if="mobile">{{ mobile }}</text>
         <view class="iconfont iconbtn_arrow"></view>
       </view>
@@ -46,7 +52,7 @@
           <view class="iconfont iconpersonalcenter_information"></view>
           <text class="he-text">个人信息</text>
         </view>
-        <view class="task-user-tips"> {{perfect.remark||''}}</view>
+        <view class="task-user-tips"> {{ perfect.remark || '' }}</view>
         <view class="iconfont iconbtn_arrow"></view>
       </view>
     </template>
@@ -62,22 +68,24 @@
         <view class="iconfont iconpersonalcenter_phone2"></view>
         <view class="he-content-text">
           <view class="he-text">电话客服</view>
-          <view class="he-time" v-if="isEmpty(storeSetting.contact.phone)">{{
-            storeSetting.contact.phone.time
-            }}</view>
+          <view class="he-time" v-if="isEmpty(storeSetting.contact.phone)">{{ storeSetting.contact.phone.time }}</view>
         </view>
       </view>
       <view class="iconfont iconbtn_arrow"></view>
     </view>
     <!-- #ifndef H5 -->
-    <button open-type="contact" class="he-item flex justify-between he-item__btn" v-if="storeSetting.contact.online.bool">
+    <button
+      open-type="contact"
+      class="he-item flex justify-between he-item__btn"
+      v-if="storeSetting.contact.online.bool"
+    >
       <view class="flex">
         <view class="iconfont iconpersonalcenter_contactus"></view>
         <view class="he-content-text">
           <view class="he-text">在线客服</view>
           <view class="he-time" v-if="isEmpty(storeSetting.contact.online)">{{
             storeSetting.contact.online.time
-            }}</view>
+          }}</view>
         </view>
       </view>
       <view class="iconfont iconbtn_arrow"></view>
@@ -90,7 +98,7 @@
           <view class="he-text">加好友联系</view>
           <view class="he-time" v-if="isEmpty(storeSetting.contact.friend)">{{
             storeSetting.contact.friend.time
-            }}</view>
+          }}</view>
         </view>
       </view>
       <view class="iconfont iconbtn_arrow"></view>
@@ -107,15 +115,15 @@
   </view>
 </template>
 <script>
-import userQrcode from "./user-qrcode.vue";
-import heClearStorage from "@/components/he-clear-storage.vue";
-import userBindPhone from "./user-bind-phone.vue";
-import heTell from "@/components/he-tell.vue";
+import userQrcode from './user-qrcode.vue';
+import heClearStorage from '@/components/he-clear-storage.vue';
+import userBindPhone from './user-bind-phone.vue';
+import heTell from '@/components/he-tell.vue';
 
-import taskpopups from "@/plugins/task/components/popups.vue";
+import taskpopups from '@/plugins/task/components/popups.vue';
 
 export default {
-  name: "user-features",
+  name: 'user-features',
   components: {
     userQrcode,
     heClearStorage,
@@ -124,30 +132,29 @@ export default {
     taskpopups
   },
   computed: {
-    mobile: function() {
+    // 获取绑定手机号码
+    mobile: function () {
       let data = this.$store.state.apply.userInfo.mobile;
       if (!data) return null;
-      data = data + "";
+      data = data + '';
       if (data) {
         this.getTaskBinding();
       }
-      return data ?
-        data
-        .match(/(\d{3})(\d{4})(\d{4})/)
-        .slice(1)
-        .reduce(function(value, item, index) {
-          return index === 1 ? value + "****" : value + item;
-        }) :
-        null;
-    },
+      return data
+        ? data
+            .match(/(\d{3})(\d{4})(\d{4})/)
+            .slice(1)
+            .reduce(function (value, item, index) {
+              return index === 1 ? value + '****' : value + item;
+            })
+        : null;
+    }
   },
   /**
    * 数据监听
    * @type {Object}
    */
-  watch: {
-
-  },
+  watch: {},
   data() {
     return {
       isQrcode: false,
@@ -167,11 +174,11 @@ export default {
    */
   mounted() {
     //this.handleLoad();
-    console.log("获取父级", this)
+    console.log('获取父级', this);
   },
   methods: {
     handleLoad() {
-      console.log("执行我了呀，真的真的")
+      console.log('执行我了呀，真的真的');
       this.popupsList = [];
       this.statusTaskBinding();
       this.statusTaskPerfect();
@@ -183,15 +190,18 @@ export default {
      */
     statusTaskBinding() {
       //判断当前任务是否打开
-      this.$heshop.plugin("get", { include: "task", model: "task", keyword: "binding" }).then(res => {
-        console.log("查看绑定手机号任务是否开启", res)
-        if (res.status) {
-          this.binding = res;
-          this.getTaskBinding();
-        }
-      }).catch(err => {
-        console.log("err", err)
-      })
+      this.$heshop
+        .plugin('get', { include: 'task', model: 'task', keyword: 'binding' })
+        .then(res => {
+          console.log('查看绑定手机号任务是否开启', res);
+          if (res.status) {
+            this.binding = res;
+            this.getTaskBinding();
+          }
+        })
+        .catch(err => {
+          console.log('err', err);
+        });
     },
     /**
      * 获取获取设置状态
@@ -202,29 +212,32 @@ export default {
       const value = uni.getStorageSync('statusTaskBinding');
       if (value) {
         this.binding = {};
-        return true
+        return true;
       }
-      this.$heshop.plugin("get", { include: "task", model: "score", type: 'single', keyword: 'binding' }).then(res => {
-        console.log("判断是否完成过该任务")
-        //判断如果存在的状态下
-        if (res && res.status === 0 && !this.is_binding) {
-          this.is_binding = true;
-          this.popupsList.push({
-            display: true,
-            remark: res.remark
-          })
-          this.$parent.handleLoadData()
-          this.binding = {};
-          uni.setStorageSync('statusTaskBinding', 1);
-        } else if (res && res.status === 1) {
-          this.binding = {};
-        } else {
-          //如果没有记录的状态下
-          this.setTaskBinding();
-        }
-      }).catch(err => {
-        console.log("查看错误信息")
-      })
+      this.$heshop
+        .plugin('get', { include: 'task', model: 'score', type: 'single', keyword: 'binding', today: 0 })
+        .then(res => {
+          console.log('判断是否完成过该任务');
+          //判断如果存在的状态下
+          if (res && res.status === 0 && !this.is_binding) {
+            this.is_binding = true;
+            this.popupsList.push({
+              display: true,
+              remark: res.remark
+            });
+            this.$parent.handleLoadData();
+            this.binding = {};
+            uni.setStorageSync('statusTaskBinding', 1);
+          } else if (res && res.status === 1) {
+            this.binding = {};
+          } else {
+            //如果没有记录的状态下
+            this.setTaskBinding();
+          }
+        })
+        .catch(err => {
+          console.log('查看错误信息');
+        });
     },
     /**
      * 获取绑定状态
@@ -232,22 +245,29 @@ export default {
      */
     setTaskBinding() {
       if (this.mobile) {
-        this.$heshop.plugin("post", { include: "task", model: "task" }, {
-          "number": this.mobile,
-          "keyword": "binding"
-        }).then(res => {
-          console.log("直接提交执行任务")
-          if (res && res.msg) {
-            this.getTaskBinding();
-            // this.popupsList.push({
-            //   display: true,
-            //   remark: res.msg
-            // })
-            // uni.setStorageSync('statusTaskBinding', 1);
-          }
-        }).catch(err => {
-          console.log("返回绑定错误信息", err)
-        })
+        this.$heshop
+          .plugin(
+            'post',
+            { include: 'task', model: 'task' },
+            {
+              number: this.mobile,
+              keyword: 'binding'
+            }
+          )
+          .then(res => {
+            console.log('直接提交执行任务');
+            if (res && res.msg) {
+              this.getTaskBinding();
+              // this.popupsList.push({
+              //   display: true,
+              //   remark: res.msg
+              // })
+              // uni.setStorageSync('statusTaskBinding', 1);
+            }
+          })
+          .catch(err => {
+            console.log('返回绑定错误信息', err);
+          });
       }
     },
     /**
@@ -257,17 +277,21 @@ export default {
     statusTaskPerfect() {
       let that = this;
       //判断当前任务是否打开
-      that.$heshop.plugin("get", { include: "task", model: "task", keyword: "perfect" }).then(res => {
-        if (res.status) {
-          const value = uni.getStorageSync('statusTaskPerfect');
-          if (!value) {
-            this.perfect = res;
+      that.$heshop
+        .plugin('get', { include: 'task', model: 'task', keyword: 'perfect', today: 0 })
+        .then(res => {
+          if (res.status) {
+            const value = uni.getStorageSync('statusTaskPerfect');
+            // 逻辑有问题
+            if (!value) {
+              this.perfect = res;
+            }
+            this.getTaskPerfect();
           }
-          this.getTaskPerfect();
-        }
-      }).catch(err => {
-        console.log("err", err)
-      })
+        })
+        .catch(err => {
+          console.log('err', err);
+        });
     },
     /**
      * 获取获取设置状态
@@ -278,122 +302,133 @@ export default {
       const value = uni.getStorageSync('statusTaskPerfect');
       if (value) {
         this.perfect = {};
-        return true
+        return true;
       }
-      this.$heshop.plugin("get", { include: "task", model: "score", type: 'single', keyword: 'perfect' }).then(res => {
-        console.log("查看用户绑定信息", res)
-        //判断如果存在的状态下
-        if (res && res.status === 0) {
-          this.perfect = {};
-          this.popupsList.push({
-            display: true,
-            remark: res.remark
-          })
-          this.$parent.handleLoadData()
-          uni.setStorageSync('statusTaskPerfect', 1);
-        } else if (res && res.status === 1) {
-          this.perfect = {};
-        } else {
-          //如果没有记录的状态下
-          this.setTaskPerfect();
-        }
-
-      }).catch(err => {
-        console.log("查看错误信息")
-      })
+      this.$heshop
+        .plugin('get', { include: 'task', model: 'score', type: 'single', keyword: 'perfect' })
+        .then(res => {
+          console.log('查看用户绑定信息', res);
+          //判断如果存在的状态下
+          if (res && res.status === 0) {
+            this.perfect = {};
+            this.popupsList.push({
+              display: true,
+              remark: res.remark
+            });
+            this.$parent.handleLoadData();
+            uni.setStorageSync('statusTaskPerfect', 1);
+          } else if (res && res.status === 1) {
+            this.perfect = {};
+          } else {
+            //如果没有记录的状态下
+            this.setTaskPerfect();
+          }
+        })
+        .catch(err => {
+          console.log('查看错误信息');
+        });
     },
     /**
      * 获取绑定状态
      * @return {[type]} [description]
      */
     setTaskPerfect() {
-      this.$heshop.plugin("post", { include: "task", model: "task" }, {
-        "number": 1,
-        "keyword": "perfect"
-      }).then(res => {
-        console.log("重新执行用户绑定信息", res)
-        if (res && res.msg) {
-          this.popupsList.push({
-            display: true,
-            remark: res.msg
-          })
-          this.$parent.handleLoadData()
-          this.perfect = {};
-          uni.setStorageSync('statusTaskPerfect', 1);
-        }
-      }).catch(err => {
-        console.log("返回绑定错误信息", err)
-      })
+      this.$heshop
+        .plugin(
+          'post',
+          { include: 'task', model: 'task' },
+          {
+            number: 1,
+            keyword: 'perfect'
+          }
+        )
+        .then(res => {
+          console.log('重新执行用户绑定信息', res);
+          if (res && res.msg) {
+            this.popupsList.push({
+              display: true,
+              remark: res.msg
+            });
+            this.$parent.handleLoadData();
+            this.perfect = {};
+            uni.setStorageSync('statusTaskPerfect', 1);
+          }
+        })
+        .catch(err => {
+          console.log('返回绑定错误信息', err);
+        });
     },
     // 跳转
-    navigateTo: function(url) {
+    navigateTo: function (url) {
       uni.navigateTo({ url: url });
     },
     //  清理缓存
-    clearStorage: function() {
+    clearStorage: function () {
       this.isClear = true;
     },
-    bindPhone: function() {
+    bindPhone: function () {
       if (this.isLogin) {
         if (this.mobile) {
           this.isBind = true;
         } else {
-          this.navigateTo("/pages/user/bind-phone");
+          this.navigateTo('/pages/user/bind-phone');
         }
       } else {
-        this.navigateTo('/pages/user/login')
+        this.navigateTo('/pages/user/login');
       }
     },
     // #ifndef H5
-    getPhoneNumber: function(e) {
+    getPhoneNumber: function (e) {
       let _this = this;
       let errMsg = e.detail.errMsg;
-      if (errMsg === "getPhoneNumber:ok") {
+      if (errMsg === 'getPhoneNumber:ok') {
         uni.login({
           success(res) {
             if (res.code) {
-              setTimeout(function() {
+              setTimeout(function () {
                 _this.$heshop
                   .users(
-                    "put", {
-                      behavior: "bindMobile",
-                    }, {
+                    'put',
+                    {
+                      behavior: 'bindMobile'
+                    },
+                    {
                       code: res.code,
                       encryptedData: e.detail.encryptedData,
-                      iv: e.detail.iv,
+                      iv: e.detail.iv
                     }
                   )
-                  .then(function(res) {
+                  .then(function (res) {
                     _this.$store.state.apply.userInfo.mobile = res.mobile;
-                    let userInfo = uni.getStorageSync("userInfo");
+                    let userInfo = uni.getStorageSync('userInfo');
                     userInfo.mobile = res.mobile;
-                    uni.setStorageSync("userInfo", userInfo);
+                    uni.setStorageSync('userInfo', userInfo);
                   })
-                  .catch(function(err) {
+                  .catch(function (err) {
                     _this.$toError(err);
                   });
               }, 800);
             } else {
               _this.$toError(res);
             }
-          },
+          }
         });
-      } else if (errMsg === "getPhoneNumber:fail user deny") {}
+      } else if (errMsg === 'getPhoneNumber:fail user deny') {
+      }
     },
     // #endif
-    isEmpty: function(data) {
+    isEmpty: function (data) {
       return !this.$h.test.isEmpty(data.time);
-    },
-  },
+    }
+  }
 };
-
 </script>
 <style scoped lang="scss">
 .task-user-tips {
   font-size: 26px;
   font-family: PingFang SC;
   font-weight: 500;
-  color: #E60B30;
+  color: #e60b30;
   line-height: 78rpx;
   width: 50%;
   z-index: 1;
@@ -470,5 +505,4 @@ export default {
   color: #666666;
   margin-right: 14px;
 }
-
 </style>

@@ -1,0 +1,215 @@
+<template>
+  <view class="he-page-content" :data-theme="theme">
+    <view class="he-switch flex he-card">
+      <view class="flex-sub" :class="{ active: searchNum === 0 }" @click="switchTime(0)">一级（999）</view>
+      <view class="flex-sub" :class="{ active: searchNum === 1 }" @click="switchTime(1)">二级（999）</view>
+      <view class="flex-sub" :class="{ active: searchNum === 2 }" @click="switchTime(2)">三级（999）</view>
+    </view>
+    <view class="he-list">
+      <view class="he-total flex justify-between align-center">
+        <view class="he-total--item">
+          <text class="he-label">今日新增</text>
+          <text class="he-value">36人</text>
+        </view>
+        <view class="he-total--item">
+          <text class="he-label">今日流失</text>
+          <text class="he-value">27人</text>
+        </view>
+      </view>
+      <view class="he-card he-people--item" v-for="(item, index) in 30">
+        <view class="he-item--user flex">
+          <view class="he-avatar" :class="{ 'is-avatar': item }">
+            <he-image
+              :image-style="{
+                borderRadius: '50%'
+              }"
+              width="88"
+              height="88"
+              src=""
+            ></he-image>
+            <view class="he-avatar--sign" v-if="item">分销商</view>
+          </view>
+          <view>
+            <view class="he-user--name">法外狂徒张三</view>
+            <view class="he-user--create_time">加入时间：2021.06.23</view>
+          </view>
+        </view>
+        <view class="he-item--footer flex">
+          <view class="he-footer--item flex-sub">
+            <view class="le-value">￥512.00</view>
+            <view class="le-label">商品金额</view>
+          </view>
+          <view class="he-footer--item flex-sub">
+            <view class="le-value">12</view>
+            <view class="le-label">订单数</view>
+          </view>
+          <view class="he-footer--item flex-sub">
+            <view class="le-value">￥51.20</view>
+            <view class="le-label">贡献佣金金额</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <he-load-more v-if="list.length > 0" :status="loadStatus"></he-load-more>
+    <he-no-content-yet
+      v-if="isNothing"
+      :image="ipAddress + '/order-background-empty.png'"
+      text="暂无相关订单"
+    ></he-no-content-yet>
+    <view class="safe-area-inset-bottom"></view>
+  </view>
+</template>
+
+<script>
+import heLoadMore from './../../components/he-load-more.vue';
+import heNoContentYet from './../../components/he-no-content-yet.vue';
+
+export default {
+  name: 'offline',
+  components: {
+    heLoadMore,
+    heNoContentYet
+  },
+  data() {
+    return {
+      searchNum: 0,
+      loadStatus: 'loadmore',
+      list: [{}],
+      isNothing: true
+    };
+  },
+  methods: {
+    switchTime(num) {
+      this.searchNum = num;
+    }
+  },
+  onPullDownRefresh() {
+    setTimeout(function () {
+      uni.stopPullDownRefresh();
+    }, 1000);
+  }
+};
+</script>
+
+<style scoped lang="scss">
+@import '../main.less';
+
+.he-switch {
+  width: 750px;
+  height: 144px;
+  border-radius: 0 0 32px 32px;
+  position: sticky;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.04);
+  top: 0;
+  z-index: 10;
+  .flex-sub {
+    height: 80px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    line-height: 80px;
+    text-align: center;
+    font-size: 28px;
+    @extend .font-family-sc;
+    font-weight: 500;
+    color: #262626;
+    &:not(:last-child) {
+      margin-right: 16px;
+    }
+    &.active {
+      @include background_color('opacify_background_0');
+      @include font_color('font_color');
+    }
+  }
+}
+
+.he-list {
+  padding: 0 20px;
+}
+.he-total {
+  height: 48px;
+  padding: 0 12px;
+  margin: 32px 0 24px 0;
+}
+.he-total--item {
+  height: 48px;
+  font-size: 28px;
+  font-weight: 500;
+  .he-label {
+    @extend .font-family-sc;
+    color: #999999;
+  }
+  .he-value {
+    @extend .font-family-sc;
+    color: #262626;
+  }
+}
+.he-people--item {
+  border-radius: 8px;
+  padding: 28px 24px 40px 24px;
+}
+.he-item--user {
+  .he-avatar {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    position: relative;
+    margin-right: 24px;
+    &.is-avatar {
+      border: 2px solid #623ceb;
+    }
+  }
+  .he-avatar--sign {
+    width: 80px;
+    line-height: 30px;
+    background: #623ceb;
+    border-radius: 14px;
+    font-size: 20px;
+    @extend .font-family-sc;
+    font-weight: 500;
+    color: #ffffff;
+    position: absolute;
+    bottom: -6px;
+    text-align: center;
+    left: 50%;
+    z-index: 1;
+    transform: translateX(-50%);
+  }
+  .he-user--name {
+    @extend .font-family-sc;
+    font-size: 32px;
+    font-weight: 500;
+    color: #222222;
+    line-height: 48px;
+  }
+  .he-user--create_time {
+    font-size: 26px;
+    @extend .font-family-sc;
+    font-weight: 500;
+    color: #999999;
+    line-height: 40px;
+  }
+}
+.he-item--footer {
+  margin-top: 33px;
+}
+.he-footer--item {
+  text-align: center;
+  &:not(:last-child) {
+    border-right: 1px solid #e5e5e5;
+  }
+  .le-value {
+    @extend .font-family-sc;
+    line-height: 40px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #222222;
+  }
+  .le-label {
+    font-size: 24px;
+    @extend .font-family-sc;
+    font-weight: 500;
+    color: #999999;
+    line-height: 32px;
+  }
+}
+</style>

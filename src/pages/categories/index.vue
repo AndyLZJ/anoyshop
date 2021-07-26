@@ -1,12 +1,6 @@
 <template>
-  <view class="he-page-content flex" scroll-y :style="{height: height}">
-    <scroll-view
-      class="index-scroll"
-      :scroll-top="scrollTop"
-      scroll-with-animation
-      scroll-y
-      :data-theme="theme"
-    >
+  <view class="he-page-content flex" scroll-y :style="{ height: height }">
+    <scroll-view class="index-scroll" :scroll-top="scrollTop" scroll-with-animation scroll-y :data-theme="theme">
       <view
         class="he-item flex align-center"
         @click="setSelect(index)"
@@ -36,17 +30,17 @@
   </view>
 </template>
 <script>
-import indexA from "./component/index-a.vue";
-import indexB from "./component/index-b.vue";
-import indexC from "./component/index-c.vue";
-import { mapActions } from "vuex";
+import indexA from './component/index-a.vue';
+import indexB from './component/index-b.vue';
+import indexC from './component/index-c.vue';
+import { mapActions } from 'vuex';
 
 export default {
-  name: "index",
+  name: 'index',
   components: {
     indexA,
     indexB,
-    indexC,
+    indexC
   },
   data() {
     return {
@@ -57,10 +51,10 @@ export default {
       menuItemHeight: 0, // 左边菜单item的高度
       page: {
         current: 1,
-        size: 10,
+        size: 10
       },
       item: {
-        goods_show: null,
+        goods_show: null
       },
       goodsLoading: false,
       height: '100vh'
@@ -68,29 +62,26 @@ export default {
   },
   methods: {
     ...mapActions({
-      setCartNumber: "cart/setCartNumber",
+      setCartNumber: 'cart/setCartNumber'
     }),
     async setSelect(index) {
       if (index == this.current || this.goodsLoading) return;
       this.current = index;
       // 如果为0，意味着尚未初始化
       if (this.menuHeight == 0 || this.menuItemHeight == 0) {
-        await this.getElRect("index-scroll", "menuHeight");
-        await this.getElRect("he-item", "menuItemHeight");
+        await this.getElRect('index-scroll', 'menuHeight');
+        await this.getElRect('he-item', 'menuItemHeight');
       }
       // 将菜单菜单活动item垂直居中
-      this.scrollTop =
-        index * this.menuItemHeight +
-        this.menuItemHeight / 2 -
-        this.menuHeight / 2;
+      this.scrollTop = index * this.menuItemHeight + this.menuItemHeight / 2 - this.menuHeight / 2;
     },
     // 获取一个目标元素的高度
     getElRect(elClass, dataVal) {
       new Promise((resolve, reject) => {
         const query = uni.createSelectorQuery().in(this);
         query
-          .select("." + elClass)
-          .fields({ size: true }, (res) => {
+          .select('.' + elClass)
+          .fields({ size: true }, res => {
             // 如果节点尚未生成，res值为null，循环调用执行
             if (!res) {
               setTimeout(() => {
@@ -106,18 +97,18 @@ export default {
     getCatList: function () {
       let _this = this;
       this.$heshop
-        .group("get", {
+        .group('get', {
           merchant_id: 1,
-          include: "goods",
-          type: "all",
+          include: 'goods',
+          type: 'all'
         })
         .then(function (res) {
           _this.list = _this.$heshop
             .toTree({
-              parentKey: "parent_id",
-              idKey: "id",
+              parentKey: 'parent_id',
+              idKey: 'id',
               parentId: 0,
-              childrenKey: "children",
+              childrenKey: 'children'
             })
             .on(res)
             .get();
@@ -128,15 +119,15 @@ export default {
         });
     },
     navigateTo: function () {
-      uni.navigateTo({ url: "/pages/goods/search" });
-    },
+      uni.navigateTo({ url: '/pages/goods/search' });
+    }
   },
   onLoad() {
     // #ifdef H5
     let self = this;
     uni.getSystemInfo({
-      success: function(res) {
-        self.height = res.windowHeight + res.windowTop + 'px'
+      success: function (res) {
+        self.height = res.windowHeight + res.windowTop + 'px';
       }
     });
     // #endif
@@ -146,14 +137,14 @@ export default {
     current: {
       handler(newVal) {
         this.item = this.list[newVal];
-      },
-    },
+      }
+    }
   },
   onShow() {
     if (this.isLogin) {
       this.setCartNumber();
     }
-  },
+  }
 };
 </script>
 <style scoped lang="scss">
@@ -180,8 +171,8 @@ export default {
 }
 
 .he-item__1 .he-item__text {
-  @include font_color("font_color");
-  @include border_color("border_color");
+  @include font_color('font_color');
+  @include border_color('border_color');
   border-left-style: solid;
   border-left-width: 4px;
 }

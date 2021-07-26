@@ -98,7 +98,7 @@ export default {
   components: {
     heLoadMore,
     heNoContentYet,
-    heCart,
+    heCart
   },
   props: {
     list: Array,

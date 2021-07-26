@@ -1,5 +1,5 @@
 const getters = {
-	    token: state => state.apply.token
+  token: state => state.apply.token
 };
 
 export default getters;

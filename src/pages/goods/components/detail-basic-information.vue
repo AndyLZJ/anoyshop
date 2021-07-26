@@ -18,6 +18,9 @@
           <text class="he-share__text">分享</text>
         </view>
       </view>
+      <view class="he-subtitle" v-if="!$h.test.isEmpty(goodsIntroduce)">
+        {{ goodsIntroduce }}
+      </view>
       <view class="he-coupon flex align-center" @click="isCoupon = true" v-if="!$h.test.isEmpty(coupon)">
         <view class="he-coupon-left flex align-center">
           <view class="he-coupon-item flex align-center" :key="index" v-for="(item, index) in coupon">
@@ -109,6 +112,13 @@ export default {
       type: Object,
       default: function () {
         return {};
+      }
+    },
+    // 副标题
+    goodsIntroduce: {
+      type: String,
+      default: function () {
+        return '';
       }
     }
   },
@@ -256,7 +266,16 @@ export default {
   font-size: 32px;
   color: RGBA(153, 153, 153, 1);
 }
-
+.he-subtitle {
+  font-size: 22px;
+  font-family: PingFang SC;
+  font-weight: 500;
+  color: #999999;
+  line-height: 32px;
+  margin: 20px 0 0 0;
+  word-wrap: break-word;
+  word-break: normal;
+}
 .he-coupon {
   width: 662px;
   height: 64px;

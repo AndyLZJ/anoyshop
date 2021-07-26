@@ -17,6 +17,7 @@
     <he-no-content-yet v-if="isNothing" text="暂未找到相关商品"></he-no-content-yet>
   </view>
 </template>
+
 <script>
 import listSort from './components/list-sort.vue';
 import listA from '../../components/goods-list/list-A.vue';

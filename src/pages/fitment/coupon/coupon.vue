@@ -13,18 +13,8 @@
       </view>
       <!-- #endif -->
       <!-- #ifdef H5 -->
-      <view
-        :class="[couponItem]"
-        v-for="(item, index) in list"
-        :key="index"
-        :style="[itemStyle(item)]"
-      >
-        <item
-          v-if="!item.can_obtain"
-          :facade="facade"
-          :content="content"
-          :item="item"
-        ></item>
+      <view :class="[couponItem]" v-for="(item, index) in list" :key="index" :style="[itemStyle(item)]">
+        <item v-if="!item.can_obtain" :facade="facade" :content="content" :item="item"></item>
         <he-open-subscribe
           @open-subscribe-success="receive"
           :template-id="subTemplateId"
@@ -42,40 +32,40 @@
 
 <script type="text/javascript">
 // #ifdef H5
-import heOpenSubscribe from "@/components/he-open-subscribe.vue";
+import heOpenSubscribe from '@/components/he-open-subscribe.vue';
 // #endif
-import item from "./item.vue";
+import item from './item.vue';
 export default {
   components: {
     // #ifdef H5
     heOpenSubscribe,
     // #endif
-    item,
+    item
   },
   computed: {
     couponBox: function () {
       if (this.facade.list_style === 1) {
-        return "";
+        return '';
       } else if (this.facade.list_style === 2) {
-        return "flex flex-wrap";
+        return 'flex flex-wrap';
       } else if (this.facade.list_style === 3) {
-        return "flex";
+        return 'flex';
       }
     },
     subTemplateId: function () {
-      return [this.$store.getters["setting/subscribe"].coupon_expire];
+      return [this.$store.getters['setting/subscribe'].coupon_expire];
     },
     couponItem: function () {
-      let str = "";
+      let str = '';
       if (this.content.style === 3) {
-        str += " fillet ";
+        str += ' fillet ';
       }
       if (this.facade.list_style === 1) {
-        str += "";
+        str += '';
       } else if (this.facade.list_style === 2) {
-        str += "le-item-marginRight-odd ";
+        str += 'le-item-marginRight-odd ';
       } else if (this.facade.list_style === 3) {
-        str += "le-item-marginRight ";
+        str += 'le-item-marginRight ';
       }
       return str;
     },
@@ -83,29 +73,29 @@ export default {
       return () => {
         let style = {};
         if (this.facade.list_style === 1) {
-          style.width = 710 + "rpx";
-          style.marginBottom = 10 + "rpx";
+          style.width = 710 + 'rpx';
+          style.marginBottom = 10 + 'rpx';
         } else if (this.facade.list_style === 2) {
-          style.width = 349 + "rpx";
-          style.marginBottom = 10 + "rpx";
+          style.width = 349 + 'rpx';
+          style.marginBottom = 10 + 'rpx';
         } else if (this.facade.list_style === 3) {
-          style.width = 280 + "rpx";
+          style.width = 280 + 'rpx';
         }
         return style;
       };
-    },
+    }
   },
   props: {
     facade: {
-      type: [Object, Array],
+      type: [Object, Array]
     },
     content: {
-      type: [Object, Array],
-    },
+      type: [Object, Array]
+    }
   },
   data() {
     return {
-      list: [],
+      list: []
     };
   },
   methods: {
@@ -119,22 +109,29 @@ export default {
           _array = data.map(function (item) {
             return item.id;
           });
-          this.$heshop.coupon("get", {
-              behavior: "coupon",
-              coupon_id: _array,
-            }).then(function (response) {
+          this.$heshop
+            .coupon('get', {
+              behavior: 'coupon',
+              coupon_id: _array
+            })
+            .then(function (response) {
               _this.list = response.data;
-            }).catch(function (error) {
+            })
+            .catch(function (error) {
               _this.$toError(error);
             });
         }
       } else if (autoplay === 1) {
         // 自动添加
-        this.$heshop.coupon("get", {
-            behavior: "coupon",
-          }).page(1, number).then(function (response) {
+        this.$heshop
+          .coupon('get', {
+            behavior: 'coupon'
+          })
+          .page(1, number)
+          .then(function (response) {
             _this.list = response.data;
-          }).catch(function (error) {
+          })
+          .catch(function (error) {
             _this.$toError(error);
           });
       }
@@ -150,8 +147,8 @@ export default {
             fail: function () {},
             complete: function () {
               _this.$heshop
-                .coupon("post", {
-                  id: item.id,
+                .coupon('post', {
+                  id: item.id
                 })
                 .then(function () {
                   item.can_obtain = false;
@@ -160,13 +157,13 @@ export default {
                   item.can_obtain = false;
                   _this.$toError(error);
                 });
-            },
+            }
           });
           // #endif
           // #ifdef H5
           _this.$heshop
-            .coupon("post", {
-              id: item.id,
+            .coupon('post', {
+              id: item.id
             })
             .then(function () {
               item.can_obtain = false;
@@ -178,26 +175,26 @@ export default {
           // #endif
         } else {
           uni.navigateTo({
-            url: "/pages/user/login",
+            url: '/pages/user/login'
           });
         }
       }
-    },
+    }
   },
   watch: {
-    "content.data": {
+    'content.data': {
       handler() {
         this.getList();
       },
       deep: true,
-      immediate: true,
-    },
-  },
+      immediate: true
+    }
+  }
 };
 </script>
 
 <style scoped lang="scss">
-@import "./element.less";
+@import './element.less';
 .coupon {
   overflow: hidden;
   background-color: #fff;
