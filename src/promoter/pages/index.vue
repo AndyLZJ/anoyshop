@@ -146,15 +146,18 @@
         </view>
       </view>
     </view>
+    <down-grade v-model="isDowngrade" />
   </view>
 </template>
 
 <script>
 import { goods } from '../api';
-
+import DownGrade from './components/downgrade.vue';
 export default {
   name: 'index',
-  components: {},
+  components: {
+    DownGrade
+  },
   data() {
     return {
       chartData: {
@@ -203,7 +206,8 @@ export default {
         }
       },
       good: {},
-      animationData: {}
+      animationData: {},
+      isDowngrade: true
     };
   },
   computed: {
@@ -223,25 +227,13 @@ export default {
     ).then(response => {
       this.good = response.data[0];
     });
-    var animation = uni.createAnimation({
-        duration: 500,
-        timingFunction: 'ease-in',
-        delay: 250
+    let animation = uni.createAnimation({
+      duration: 500,
+      timingFunction: 'ease-in',
+      delay: 250
     });
     animation.width('40%').step();
-    this.animationData = animation.export()
-    // this.
-    // const worker = wx.createWorker('workers/promoter.js')
-    // worker.postMessage({
-    //   msg: 'hello from main'
-    // })
-    // // 监听worker被系统回收事件
-    // worker.onProcessKilled(() => {
-    //   // 重新创建一个worker
-    //   wx.createWorker('workers/promoter.js', {
-    //     useExperimentalWorker: true
-    //   })
-    // })
+    this.animationData = animation.export();
     this.initCanvas();
   },
   methods: {

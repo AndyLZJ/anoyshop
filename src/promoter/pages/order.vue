@@ -1,7 +1,7 @@
 <template>
   <view class="he-page-content" :data-theme="theme">
     <view class="he-search">
-      <view class="flex he-switch he-card">
+      <view class="flex he-switch">
         <view class="flex-sub" :class="{ active: searchNum === 0 }" @click="switchTime(0)">全部</view>
         <view class="flex-sub" :class="{ active: searchNum === 1 }" @click="switchTime(1)">今日</view>
         <view class="flex-sub" :class="{ active: searchNum === 2 }" @click="switchTime(2)">昨日</view>
@@ -107,8 +107,10 @@ export default {
 .he-search {
   width: 750px;
   height: 244px;
+  background: #ffffff;
   border-radius: 0 0 32px 32px;
   position: sticky;
+  padding: 32px;
   top: 0;
   z-index: 10;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.04);

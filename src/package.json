@@ -1,6 +1,6 @@
 {
-  "name": "applet",
-  "version": "1.3.3",
+  "name": "micromall",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "npm run dev:h5",
@@ -55,6 +55,7 @@
     "@dcloudio/uni-quickapp-native": "^2.0.0-alpha-29920201203001",
     "@dcloudio/uni-quickapp-webview": "^2.0.0-29820201110001",
     "@dcloudio/uni-stat": "^2.0.0-29820201110001",
+    "@heshop/heshop.uni": "^0.1.6",
     "@vue/shared": "^3.0.4",
     "axios": "^0.21.0",
     "core-js": "^3.8.1",

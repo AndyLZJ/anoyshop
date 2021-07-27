@@ -52,7 +52,7 @@ export default {
 <style scoped lang="scss">
 .he-content {
   width: 570px;
-  height: calc(100vh - 104px);
+  height: calc(100% - 104px);
   padding: 16px 20px;
 }
 .he-item {

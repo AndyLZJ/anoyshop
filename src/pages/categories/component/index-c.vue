@@ -57,7 +57,7 @@ export default {
 <style scoped lang="scss">
 .he-content {
   width: 570px;
-  height: calc(100vh - 104px);
+  height: calc(100% - 104px);
 }
 .he-header {
   height: 72px;
