@@ -362,6 +362,18 @@
           "style": {
             "navigationBarTitleText": "提现明细"
           }
+        },
+        {
+          "path": "pages/material",
+          "style": {
+            "navigationBarTitleText": "素材中心"
+          }
+        },
+        {
+          "path": "pages/create-dynamic",
+          "style": {
+            "navigationBarTitleText": "发布动态"
+          }
         }
       ]
     }

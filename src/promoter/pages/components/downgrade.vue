@@ -1,7 +1,16 @@
 <template>
   <he-popup mode="center" v-model="showModel" background-color="transparent">
-    <view class="he-down-grade">
-      <image :src="ipAddress + '/promoter-demote-grade.png'" class="he-image" />
+    <view class="he-down-grade" :data-theme="theme">
+      <image
+        :src="isUpDown ? ipAddress + '/promoter-rise-grade.png' : ipAddress + '/promoter-demote-grade.png'"
+        class="he-image"
+      />
+      <view class="he-box flex flex-direction align-center">
+        <text class="he-instruction" v-if="!isUpDown"> 由于您当前的分销业绩不足 分销等级已降级至 </text>
+        <text v-else class="he-instruction"> 恭喜！您的分销等级已升级至 </text>
+        <text class="he-level">{{ level }}</text>
+        <button class="cu-btn he-btn" @click="showModel = false">我知道了</button>
+      </view>
     </view>
   </he-popup>
 </template>
@@ -17,7 +26,15 @@ export default {
   props: {
     value: {
       type: Boolean,
-      default: false
+      default: true
+    },
+    isUpDown: {
+      type: Boolean,
+      default: true
+    },
+    level: {
+      type: String,
+      default: '白银分销商'
     }
   },
   computed: {
@@ -34,18 +51,53 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '../../main.less';
+
 .he-down-grade {
   width: 590px;
-  height: 460px;
-  background: #fff;
   position: relative;
+  overflow: hidden;
+}
+
+.he-image {
+  width: 540px;
+  height: 280px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+.he-box {
+  width: 590px;
+  background: #fff;
   border-radius: 16px;
-  .he-image {
-    width: 540px;
-    height: 280px;
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
+  margin-top: 140px;
+  padding-top: 162px;
+}
+.he-btn {
+  width: 242px;
+  height: 72px;
+  border-radius: 36px;
+  font-size: 28px;
+  @extend .font-family-sc;
+  font-weight: 500;
+  color: #ffffff;
+  margin: 54px 0 56px 0;
+  @include background_color('background_color');
+}
+.he-instruction {
+  font-size: 28px;
+  @extend .font-family-sc;
+  font-weight: 500;
+  color: #222222;
+  line-height: 36px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+.he-level {
+  font-size: 36px;
+  @extend .font-family-sc;
+  font-weight: 500;
+  color: #222222;
+  line-height: 48px;
 }
 </style>

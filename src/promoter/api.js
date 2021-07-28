@@ -21,3 +21,25 @@ export function goods(page = 1, keyword = { search: '', sort_key: 'created_time'
       });
   });
 }
+
+export function promotermaterial(page = 1, type = 0, size = 10) {
+  return new Promise((resolve, reject) => {
+    service
+      .promotermaterial('get', {
+        type: type
+      })
+      .page(page, size)
+      .then(response => {
+        transformPageHeaders(response);
+        const { data, pagination } = response;
+        resolve({
+          data: data,
+          pagination
+        });
+      })
+      .catch(error => {
+        console.log(error);
+        reject(error);
+      });
+  });
+}

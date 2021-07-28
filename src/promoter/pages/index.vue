@@ -122,7 +122,7 @@
             </view>
             <image class="he-image" :src="ipAddress + '/promoter-promotion-space.png'" />
           </button>
-          <button class="cu-btn basis-df flex justify-between">
+          <button class="cu-btn basis-df flex justify-between" @click="routerMaterial">
             <view>
               <view class="he-title">推广素材</view>
               <view class="he-desc">便捷复制素材</view>
@@ -218,15 +218,15 @@ export default {
     }
   },
   mounted() {
-    goods(
-      1,
-      {
-        sort_value: 'DESC'
-      },
-      1
-    ).then(response => {
-      this.good = response.data[0];
-    });
+    // goods(
+    //   1,
+    //   {
+    //     sort_value: 'DESC'
+    //   },
+    //   1
+    // ).then(response => {
+    //   this.good = response.data[0];
+    // });
     let animation = uni.createAnimation({
       duration: 500,
       timingFunction: 'ease-in',
@@ -270,6 +270,11 @@ export default {
     routerWithDraw() {
       uni.navigateTo({
         url: '/promoter/pages/withdraw'
+      });
+    },
+    routerMaterial() {
+      uni.navigateTo({
+        url: '/promoter/pages/material'
       });
     },
     initCanvas() {
