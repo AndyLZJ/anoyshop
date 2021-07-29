@@ -28,17 +28,11 @@
 
 <script>
 import heToast from '@/components/he-toast.vue';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'he-upload-image',
   components: {
     heToast
-  },
-  computed: {
-    ...mapGetters('setting', {
-      storagePicLimit: 'storagePicLimit'
-    })
   },
   props: {
     // 是否开启图片多选，部分安卓机型不支持
@@ -167,7 +161,7 @@ export default {
             // 如果是非多选，index大于等于1或者超出最大限制数量时，不处理
             if (!multiple && index >= 1) return;
 
-            if (val.size > maxSize) {
+            if (val.size > maxSize && maxSize > 0) {
               this.$h.toast('超出允许的文件大小');
             } else {
               if (maxCount <= lists.length) {

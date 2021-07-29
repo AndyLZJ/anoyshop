@@ -7,6 +7,7 @@
 <script>
 import * as utils from './e-picker.js';
 let defaultValue;
+
 export default {
   data() {
     return {
@@ -47,7 +48,7 @@ export default {
         defaultValue = this.showValue;
       }
       utils.checkShowValue(this.mode, defaultValue);
-      this.mode == 'dateTime' ? (l = 6) : (l = 3);
+      this.mode === 'dateTime' ? (l = 6) : (l = 3);
       for (let i = 0; i < l; i++) {
         this.range.push([]);
         this.value.push(0);
@@ -56,7 +57,7 @@ export default {
     },
     setColumns(index) {
       const m = this.mode;
-      if (m != 'time') {
+      if (m !== 'time') {
         const showYear = defaultValue.substring(0, 4),
           showMonth = defaultValue.substring(5, 7),
           showDay = defaultValue.substring(8, 10);
@@ -115,7 +116,7 @@ export default {
       this.$forceUpdate();
     },
     columnchange(e) {
-      if (this.mode == 'time') return;
+      if (this.mode === 'time') return;
       const column = e.detail.column,
         value = e.detail.value;
       if (column == 1 || !column) {

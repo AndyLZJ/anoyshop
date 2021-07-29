@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import Vuex from 'vuex';
 import apply from './apply';
 import getters from './getters.js';

@@ -86,7 +86,7 @@
   </view>
 </template>
 <script>
-import heUploadImage from '@/components/he-upload-image.vue';
+import heUploadImage from './../../components/he-upload-image.vue';
 import { mapGetters } from 'vuex';
 
 export default {

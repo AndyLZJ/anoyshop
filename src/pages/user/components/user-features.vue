@@ -55,6 +55,17 @@
         <view class="task-user-tips"> {{ perfect.remark || '' }}</view>
         <view class="iconfont iconbtn_arrow"></view>
       </view>
+      <view
+        v-if="promoterStatus < 0"
+        class="he-item flex justify-between"
+        @click="navigateTo('/promoter/pages/recruit')"
+      >
+        <view class="flex">
+          <view class="iconfont icona-personalcenter_distribution"></view>
+          <text class="he-text">分销商招募令</text>
+        </view>
+        <view class="iconfont iconbtn_arrow"></view>
+      </view>
     </template>
     <view class="he-item flex justify-between" @click="clearStorage">
       <view class="flex">
@@ -148,6 +159,9 @@ export default {
               return index === 1 ? value + '****' : value + item;
             })
         : null;
+    },
+    promoterStatus({ $store }) {
+      return $store.state.apply.userInfo.promoter_status;
     }
   },
   /**
@@ -475,7 +489,8 @@ export default {
 .iconpersonalcenter_address,
 .iconpersonalcenter_phone2,
 .iconpersonalcenter_information,
-.iconpersonalcenter_add {
+.iconpersonalcenter_add,
+.icona-personalcenter_distribution {
   font-size: 28px;
   color: #d7d7d7;
 }

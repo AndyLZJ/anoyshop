@@ -323,10 +323,18 @@
           "path": "pages/index"
         },
         {
-          "path": "pages/dynamic"
+          "path": "pages/dynamic",
+          "style": {
+            "navigationBarTitleText": "动态",
+            "enablePullDownRefresh": true
+          }
         },
         {
-          "path": "pages/leaderboard"
+          "path": "pages/leaderboard",
+          "style": {
+            "navigationBarTitleText": "排行榜",
+            "enablePullDownRefresh": true
+          }
         },
         {
           "path": "pages/grade"
@@ -374,6 +382,18 @@
           "style": {
             "navigationBarTitleText": "发布动态"
           }
+        },
+        {
+          "path": "pages/recruit"
+        },
+        {
+          "path": "pages/apply",
+          "style": {
+            "navigationBarTitleText": "申请分销商"
+          }
+        },
+        {
+          "path": "pages/protocol"
         }
       ]
     }

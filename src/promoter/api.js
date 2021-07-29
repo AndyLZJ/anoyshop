@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { transformPageHeaders } from './helper';
+
 const service = Vue.prototype.$heshop;
 
 // 获取分销商商品
@@ -38,7 +39,93 @@ export function promotermaterial(page = 1, type = 0, size = 10) {
         });
       })
       .catch(error => {
-        console.log(error);
+        reject(error);
+      });
+  });
+}
+
+// 获取招募令
+export function recruit() {
+  return new Promise((resolve, reject) => {
+    service
+      .search(
+        'post',
+        {
+          include: 'setting'
+        },
+        {
+          keyword: 'promoter_recruit_make'
+        }
+      )
+      .then(response => {
+        resolve(response.content);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
+// 是否启用分销协议
+export function useAgreement() {
+  return new Promise((resolve, reject) => {
+    service
+      .search(
+        'post',
+        {
+          include: 'setting'
+        },
+        {
+          keyword: 'promoter_setting',
+          content_key: 'use_agreement'
+        }
+      )
+      .then(response => {
+        resolve(response);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
+// 获取分销协议
+export function agreement() {
+  return new Promise((resolve, reject) => {
+    service
+      .search(
+        'post',
+        {
+          include: 'setting'
+        },
+        {
+          keyword: 'promoter_setting'
+        }
+      )
+      .then(response => {
+        const { agreement_content, agreement_title } = response.content;
+        resolve({
+          agreement_content: agreement_content,
+          agreement_title: agreement_title
+        });
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
+// 接令牌
+export function receiveRecruitToken() {
+  return new Promise((resolve, reject) => {
+    service
+      .promoter('get', {
+        behavior: 'recruiting'
+      })
+      .then(response => {
+        resolve(response);
+      })
+      .catch(error => {
         reject(error);
       });
   });
