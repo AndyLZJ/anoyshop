@@ -55,11 +55,14 @@
         <view class="task-user-tips"> {{ perfect.remark || '' }}</view>
         <view class="iconfont iconbtn_arrow"></view>
       </view>
-      <view
-        v-if="promoterStatus < 0"
-        class="he-item flex justify-between"
-        @click="navigateTo('/promoter/pages/recruit')"
-      >
+      <view v-if="promoterShow" class="he-item flex justify-between" @click="navigateTo('/promoter/pages/index')">
+        <view class="flex">
+          <view class="iconfont icona-personalcenter_distribution"></view>
+          <text class="he-text">分销商中心</text>
+        </view>
+        <view class="iconfont iconbtn_arrow"></view>
+      </view>
+      <view v-if="recruitingShow" class="he-item flex justify-between" @click="navigateTo('/promoter/pages/recruit')">
         <view class="flex">
           <view class="iconfont icona-personalcenter_distribution"></view>
           <text class="he-text">分销商招募令</text>
@@ -160,8 +163,11 @@ export default {
             })
         : null;
     },
-    promoterStatus({ $store }) {
-      return $store.state.apply.userInfo.promoter_status;
+    recruitingShow({ $store }) {
+      return $store.state.apply.userInfo.recruiting_show === 1;
+    },
+    promoterShow({ $store }) {
+      return $store.state.apply.userInfo.promoter_show === 1;
     }
   },
   /**

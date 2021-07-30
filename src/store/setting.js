@@ -94,7 +94,6 @@ const setting = {
     },
     getPicLimit: function (state) {
       let limit = state.setting.storage_limit.pic_limit;
-      console.log(limit);
       return limit * 1024 * 1024;
     },
     shareSetting: function (state) {
@@ -105,6 +104,10 @@ const setting = {
     },
     getOpeningad: function (state) {
       return state.setting.openingad;
+    },
+    // 获取分销设置
+    getPromoter: function (state) {
+      return state.setting.promoter_setting;
     }
   },
   actions: {

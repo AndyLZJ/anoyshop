@@ -130,3 +130,35 @@ export function receiveRecruitToken() {
       });
   });
 }
+
+// 申请检测
+export function applyMonitoring() {
+  return new Promise((resolve, reject) => {
+    service
+      .promoter('get', {
+        behavior: 'apply_check'
+      })
+      .then(response => {
+        resolve(response);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
+// 申请成为分销商
+export function applyPromoter(applyContent = []) {
+  return new Promise((resolve, reject) => {
+    service
+      .promoter('post', {
+        apply_content: applyContent
+      })
+      .then(response => {
+        resolve(response);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}

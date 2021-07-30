@@ -2,34 +2,74 @@
   <view class="he-page-content" :data-theme="theme" :class="loading ? 'flex justify-center align-center' : ''">
     <he-loading size="50" mode="flower" v-if="loading"></he-loading>
     <template v-else>
-      <template v-if="status === 0 || status === 1">
+      <template v-if="promoterStatus === -1 || promoterStatus === -2">
         <image :src="adsPictures" class="he-ads"></image>
-        <view class="he-card he-condition flex flex-direction align-center">
+        <!-- 满足条件： 满足的条件 -->
+        <view class="he-card he-condition flex flex-direction align-center" v-if="!isApply && type !== 1">
           <view class="flex align-center he-top">
-            <text class="iconfont iconwarning"></text>
-            <text class="he-title">很遗憾，您暂未满足成为分销商的条件</text>
+            <text class="iconfont" :class="status ? 'iconsuccess' : 'iconwarning'"></text>
+            <text class="he-title">
+              {{ !status ? '很遗憾，您暂未满足成为分销商的条件' : '恭喜您，您满足成为分销商的条件' }}
+            </text>
           </view>
           <view class="he-center">
-            累计消费次数需达到
-            <text class="he-hit">20</text>
-            ，方可申请成为分销商
+            <template v-if="!status">
+              <template v-if="type === 5">购买一件指定商品，方可申请成为分销商</template>
+              <template v-else-if="type === 4"> 购买任意一件商品，方可申请成为分销商 </template>
+              <template v-else-if="type === 3 || type === 2">
+                <template v-if="type === 3">
+                  累计消费次数需达到
+                  <text class="he-hit">{{ denominator }}</text>
+                </template>
+                <template v-else-if="type === 2">
+                  累计消费金额需达到
+                  <text class="he-hit">￥{{ denominator }}</text>
+                </template>
+                ，方可申请成为分销商
+              </template>
+            </template>
+            <template v-else>
+              <template v-if="type === 5">您已购买一件指定商品，可申请成为分销商</template>
+              <template v-else-if="type === 4"> 您已购买任意一件商品，可申请成为分销商 </template>
+              <template v-else-if="type === 3 || type === 2">
+                <template v-if="type === 3">
+                  您的累计消费次数已达到
+                  <text class="he-hit">{{ denominator }}</text>
+                </template>
+                <template v-else-if="type === 2">
+                  您的累计消费金额已达到
+                  <text class="he-hit">￥{{ denominator }}</text>
+                </template>
+                ，可申请成为分销商
+              </template>
+            </template>
           </view>
-          <view class="he-progress--bar">
-            <view class="he-progress" :animation="animationProgress">
-              <view class="he-slider"></view>
+          <template v-if="type === 3 || type === 2">
+            <view class="he-progress--bar">
+              <view class="he-progress" :animation="animationProgress">
+                <view class="he-slider"></view>
+              </view>
             </view>
-          </view>
-          <view class="he-bottom flex-sub flex justify-between align-center">
-            <view
-              >已消费
-              <text class="he-hit">12</text>
-              次
+            <view class="he-bottom flex-sub flex align-center" :class="status ? 'justify-end' : 'justify-between'">
+              <view>
+                已消费
+                <text class="he-hit">
+                  <template v-if="type === 2"> ￥ </template>
+                  {{ status ? denominator : numerator }}
+                </text>
+                <template v-if="type === 3"> 次 </template>
+              </view>
+              <view v-if="!status">
+                <template v-if="type === 2"> ￥ </template>
+                {{ denominator }}
+              </view>
             </view>
-            <view> 20 </view>
-          </view>
-          <button class="cu-btn he-btn" @click="routerIndex">去逛逛</button>
+          </template>
+          <button class="cu-btn he-btn" @click="routerIndex" v-if="!status">去逛逛</button>
+          <button class="cu-btn he-btn" v-else @click="apply">立即申请</button>
         </view>
-        <view class="he-card he-form" v-if="status === 1">
+        <!-- 满足条件： 需要填写信息 -->
+        <view class="he-card he-form" v-if="isApply && !!promoterSetting.need_apply">
           <view
             class="he-item he-hit"
             :style="[
@@ -67,13 +107,13 @@
         </view>
       </template>
       <!-- 提交成功 -->
-      <view v-else-if="status === 2" class="he-submit--box he-result--box flex flex-direction align-center">
+      <view v-if="promoterStatus === 1" class="he-submit--box he-result--box flex flex-direction align-center">
         <image class="he-image" :src="ipAddress + '/promoter/apply-submit.png'"></image>
         <text class="he-text">申请提交成功，请耐心等待</text>
         <button class="cu-btn he-go-btn" @click="routerIndex">去逛逛</button>
       </view>
       <!-- 商家拒绝 -->
-      <view v-else-if="status === 3" class="he-refuse--box he-result--box flex flex-direction align-center">
+      <view v-if="promoterStatus === 3" class="he-refuse--box he-result--box flex flex-direction align-center">
         <image class="he-image" :src="ipAddress + '/promoter/refuse-apply.png'"></image>
         <text class="he-text">不好意思，商家拒绝了您的申请</text>
         <text class="he-information--text">拒绝理由：暂时不招募新分销商了</text>
@@ -89,7 +129,8 @@
 <script>
 import heRadio from './../../components/he-radio.vue';
 import heLoading from '../../components/he-loading.vue';
-import { useAgreement } from '../api';
+import { applyMonitoring, applyPromoter, useAgreement } from '../api';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'apply',
@@ -101,27 +142,63 @@ export default {
     return {
       loading: true,
       isBeInvited: false,
+      // 是否统一协议
       isAgree: false,
-      status: 0,
       // 是否启用分销协议
       isAgreement: 0,
-      animationProgress: null
+      // 申请条件是否满足
+      status: false,
+      animationProgress: null,
+      type: 1, // 1 无条件 2 累计消费金额 3 累计消费次数 4 购买任意商品 5 购买指定商品
+      numerator: null,
+      denominator: null,
+      isApply: false,
+      // 是否为再次申请
+      isApplyAgain: false
     };
   },
   computed: {
     adsPictures({ ipAddress }) {
       return ipAddress + '/promoter/join-us.png';
-    }
+    },
+    promoterStatus({ $store }) {
+      return $store.state.apply.userInfo.promoter_status; // -2 清退后接到招募令 -1 接到招募令 0 普通用户 1 申请待审核 2 审核通过 3 已拒绝 4 已清退
+    },
+    ...mapGetters('setting', {
+      // 获取分销设置
+      promoterSetting: 'getPromoter'
+    })
   },
   mounted() {
     // 是否启用分销协议
     useAgreement().then(response => {
       this.isAgreement = response;
-      this.loading = false;
     });
-    this.progressAnimation();
+    console.log(this.promoterSetting);
+    // 接到招募令 检测申请条件是否满足
+    if (this.promoterStatus < 0) {
+      this.getMonitoring().then(response => {
+        this.loading = false;
+        // 异步保证元素存在
+        this.$nextTick(() => {
+          this.progressAnimation(response.percentage);
+        });
+      });
+    } else {
+      this.loading = false;
+    }
   },
   methods: {
+    // 进度条动画
+    progressAnimation(number) {
+      let pieceAnimation = uni.createAnimation({
+        duration: 500,
+        timingFunction: 'ease-in',
+        delay: 250
+      });
+      pieceAnimation.width(number + '%').step();
+      this.animationProgress = pieceAnimation.export();
+    },
     routerProtocol() {
       uni.navigateTo({
         url: '/promoter/pages/protocol'
@@ -133,24 +210,57 @@ export default {
         url: '/pages/index/index'
       });
     },
+    // 检测申请条件是否满足
+    async getMonitoring() {
+      const response = await applyMonitoring();
+      const { denominator, numerator, status, type } = response;
+      this.type = type;
+      if (this.type === 1) {
+        this.isApply = true;
+      }
+      this.status = status;
+      this.denominator = denominator; // 分母
+      this.numerator = numerator; // 分子
+      let percentage = 0;
+      if (status) {
+        percentage = 100;
+      } else {
+        percentage = (numerator / denominator) * 100;
+      }
+      return {
+        percentage
+      };
+    },
     // 再次申请
     applyAgain() {
-      this.status = 1;
+      this.isApply = true;
     },
     // 提交申请
-    submitApply() {
-      this.status = 2;
-    },
-    // 进度条动画
-    progressAnimation() {
-      console.log('12');
-      let pieceAnimation = uni.createAnimation({
-        duration: 500,
-        timingFunction: 'ease-in',
-        delay: 250
-      });
-      pieceAnimation.width('40%').step();
-      this.animationProgress = pieceAnimation.export();
+    submitApply() {},
+    // 立即申请
+    apply() {
+      // 是否需要填写申请信息
+      console.log('申请信息');
+      if (!!this.promoterSetting.need_apply) {
+        this.isApply = 1;
+      } else {
+        // 不需要填写申请信息 直接申请
+        applyPromoter().then(response => {
+          let userInfo = uni.getStorageSync('userInfo');
+          console.log(userInfo);
+          const { status } = response;
+          // status 1 待审核 2 审核通过
+          userInfo.promoter_status = status;
+          // promoter_show 原本就是1的话 是清退用户 入口一直存在 不需要修改
+          if (userInfo.promoter_show === 0 && status === 2) {
+            // 开启分销中心入口
+            userInfo.promoter_show = 1;
+          }
+          console.log(userInfo);
+          uni.setStorageSync('userInfo', userInfo);
+          console.log('申请成功！');
+        });
+      }
     }
   }
 };
@@ -357,11 +467,12 @@ export default {
     &:first-child {
       margin-right: 20px;
       height: 80px;
-      border: 1px solid #e60b30;
+      border: 1px solid transparent;
+      @include border_color('border_color');
       font-size: 28px;
       @extend .font-family-sc;
       font-weight: 500;
-      color: #e60b30;
+      @include font_color('font_color');
       border-radius: 40px;
       background-color: transparent;
       padding: 26px 64px;

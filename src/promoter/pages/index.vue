@@ -151,7 +151,7 @@
 </template>
 
 <script>
-import { goods } from '../api';
+import { goods, receiveRecruitToken } from '../api';
 import DownGrade from './components/downgrade.vue';
 export default {
   name: 'index',
@@ -207,7 +207,7 @@ export default {
       },
       good: {},
       animationData: {},
-      isDowngrade: true
+      isDowngrade: false
     };
   },
   computed: {
@@ -218,15 +218,16 @@ export default {
     }
   },
   mounted() {
-    // goods(
-    //   1,
-    //   {
-    //     sort_value: 'DESC'
-    //   },
-    //   1
-    // ).then(response => {
-    //   this.good = response.data[0];
-    // });
+    receiveRecruitToken();
+    goods(
+      1,
+      {
+        sort_value: 'DESC'
+      },
+      1
+    ).then(response => {
+      this.good = response.data[0];
+    });
     let animation = uni.createAnimation({
       duration: 500,
       timingFunction: 'ease-in',

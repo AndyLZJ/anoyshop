@@ -8,7 +8,7 @@
           <text>输入商品名称搜索</text>
         </button>
       </view>
-      <list-sort class="he-sort" first="佣金"></list-sort>
+      <list-sort class="he-sort" first="佣金" @sort="setSort"></list-sort>
     </view>
     <view class="he-list">
       <view class="he-item flex" v-for="item in list" :key="item.id" @tap="navigateTo(item)">
@@ -19,10 +19,10 @@
           >
           <view class="flex-sub"></view>
           <view class="he-item__footer flex justify-between align-center">
-            <text class="he-item__price">¥1480.00</text>
+            <text class="he-item__price">¥{{ item.price }}</text>
             <button class="cu-btn he-commission">
               <text class="iconfont iconproductdetails_share"></text>
-              <text>预计赚¥14.80</text>
+              <text>预计赚¥{{ item.commission }}</text>
             </button>
           </view>
         </view>
@@ -38,6 +38,7 @@
 import listSort from './../../components/list-sort.vue';
 import heNoContentYet from './../../components/he-no-content-yet.vue';
 import heLoadMore from './../../components/he-load-more.vue';
+import { goods } from '../api';
 
 export default {
   name: 'goods',
@@ -50,22 +51,71 @@ export default {
     return {
       showInput: false,
       search: '',
-      list: [{}, {}, {}, {}],
+      list: [],
       loadStatus: 'loadmore',
-      isNothing: true
+      isNothing: false,
+      page: {
+        current: 1,
+        pageCount: 1
+      },
+      sort: {
+        key: 'commission',
+        value: 'ASC'
+      }
     };
+  },
+  mounted() {
+    this.getList().then(() => {
+      if (this.$h.test.isEmpty(this.list)) {
+        this.isNothing = true;
+      }
+    });
   },
   methods: {
     blurInput() {
       if (this.$h.test.isEmpty(this.search)) {
         this.showInput = false;
       }
+      this.getList();
     },
     openInput() {
       this.showInput = !this.showInput;
       this.list = [];
+      this.isNothing = false;
     },
-    navigateTo(item) {}
+    setSort({ key, value }) {
+      key === 'sort' ? (key = 'commission') : key;
+      this.sort.key = key;
+      this.sort.value = value;
+      this.page.current = 1;
+      this.list = [];
+      this.getList();
+    },
+    navigateTo(item) {},
+    async getList() {
+      // 排序  佣金commission  销量sales  价格price  最新created_time
+      const response = await goods(this.page.current, {
+        sort_value: this.sort.value,
+        sort_key: this.sort.key,
+        search: this.search
+      });
+      const { data, pagination } = response;
+      this.list = this.list.concat(data);
+      this.page.pageCount = pagination.pageCount;
+      const { pageCount, current } = this.page;
+      if (current === pageCount) {
+        this.loadStatus = 'nomore';
+      }
+    }
+  },
+  onReachBottom() {
+    if (this.page.pageCount > this.page.current) {
+      this.page.current++;
+      this.loadStatus = 'loading';
+      this.getList().then(() => {
+        this.loadStatus = 'loadmore';
+      });
+    }
   }
 };
 </script>

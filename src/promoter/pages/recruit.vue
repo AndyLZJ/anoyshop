@@ -15,9 +15,10 @@
 </template>
 
 <script>
-import { recruit } from '../api';
+import { applyPromoter, recruit } from '../api';
 import heRich from './../../components/he-html/he-html.vue';
 import heLoading from '../../components/he-loading.vue';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'recruit',
@@ -33,10 +34,16 @@ export default {
       loading: true
     };
   },
+  computed: {
+    ...mapGetters('setting', {
+      // 获取分销设置
+      promoterSetting: 'getPromoter'
+    })
+  },
   mounted() {
     recruit().then(response => {
       uni.setNavigationBarTitle({
-        title: response.title
+        title: response.title ? response.title : '招募令'
       });
       this.content = response.content;
       this.loading = false;
@@ -49,9 +56,23 @@ export default {
   methods: {
     routerApply() {
       if (this.finishRead) {
-        uni.navigateTo({
-          url: '/promoter/pages/apply'
-        });
+        const { conditions, need_apply } = this.promoterSetting;
+        // need_apply 申请信息  0无需填写  1需填写
+        // conditions.type 满足条件 1无条件  2累计消费金额  3累计消费次数  4购买任意商品   5购买指定商品
+        if (conditions.type === 1 && !need_apply) {
+          console.log('无需条件');
+          // 申请分销商
+          applyPromoter().then(() => {
+            // 跳转分销中心
+            uni.navigateTo({
+              url: '/promoter/pages/index'
+            });
+          });
+        } else {
+          uni.navigateTo({
+            url: '/promoter/pages/apply'
+          });
+        }
       }
     },
     // 跳转到首页
