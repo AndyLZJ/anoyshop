@@ -305,6 +305,7 @@ export default {
           this.handlePageLoading();
         }, 1000);
       } else {
+        console.log('1');
         uni.showTabBar();
         this.handlePageLoading();
       }

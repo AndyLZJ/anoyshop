@@ -72,7 +72,7 @@ export default class heshop {
       if (!this.instance) {
         this.instance = [];
       }
-      if (this.instance.indexOf(config.AppID) == -1) {
+      if (this.instance.indexOf(config.AppID) === -1) {
         this.instance[config.AppID] = this.get_proxy(config);
       }
       this.config = config;
@@ -88,7 +88,7 @@ export default class heshop {
    * @return {[type]}        [description]
    */
   static get_proxy(config) {
-    var _Proxy = new Proxy(new cloud(config, this), {
+    let _Proxy = new Proxy(new cloud(config, this), {
       _upload: false,
       _validator: {},
       //此处不能使用()=> 否者会导致get方法内的this指向为basics从而this._validator获取失败

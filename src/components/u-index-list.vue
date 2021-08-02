@@ -35,10 +35,10 @@
 </template>
 
 <script>
-var indexList = function () {
-  var indexList = [];
-  var charCodeOfA = 'A'.charCodeAt(0);
-  for (var i = 0; i < 26; i++) {
+let indexList = function () {
+  let indexList = [];
+  let charCodeOfA = 'A'.charCodeAt(0);
+  for (let i = 0; i < 26; i++) {
     indexList.push(String.fromCharCode(charCodeOfA + i));
   }
   return indexList;
@@ -255,7 +255,6 @@ export default {
     }
   },
   mounted() {
-    // this.setRect();
     setTimeout(() => {
       this.setRect();
     });

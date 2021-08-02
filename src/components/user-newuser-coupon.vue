@@ -132,7 +132,7 @@ export default {
   width: 630px;
   margin: 0 auto;
   background: #ee4444;
-  border-radius: 0px 0px 16px 16px;
+  border-radius: 0 0 16px 16px;
   padding: 32px 32px 0 32px;
   .le-body {
     min-height: 160px;

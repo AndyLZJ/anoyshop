@@ -48,9 +48,6 @@ const setting = {
     tradeSetting: function (state) {
       return state.setting.setting_collection.trade_setting;
     },
-    storagePicLimit: function (state) {
-      return Number(state.setting.storage_limit.pic_limit) * 1048576;
-    },
     getLocation: function (state) {
       return state.location;
     },
@@ -121,6 +118,7 @@ const setting = {
         .setting('get')
         .then(function (res) {
           commit('setting', res);
+          console.log(res);
           uni.setStorageSync($storageKey.setting, res);
         })
         .catch(function (err) {

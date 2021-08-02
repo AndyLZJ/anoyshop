@@ -83,4 +83,5 @@ const initRouter = (routerMap = {}, isCustom = false) => {
     console.log('错误：', e.message || '路由跳转失败');
   });
 };
+
 export default initRouter;

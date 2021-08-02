@@ -1,9 +1,6 @@
 <template>
   <view class="he-page-content">
-    <view
-      v-if="cartLoading"
-      class="flex align-center justify-center he-loading-require"
-    >
+    <view v-if="cartLoading" class="flex align-center justify-center he-loading-require">
       <he-loading mode="flower"></he-loading>
     </view>
     <cart-empty v-if="isEmpty"></cart-empty>
@@ -14,9 +11,7 @@
             <text class="iconfont iconshoppingcart_shopname"></text>
             <text class="he-shop-name">{{ storeSetting.name }}</text>
           </view>
-          <view class="he-button" @click="setEdit">{{
-            isEdit ? "完成" : "编辑"
-          }}</view>
+          <view class="he-button" @click="setEdit">{{ isEdit ? '完成' : '编辑' }}</view>
         </view>
         <view class="he-body">
           <cart-item
@@ -60,16 +55,11 @@
         :show.sync="shopping"
       ></he-cart>
     </template>
-    <he-products-featured
-      v-if="goodsSetting.recommend_showpage.cart.value"
-    ></he-products-featured>
+    <he-products-featured v-if="goodsSetting.recommend_showpage.cart.value"></he-products-featured>
     <view class="he-bottom" v-if="!isEmpty"></view>
     <he-toast v-model="isLoading">
       <view class="he-loading flex flex-direction align-center">
-        <image
-          class="he-loading__image"
-          :src="ipAddress + '/cart-image-loading.gif'"
-        ></image>
+        <image class="he-loading__image" :src="ipAddress + '/cart-image-loading.gif'"></image>
         <text>加载中...</text>
       </view>
     </he-toast>
@@ -77,17 +67,17 @@
 </template>
 
 <script>
-import cartSettlement from "./components/cart-settlement.vue";
-import cartEmpty from "./components/cart-empty.vue";
-import heToast from "../../components/he-toast.vue";
-import heCart from "../../components/he-cart.vue";
-import cartItem from "./components/cart-item.vue";
-import heProductsFeatured from "../../components/he-products-featured.vue";
-import heLoading from "../../components/he-loading";
-import { mapGetters } from "vuex";
+import cartSettlement from './components/cart-settlement.vue';
+import cartEmpty from './components/cart-empty.vue';
+import heToast from '../../components/he-toast.vue';
+import heCart from '../../components/he-cart.vue';
+import cartItem from './components/cart-item.vue';
+import heProductsFeatured from '../../components/he-products-featured.vue';
+import heLoading from '../../components/he-loading';
+import { mapGetters } from 'vuex';
 
 export default {
-  name: "index",
+  name: 'index',
   components: {
     cartSettlement,
     cartEmpty,
@@ -95,7 +85,7 @@ export default {
     heCart,
     cartItem,
     heLoading,
-    heProductsFeatured,
+    heProductsFeatured
   },
   data() {
     return {
@@ -110,33 +100,29 @@ export default {
       selectObj: {},
       shopping: false,
       detail: {
-        param: {},
+        param: {}
       },
-      key: "",
-      cartLoading: false,
+      key: '',
+      cartLoading: false
     };
   },
   computed: {
     isLogin: function () {
       return this.$store.state.apply.is_login;
     },
-    ...mapGetters("setting", {
-      goodsSetting: "goodsSetting",
+    ...mapGetters('setting', {
+      goodsSetting: 'goodsSetting'
     }),
     isEmpty: function () {
-      return (
-        this.$h.test.isEmpty(this.failure) &&
-        this.$h.test.isEmpty(this.list) &&
-        !this.isLoading
-      );
-    },
+      return this.$h.test.isEmpty(this.failure) && this.$h.test.isEmpty(this.list) && !this.isLoading;
+    }
   },
   methods: {
     getList: function () {
       let _this = this;
       return new Promise(function (resolve) {
         _this.$heshop
-          .cart("get")
+          .cart('get')
           .then(function (res) {
             _this.isLoading = false;
             res.normal.forEach(function (item) {
@@ -162,12 +148,12 @@ export default {
         if (this.list[i].is_select) data.push(this.list[i]);
       }
       uni.navigateTo({
-        url: "/pages/order/submit",
+        url: '/pages/order/submit',
         success: function (res) {
-          res.eventChannel.emit("acceptDataFromOpenerPage", {
-            data: data,
+          res.eventChannel.emit('acceptDataFromOpenerPage', {
+            data: data
           });
-        },
+        }
       });
     },
     del: function () {
@@ -182,7 +168,7 @@ export default {
         let _this = this;
         _this.isEdit = false;
         this.$heshop
-          .cart("delete", data)
+          .cart('delete', data)
           .then(function () {
             for (let i = 0; i < _this.list.length; i++) {
               for (let j = 0; j < data.length; j++) {
@@ -203,7 +189,7 @@ export default {
             _this.$toError(err);
           });
       } else {
-        this.$h.toast("您还没有选择宝贝哦");
+        this.$h.toast('您还没有选择宝贝哦');
       }
     },
     setRadio: function (index, key) {
@@ -212,9 +198,9 @@ export default {
     setNumber: function (obj, key) {
       let _this = this;
       this.$heshop
-        .cart("put", this[key][obj.index].id, {
+        .cart('put', this[key][obj.index].id, {
           goods_number: obj.value,
-          goods_param: this[key][obj.index].goods_param,
+          goods_param: this[key][obj.index].goods_param
         })
         .then(function () {
           _this[key][obj.index].goods_number = obj.value;
@@ -226,9 +212,9 @@ export default {
     setParam: function (item) {
       let _this = this;
       this.$heshop
-        .cart("put", item.cart_id, {
+        .cart('put', item.cart_id, {
           goods_param: item.param_value,
-          goods_number: item.goods_number,
+          goods_number: item.goods_number
         })
         .then(function (res) {
           for (let i = 0; i < _this[_this.key].length; i++) {
@@ -257,8 +243,8 @@ export default {
       let _this = this;
       this.key = key;
       this.$heshop
-        .goods("get", item.goods_id, {
-          type: "param",
+        .goods('get', item.goods_id, {
+          type: 'param'
         })
         .then(function (res) {
           _this.shopping = true;
@@ -299,7 +285,7 @@ export default {
           this.list[i].is_select = bool;
         }
       }
-    },
+    }
   },
   onLoad() {
     let _this = this;
@@ -342,30 +328,27 @@ export default {
               num++;
             }
           }
-          if (
-            num + this.select.length ===
-            this.failure.length + this.list.length
-          ) {
+          if (num + this.select.length === this.failure.length + this.list.length) {
             this.all = true;
           } else {
             this.all = false;
           }
         }
         this.total = all;
-        goodsnum = goodsnum > 99 ? "99+" : goodsnum + "";
-        let index = this.$store.getters["setting/getCartIndex"];
+        goodsnum = goodsnum > 99 ? '99+' : goodsnum + '';
+        let index = this.$store.getters['setting/getCartIndex'];
         if (goodsnum != 0) {
           uni.setTabBarBadge({
             index: index,
-            text: goodsnum,
+            text: goodsnum
           });
         } else {
           uni.removeTabBarBadge({
-            index: index,
+            index: index
           });
         }
       },
-      deep: true,
+      deep: true
     },
     failure: {
       handler(newVal) {
@@ -376,42 +359,39 @@ export default {
           }
         }
         if (this.isEdit) {
-          if (
-            num + this.select.length ===
-            this.failure.length + this.list.length
-          ) {
+          if (num + this.select.length === this.failure.length + this.list.length) {
             this.all = true;
           } else {
             this.all = false;
           }
         }
       },
-      deep: true,
+      deep: true
     },
-    "$store.state.cart.cart_add": {
+    '$store.state.cart.cart_add': {
       handler(val) {
         let _this = this;
         if (val) {
           this.getList().then(function () {
-            _this.$store.commit("cart/setCartAdd", false);
+            _this.$store.commit('cart/setCartAdd', false);
           });
-          let index = this.$store.getters["setting/getCartIndex"];
-          this.$store.dispatch("cart/getCartNumber").then((response) => {
+          let index = this.$store.getters['setting/getCartIndex'];
+          this.$store.dispatch('cart/getCartNumber').then(response => {
             if (response !== 0) {
               uni.setTabBarBadge({
                 index: index,
-                text: response + "",
+                text: response + ''
               });
             } else {
               uni.removeTabBarBadge({
-                index: index,
+                index: index
               });
             }
-            this.$store.commit("cart/cartNum", false);
+            this.$store.commit('cart/cartNum', false);
           });
         }
-      },
-    },
+      }
+    }
   },
   onPullDownRefresh() {
     this.getList();
@@ -422,19 +402,23 @@ export default {
   },
   onShow() {
     if (this.isLogin) {
-      let index = this.$store.getters["setting/getCartIndex"];
+      let index = this.$store.getters['setting/getCartIndex'];
       if (index > -1) {
-        this.$store.dispatch("cart/getCartNumber").then((response) => {
+        this.$store.dispatch('cart/getCartNumber').then(response => {
           if (response !== 0) {
             uni.setTabBarBadge({
               index: index,
-              text: response + "",
+              text: response + ''
+            });
+          } else {
+            uni.removeTabBarBadge({
+              index: index
             });
           }
         });
       }
     }
-  },
+  }
 };
 </script>
 

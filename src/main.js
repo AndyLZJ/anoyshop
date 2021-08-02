@@ -98,6 +98,7 @@ Vue.prototype.$storageKey = storageKey;
 // #ifdef H5
 Vue.prototype.$wechat = WeChat;
 Vue.config.ignoredElements.push('wx-open-subscribe');
+Vue.config.ignoredElements.push('wx-open-launch-weapp');
 // #endif
 
 const app = new Vue({

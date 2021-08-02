@@ -83,9 +83,9 @@
         <view class="iconfont iconpersonalcenter_contactus"></view>
         <view class="he-content-text">
           <view class="he-text">在线客服</view>
-          <view class="he-time" v-if="isEmpty(storeSetting.contact.online)">{{
-            storeSetting.contact.online.time
-          }}</view>
+          <view class="he-time" v-if="isEmpty(storeSetting.contact.online)"
+            >{{ storeSetting.contact.online.time }}
+          </view>
         </view>
       </view>
       <view class="iconfont iconbtn_arrow"></view>
@@ -96,9 +96,9 @@
         <view class="iconfont iconpersonalcenter_add"></view>
         <view class="he-content-text">
           <view class="he-text">加好友联系</view>
-          <view class="he-time" v-if="isEmpty(storeSetting.contact.friend)">{{
-            storeSetting.contact.friend.time
-          }}</view>
+          <view class="he-time" v-if="isEmpty(storeSetting.contact.friend)"
+            >{{ storeSetting.contact.friend.time }}
+          </view>
         </view>
       </view>
       <view class="iconfont iconbtn_arrow"></view>
@@ -110,7 +110,7 @@
     <!--绑定手机-->
     <user-bind-phone v-model="isBind"></user-bind-phone>
     <template v-for="(item, index) in popupsList">
-      <taskpopups :key="index" v-model="item.display" :title="item.remark" :index="index"></taskpopups>
+      <taskPopups :key="index" v-model="item.display" :title="item.remark" :index="index" />
     </template>
   </view>
 </template>
@@ -119,8 +119,7 @@ import userQrcode from './user-qrcode.vue';
 import heClearStorage from '@/components/he-clear-storage.vue';
 import userBindPhone from './user-bind-phone.vue';
 import heTell from '@/components/he-tell.vue';
-
-import taskpopups from '@/plugins/task/components/popups.vue';
+import taskPopups from './../../../plugins/task/components/popups.vue';
 
 export default {
   name: 'user-features',
@@ -129,7 +128,7 @@ export default {
     heClearStorage,
     userBindPhone,
     heTell,
-    taskpopups
+    taskPopups
   },
   computed: {
     // 获取绑定手机号码
@@ -168,22 +167,12 @@ export default {
       is_binding: false
     };
   },
-  /**
-   * 页面加载执行
-   * @return {[type]} [description]
-   */
-  mounted() {
-    //this.handleLoad();
-    console.log('获取父级', this);
-  },
   methods: {
     handleLoad() {
-      console.log('执行我了呀，真的真的');
       this.popupsList = [];
       this.statusTaskBinding();
       this.statusTaskPerfect();
     },
-
     /**
      * 签到列表计算
      * @return {[type]} [description]
@@ -429,7 +418,7 @@ export default {
   font-family: PingFang SC;
   font-weight: 500;
   color: #e60b30;
-  line-height: 78rpx;
+  line-height: 78px;
   width: 50%;
   z-index: 1;
   position: absolute;
