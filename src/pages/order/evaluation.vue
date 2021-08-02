@@ -143,8 +143,6 @@ export default {
               order_goods_id: res.goods[0].id
             });
           }
-          console.log(_this.detail);
-          console.log(_this.form);
         })
         .catch(function (err) {
           _this.$toError(err);

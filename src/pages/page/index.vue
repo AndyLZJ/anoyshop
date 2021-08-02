@@ -196,7 +196,7 @@ export default {
             title: data.name
           });
           //#ifdef H5
-          document.title = value?.name;
+          document.title = data.name;
           //#endif
           console.log(data);
           console.log('bshh');

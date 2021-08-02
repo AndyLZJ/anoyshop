@@ -48,10 +48,10 @@ export default {
   },
   computed: {
     subTemplateId: function () {
-      let tpl = [
-        this.$store.getters['setting/subscribe'].order_pay,
-        this.$store.getters['setting/subscribe'].order_send
-      ];
+      let tpl = [];
+      const { order_pay, order_send } = this.$store.getters['setting/subscribe'];
+      order_pay ? tpl.push(order_pay) : null;
+      order_send ? tpl.push(order_send) : null;
       if (this.$manifest('task', 'status')) {
         tpl.push(this.$store.getters['setting/subscribe'].task_refund_tpl);
       }

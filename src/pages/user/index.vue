@@ -1,15 +1,7 @@
-<!--
- * @Description:
- * @Author: fjt
- * @Date: 2021-05-18 13:49:46
- * @LastEditTime: 2021-06-18 10:23:16
- * @LastEditors: fjt
--->
 <template>
   <view class="he-page-content">
     <view class="le-content">
-      <user-top></user-top>
-      <!--<user-coupon></user-coupon> -->
+      <userTop />
       <view class="user-task" v-if="isLogin">
         <view class="user-task_item" @click="navToTask">
           <view>
@@ -24,9 +16,6 @@
             {{ taskTipsShow }}
           </view>
           <view class="user-task_item__explain" v-else> 积分 </view>
-          <!--           <view class="user-task_item__tips" v-if="!taskNumber && signNumber">
-            签到+{{signNumber}}积分
-          </view> -->
           <img src="@/static/img/task_score_icon.png" class="user-task_icon" />
         </view>
         <view class="user-task_item" @click="navToCoupon">
@@ -39,16 +28,17 @@
           <img src="@/static/img/task_coupon_icon.png" class="user-task_icon" />
         </view>
       </view>
-      <user-my-order></user-my-order>
-      <user-features ref="features"></user-features>
-      <he-products-featured v-if="goodsSetting.recommend_showpage.personal_center.value"></he-products-featured>
+      <userMyOrder />
+      <userFeatures ref="features" />
+      <heProductsFeatured v-if="goodsSetting.recommend_showpage.personal_center.value" />
     </view>
     <template v-for="(item, index) in popupsList">
-      <taskpopups :key="index" v-model="item.display" :title="item.remark" :index="index"></taskpopups>
+      <taskPopups :key="index" v-model="item.display" :title="item.remark" :index="index" />
     </template>
     <he-copyright></he-copyright>
   </view>
 </template>
+
 <script>
 import userTop from './components/user-top.vue';
 import userCoupon from './components/user-coupon.vue';
@@ -56,7 +46,7 @@ import userMyOrder from './components/user-my-order.vue';
 import userFeatures from './components/user-features.vue';
 import heProductsFeatured from '../../components/he-products-featured.vue';
 import heCopyright from './components/he-copyright.vue';
-import taskpopups from '@/plugins/task/components/popups.vue';
+import taskPopups from '../../plugins/task/components/popups.vue';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -67,7 +57,7 @@ export default {
     heProductsFeatured,
     heCopyright,
     userCoupon,
-    taskpopups
+    taskPopups
   },
   data() {
     return {
@@ -119,19 +109,6 @@ export default {
       }
       this.taskTips = '';
       return false;
-    },
-    mobile: function () {
-      let data = this.$store.state.apply.userInfo.mobile;
-      if (!data) return null;
-      data = data + '';
-      return data
-        ? data
-            .match(/(\d{3})(\d{4})(\d{4})/)
-            .slice(1)
-            .reduce(function (value, item, index) {
-              return index === 1 ? value + '****' : value + item;
-            })
-        : null;
     }
   },
   methods: {
@@ -190,7 +167,7 @@ export default {
           this.userTask = res;
           this.handleTaskLog();
         })
-        .catch(err => {});
+        .catch(() => {});
     },
     /**
      * 获取日志
@@ -207,7 +184,7 @@ export default {
           }
           this.taskNumber = taskNumber;
         })
-        .catch(err => {});
+        .catch(() => {});
     },
     /**
      * 获取日志
@@ -226,7 +203,13 @@ export default {
              * @return {[type]}     [description]
              */
             that.$heshop
-              .plugin('get', { include: 'task', model: 'score', type: 'single', keyword: 'signin', status: 1 })
+              .plugin('get', {
+                include: 'task',
+                model: 'score',
+                type: 'single',
+                keyword: 'signin',
+                status: 1
+              })
               .then(v => {
                 if (v) {
                   that.signNumber = 0;
@@ -234,7 +217,7 @@ export default {
                   that.signNumber = res.acquire;
                 }
               })
-              .catch(err => {
+              .catch(() => {
                 console.log('查看错误信息');
               });
           }
@@ -248,7 +231,7 @@ export default {
      * @return {[type]} [description]
      */
     sprintf() {
-      var arg = arguments,
+      let arg = arguments,
         str = arg[0] || '',
         i,
         n;
@@ -257,33 +240,6 @@ export default {
       }
       return str;
     }
-    // /**
-    //  * 签到列表计算
-    //  * @return {[type]} [description]
-    //  */
-    // handleTaskPerfect() {
-    //   const value = uni.getStorageSync('handleTaskPerfect');
-    //   if (value) {
-    //     return true
-    //   }
-    //   /**
-    //    * 处理数据
-    //    * @param  {[type]} res [description]
-    //    * @return {[type]}     [description]
-    //    */
-    //   this.$heshop.plugin("get", { include: "task", model: "score", type: 'single', keyword: 'perfect', status: 0 }).then(res => {
-    //     console.log("获取绑定用户信息结果", res)
-    //     if (res) {
-    //       this.popupsList.push({
-    //         display: true,
-    //         remark: res.remark
-    //       })
-    //       uni.setStorageSync('handleTaskPerfect', 1);
-    //     }
-    //   }).catch(err => {
-    //     console.log("err", err)
-    //   })
-    // },
   },
   onShow() {
     if (this.isLogin) {
@@ -301,11 +257,11 @@ export default {
         this.handleTaskInvite();
       }, 1000);
     }
-
     uni.login();
   }
 };
 </script>
+
 <style lang="less">
 .he-page-content {
   overflow: hidden;
