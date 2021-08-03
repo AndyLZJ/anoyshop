@@ -218,7 +218,7 @@ export default {
     }
   },
   mounted() {
-    receiveRecruitToken();
+    // receiveRecruitToken();
     goods(
       1,
       {
