@@ -105,6 +105,9 @@ const setting = {
     },
     getOpeningad: function (state) {
       return state.setting.openingad;
+    },
+    getCopyright(state) {
+      return state.setting.copyright_information;
     }
   },
   actions: {
