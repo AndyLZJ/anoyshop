@@ -1,15 +1,17 @@
 <template>
   <view class="he-specs"> </view>
 </template>
+
 <script type="text/javascript">
 export default {
   data() {
     return {};
   },
   methods: {},
-  onLoad() {},
+  onLoad() {}
 };
 </script>
+
 <style lang="scss" scoped>
 .he-specs {
   height: 80%;

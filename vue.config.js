@@ -1,10 +1,3 @@
-/*
- * @Description:
- * @Author: qinuoyun
- * @Date: 2020-11-23 16:45:10
- * @LastEditTime: 2021-05-25 09:09:09
- * @LastEditors: fjt
- */
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin'); //最新版本copy-webpack-plugin插件暂不兼容，推荐v5.0.0
 

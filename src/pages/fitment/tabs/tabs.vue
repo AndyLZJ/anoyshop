@@ -7,7 +7,7 @@
       scroll-x="true"
       :style="{
         top: top + 'px',
-        background: facade.background_color ? facade.background_color : '#fff',
+        background: facade.background_color ? facade.background_color : '#fff'
       }"
     >
       <view class="he-scroll-box flex">
@@ -33,31 +33,31 @@
   </view>
 </template>
 <script type="text/javascript">
-import Goods from "../goods/goods.vue";
-import { mapGetters } from "vuex";
+import Goods from '../goods/goods.vue';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
-    Goods,
+    Goods
   },
   props: {
     facade: {
       type: [Object, Array],
       default: function () {
         return {
-          background_color: "#7f7f7f",
+          background_color: '#7f7f7f'
         };
-      },
+      }
     },
     content: {
-      type: [Object, Array],
+      type: [Object, Array]
     },
     dataIndex: {
-      type: Number,
+      type: Number
     },
     pageIndex: {
-      type: Number,
-    },
+      type: Number
+    }
   },
   data() {
     return {
@@ -65,7 +65,7 @@ export default {
       active: false,
       select: 0,
       scrollWdith: 0,
-      halfWidth: null,
+      halfWidth: null
     };
   },
   /**
@@ -80,7 +80,7 @@ export default {
           ...data,
           is_title: this.content.is_title,
           is_price: this.content.is_price,
-          is_button: this.content.is_button,
+          is_button: this.content.is_button
         };
       }
       return {
@@ -89,29 +89,29 @@ export default {
         group: {},
         is_title: this.content.is_title,
         is_price: this.content.is_price,
-        is_button: this.content.is_button,
+        is_button: this.content.is_button
       };
     },
     ...mapGetters({
-      searchHeight: "components/getSearchHeight",
-      searchIndex: "components/getSearchIndex",
-      navbarHeight: "setting/getNavBarHeight",
-      statusBarHeight: "setting/statusBarHeight",
+      searchHeight: 'components/getSearchHeight',
+      searchIndex: 'components/getSearchIndex',
+      navbarHeight: 'setting/getNavBarHeight',
+      statusBarHeight: 'setting/statusBarHeight'
     }),
     top: function () {
       return this.navbarHeight + this.statusBarHeight;
-    },
+    }
   },
   /**
    * 页面加载执行
    * @return {[type]} [description]
    */
   async mounted() {
-    this.getElRect("tabs-header").then((res) => {
+    this.getElRect('tabs-header').then(res => {
       this.halfWidth = res.width / 2;
     });
     for (let i = 0; i < this.content.data.length; i++) {
-      this.getElRect("he-tab-item_" + i).then((res) => {
+      this.getElRect('he-tab-item_' + i).then(res => {
         this.content.data[i].rect = res;
       });
     }
@@ -122,7 +122,7 @@ export default {
         ...data,
         is_title: this.content.is_title,
         is_price: this.content.is_price,
-        is_button: this.content.is_button,
+        is_button: this.content.is_button
       };
     },
     radioChange(index) {
@@ -136,11 +136,11 @@ export default {
       }
     },
     getElRect(elClass) {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const query = uni.createSelectorQuery().in(this);
         query
-          .select("." + elClass)
-          .boundingClientRect((res) => {
+          .select('.' + elClass)
+          .boundingClientRect(res => {
             if (!res) {
               setTimeout(() => {
                 this.getElRect(elClass);
@@ -151,10 +151,11 @@ export default {
           })
           .exec();
       });
-    },
-  },
+    }
+  }
 };
 </script>
+
 <style lang="less" scoped>
-@import "./element.less";
+@import './element.less';
 </style>

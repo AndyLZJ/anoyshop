@@ -1,11 +1,16 @@
 <template>
-  <view :class="(selectable?'_select ':'')+'_root'">
+  <view :class="(selectable ? '_select ' : '') + '_root'">
     <slot v-if="!nodes[0]" />
     <!-- #ifndef APP-PLUS-NVUE -->
-    <node v-else :childs="nodes" :opts="[lazyLoad,loadingImg,errorImg,showImgMenu]" />
+    <node v-else :childs="nodes" :opts="[lazyLoad, loadingImg, errorImg, showImgMenu]" />
     <!-- #endif -->
     <!-- #ifdef APP-PLUS-NVUE -->
-    <web-view ref="web" src="/static/app-plus/mp-html/local.html" :style="'margin-top:-2px;height:' + height + 'px'" @onPostMessage="_onMessage" />
+    <web-view
+      ref="web"
+      src="/static/app-plus/mp-html/local.html"
+      :style="'margin-top:-2px;height:' + height + 'px'"
+      @onPostMessage="_onMessage"
+    />
     <!-- #endif -->
   </view>
 </template>
@@ -34,13 +39,13 @@
  * @event {Function} linkTap 链接被点击时触发
  * @event {Function} error 媒体加载出错时触发
  */
-const plugins=[]
-const parser = require('./parser')
+const plugins = [];
+const parser = require('./parser');
 // #ifndef APP-PLUS-NVUE
-import node from './node/node'
+import node from './node/node';
 // #endif
 // #ifdef APP-PLUS-NVUE
-const dom = weex.requireModule('dom')
+const dom = weex.requireModule('dom');
 // #endif
 export default {
   name: 'mp-html',
@@ -50,7 +55,7 @@ export default {
       // #ifdef APP-PLUS-NVUE
       height: 0
       // #endif
-    }
+    };
   },
   props: {
     // #ifdef APP-PLUS-NVUE
@@ -84,7 +89,7 @@ export default {
       default: true
     },
     tagStyle: Object,
-    useAnchor: null,
+    useAnchor: null
   },
   // #ifndef APP-PLUS-NVUE
   components: {
@@ -93,21 +98,19 @@ export default {
   // #endif
   watch: {
     content(content) {
-      this.setContent(content)
+      this.setContent(content);
     }
   },
   created() {
-    this.plugins = []
-    for (var i = plugins.length; i--;)
-      this.plugins.push(new plugins[i](this))
+    this.plugins = [];
+    for (var i = plugins.length; i--; ) this.plugins.push(new plugins[i](this));
   },
   mounted() {
-    if (this.content && !this.nodes.length)
-      this.setContent(this.content);
+    if (this.content && !this.nodes.length) this.setContent(this.content);
   },
   beforeDestroy() {
-    this._hook('onDetached')
-    clearInterval(this._timer)
+    this._hook('onDetached');
+    clearInterval(this._timer);
   },
   methods: {
     /**
@@ -123,7 +126,7 @@ export default {
           page,
           selector,
           scrollTop
-        }
+        };
       // #endif
     },
 
@@ -135,56 +138,56 @@ export default {
      */
     navigateTo(id, offset) {
       return new Promise((resolve, reject) => {
-        if (!this.useAnchor)
-          return reject('Anchor is disabled')
-        offset = offset || parseInt(this.useAnchor) || 0
+        if (!this.useAnchor) return reject('Anchor is disabled');
+        offset = offset || parseInt(this.useAnchor) || 0;
         // #ifdef APP-PLUS-NVUE
         if (!id) {
           dom.scrollToElement(this.$refs.web, {
             offset
-          })
-          resolve()
+          });
+          resolve();
         } else {
           this._navigateTo = {
             resolve,
             reject,
             offset
-          }
-          this.$refs.web.evalJs('uni.postMessage({data:{action:"getOffset",offset:(document.getElementById(' + id + ')||{}).offsetTop}})')
+          };
+          this.$refs.web.evalJs(
+            'uni.postMessage({data:{action:"getOffset",offset:(document.getElementById(' + id + ')||{}).offsetTop}})'
+          );
         }
         // #endif
         // #ifndef APP-PLUS-NVUE
-        var deep = ' '
+        var deep = ' ';
         // #ifdef MP-WEIXIN || MP-QQ || MP-TOUTIAO
-        deep = '>>>'
+        deep = '>>>';
         // #endif
-        var selector = uni.createSelectorQuery()
+        var selector = uni
+          .createSelectorQuery()
           // #ifndef MP-ALIPAY
           .in(this._in ? this._in.page : this)
           // #endif
-          .select((this._in ? this._in.selector : '._root') + (id ? `${deep}#${id}` : '')).boundingClientRect()
-        if (this._in)
-          selector.select(this._in.selector).scrollOffset()
-            .select(this._in.selector).boundingClientRect() // 获取 scroll-view 的位置和滚动距离
-        else
-          selector.selectViewport().scrollOffset() // 获取窗口的滚动距离
+          .select((this._in ? this._in.selector : '._root') + (id ? `${deep}#${id}` : ''))
+          .boundingClientRect();
+        if (this._in) selector.select(this._in.selector).scrollOffset().select(this._in.selector).boundingClientRect();
+        // 获取 scroll-view 的位置和滚动距离
+        else selector.selectViewport().scrollOffset(); // 获取窗口的滚动距离
         selector.exec(res => {
-          if (!res[0])
-            return reject('Label not found')
-          var scrollTop = res[1].scrollTop + res[0].top - (res[2] ? res[2].top : 0) + offset
+          if (!res[0]) return reject('Label not found');
+          var scrollTop = res[1].scrollTop + res[0].top - (res[2] ? res[2].top : 0) + offset;
           if (this._in)
             // scroll-view 跳转
-            this._in.page[this._in.scrollTop] = scrollTop
+            this._in.page[this._in.scrollTop] = scrollTop;
+          // 页面跳转
           else
-            // 页面跳转
             uni.pageScrollTo({
               scrollTop,
               duration: 300
-            })
-          resolve()
-        })
+            });
+          resolve();
+        });
         // #endif
-      })
+      });
     },
 
     /**
@@ -195,27 +198,26 @@ export default {
       var text = '';
       (function traversal(nodes) {
         for (var i = 0; i < nodes.length; i++) {
-          var node = nodes[i]
-          if (node.type == 'text')
-            text += node.text.replace(/&amp;/g, '&')
-          else if (node.name == 'br')
-            text += '\n'
+          var node = nodes[i];
+          if (node.type == 'text') text += node.text.replace(/&amp;/g, '&');
+          else if (node.name == 'br') text += '\n';
           else {
             // 块级标签前后加换行
-            var isBlock = node.name == 'p' || node.name == 'div' || node.name == 'tr' || node.name == 'li' || (node.name[0] == 'h' && node.name[1] > '0' && node.name[1] < '7')
-            if (isBlock && text && text[text.length - 1] != '\n')
-              text += '\n'
+            var isBlock =
+              node.name == 'p' ||
+              node.name == 'div' ||
+              node.name == 'tr' ||
+              node.name == 'li' ||
+              (node.name[0] == 'h' && node.name[1] > '0' && node.name[1] < '7');
+            if (isBlock && text && text[text.length - 1] != '\n') text += '\n';
             // 递归获取子节点的文本
-            if (node.children)
-              traversal(node.children)
-            if (isBlock && text[text.length - 1] != '\n')
-              text += '\n'
-            else if (node.name == 'td' || node.name == 'th')
-              text += '\t'
+            if (node.children) traversal(node.children);
+            if (isBlock && text[text.length - 1] != '\n') text += '\n';
+            else if (node.name == 'td' || node.name == 'th') text += '\t';
           }
         }
-      })(this.nodes)
-      return text
+      })(this.nodes);
+      return text;
     },
 
     /**
@@ -224,12 +226,15 @@ export default {
      */
     getRect() {
       return new Promise((resolve, reject) => {
-        uni.createSelectorQuery()
+        uni
+          .createSelectorQuery()
           // #ifndef MP-ALIPAY
           .in(this)
           // #endif
-          .select('._root').boundingClientRect().exec(res => res[0] ? resolve(res[0]) : reject('Root label not found'))
-      })
+          .select('._root')
+          .boundingClientRect()
+          .exec(res => (res[0] ? resolve(res[0]) : reject('Root label not found')));
+      });
     },
 
     /**
@@ -238,35 +243,35 @@ export default {
      * @param {Boolean} append 是否在尾部追加
      */
     setContent(content, append) {
-      if (!append || !this.imgList)
-        this.imgList = []
-      var nodes = new parser(this).parse(content)
+      if (!append || !this.imgList) this.imgList = [];
+      var nodes = new parser(this).parse(content);
       // #ifdef APP-PLUS-NVUE
-      if (this._ready)
-        this._set(nodes, append)
+      if (this._ready) this._set(nodes, append);
       // #endif
-      this.$set(this, 'nodes', append ? (this.nodes || []).concat(nodes) : nodes)
+      this.$set(this, 'nodes', append ? (this.nodes || []).concat(nodes) : nodes);
 
       // #ifndef APP-PLUS-NVUE
-      this._videos = []
+      this._videos = [];
       this.$nextTick(() => {
-        this._hook('onLoad')
-        this.$emit('load')
-      })
+        this._hook('onLoad');
+        this.$emit('load');
+      });
 
       // 等待图片加载完毕
-      var height
-      clearInterval(this._timer)
+      var height;
+      clearInterval(this._timer);
       this._timer = setInterval(() => {
-        this.getRect().then(rect => {
-          // 350ms 总高度无变化就触发 ready 事件
-          if (rect.height == height) {
-            this.$emit('ready', rect)
-            clearInterval(this._timer)
-          }
-          height = rect.height
-        }).catch(() => { })
-      }, 350)
+        this.getRect()
+          .then(rect => {
+            // 350ms 总高度无变化就触发 ready 事件
+            if (rect.height == height) {
+              this.$emit('ready', rect);
+              clearInterval(this._timer);
+            }
+            height = rect.height;
+          })
+          .catch(() => {});
+      }, 350);
       // #endif
     },
 
@@ -274,9 +279,7 @@ export default {
      * @description 调用插件钩子函数
      */
     _hook(name) {
-      for (var i = plugins.length; i--;)
-        if (this.plugins[i][name])
-          this.plugins[i][name]()
+      for (var i = plugins.length; i--; ) if (this.plugins[i][name]) this.plugins[i][name]();
     },
 
     // #ifdef APP-PLUS-NVUE
@@ -284,99 +287,112 @@ export default {
      * @description 设置内容
      */
     _set(nodes, append) {
-      this.$refs.web.evalJs('setContent(' + JSON.stringify(nodes) + ',' + JSON.stringify([this.bgColor, this.errorImg, this.loadingImg, this.pauseVideo, this.scrollTable, this.selectable]) + ',' + append + ')')
+      this.$refs.web.evalJs(
+        'setContent(' +
+          JSON.stringify(nodes) +
+          ',' +
+          JSON.stringify([
+            this.bgColor,
+            this.errorImg,
+            this.loadingImg,
+            this.pauseVideo,
+            this.scrollTable,
+            this.selectable
+          ]) +
+          ',' +
+          append +
+          ')'
+      );
     },
 
     /**
      * @description 接收到 web-view 消息
      */
     _onMessage(e) {
-      var message = e.detail.data[0]
+      var message = e.detail.data[0];
       switch (message.action) {
         // web-view 初始化完毕
         case 'onJSBridgeReady':
-          this._ready = true
-          if (this.nodes)
-            this._set(this.nodes)
-          break
+          this._ready = true;
+          if (this.nodes) this._set(this.nodes);
+          break;
         // 内容 dom 加载完毕
         case 'onLoad':
-          this.height = message.height
-          this._hook('onLoad')
-          this.$emit('load')
-          break
+          this.height = message.height;
+          this._hook('onLoad');
+          this.$emit('load');
+          break;
         // 所有图片加载完毕
         case 'onReady':
-          this.getRect().then(res => {
-            this.$emit('ready', res)
-          }).catch(() => { })
-          break
+          this.getRect()
+            .then(res => {
+              this.$emit('ready', res);
+            })
+            .catch(() => {});
+          break;
         // 总高度发生变化
         case 'onHeightChange':
-          this.height = message.height
-          break
+          this.height = message.height;
+          break;
         // 图片点击
         case 'onImgTap':
-          this.$emit('imgtap', message.attrs)
+          this.$emit('imgtap', message.attrs);
           if (this.previewImg)
             uni.previewImage({
               current: parseInt(message.attrs.i),
               urls: this.imgList
-            })
-          break
+            });
+          break;
         // 链接点击
         case 'onLinkTap':
-          var href = message.attrs.href
-          this.$emit('linktap', message.attrs)
+          var href = message.attrs.href;
+          this.$emit('linktap', message.attrs);
           if (href) {
             // 锚点跳转
             if (href[0] == '#') {
               if (this.useAnchor)
                 dom.scrollToElement(this.$refs.web, {
                   offset: message.offset
-                })
+                });
             }
             // 打开外链
             else if (href.includes('://')) {
-              if (this.copyLink)
-                plus.runtime.openWeb(href)
-            }
-            else
+              if (this.copyLink) plus.runtime.openWeb(href);
+            } else
               uni.navigateTo({
                 url: href,
                 fail() {
                   wx.switchTab({
                     url: href
-                  })
+                  });
                 }
-              })
+              });
           }
-          break
+          break;
         // 获取到锚点的偏移量
         case 'getOffset':
           if (typeof message.offset == 'number') {
             dom.scrollToElement(this.$refs.web, {
               offset: message.offset + this._navigateTo.offset
-            })
-            this._navigateTo.resolve()
-          } else
-            this._navigateTo.reject('Label not found')
-          break
+            });
+            this._navigateTo.resolve();
+          } else this._navigateTo.reject('Label not found');
+          break;
         // 点击
         case 'onClick':
-          this.$emit('tap')
-          break
+          this.$emit('tap');
+          break;
         // 出错
         case 'onError':
           this.$emit('error', {
             source: message.source,
             attrs: message.attrs
-          })
+          });
       }
     }
     // #endif
   }
-}
+};
 </script>
 
 <style>

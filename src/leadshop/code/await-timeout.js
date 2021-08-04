@@ -1,9 +1,12 @@
 // await-timeout v0.5.0 by Vitaliy Potapov
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.Timeout = factory());
-}(this, function () { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined'
+    ? (module.exports = factory())
+    : typeof define === 'function' && define.amd
+    ? define(factory)
+    : ((global = global || self), (global.Timeout = factory()));
+})(this, function () {
+  'use strict';
 
   function promiseFinally(promise, fn) {
     const success = result => {
@@ -30,7 +33,6 @@
   /**
    * Promise-based replacement for setTimeout / clearTimeout.
    */
-
   class Timeout {
     constructor() {
       this._id = null;
@@ -76,5 +78,4 @@
   };
 
   return Timeout;
-
-}));
+});

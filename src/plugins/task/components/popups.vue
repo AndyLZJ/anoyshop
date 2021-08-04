@@ -1,23 +1,26 @@
 <template>
-  <div class="task-popups" v-if="display" :class="{'task-popups-active':display}" :style="[topStyle]" @click.stop="tolink">
-    <div class="task-popups__bg">
-    </div>
+  <div
+    class="task-popups"
+    v-if="display"
+    :class="{ 'task-popups-active': display }"
+    :style="[topStyle]"
+    @click.stop="tolink"
+  >
+    <div class="task-popups__bg"></div>
     <div class="task-popups__icon">
       <text class="iconfont iconbtn_select"></text>
     </div>
     <div class="task-popups__title">
-      {{title}}
+      {{ title }}
     </div>
     <div class="task-popups__close" @click.stop="toclose">
       <text class="iconfont iconpopup_close"></text>
     </div>
-    <div class="task-popups__link" @click.stop="tolink">
-      去领取 <text class="iconfont iconbtn_arrow"></text>
-    </div>
+    <div class="task-popups__link" @click.stop="tolink">去领取 <text class="iconfont iconbtn_arrow"></text></div>
   </div>
 </template>
+
 <script type="text/javascript">
-// import empty from './empty.vue'
 export default {
   components: {
     // empty
@@ -25,7 +28,7 @@ export default {
   props: {
     title: {
       type: [String],
-      default: "已完善个人信息，获得10积分"
+      default: '已完善个人信息，获得10积分'
     },
     value: {
       type: [String, Boolean],
@@ -77,34 +80,28 @@ export default {
         return this.value;
       },
       set(value) {
-        this.$emit("input", value);
+        this.$emit('input', value);
       }
     },
     topStyle() {
-      const res = uni.getSystemInfoSync();
-      let _h = ((this.index + 1) * 108);
+      let _h = (this.index + 1) * 108;
       let { top } = this;
       if (top) {
         return {
-          top: `${_h+top}rpx`,
-          // width: this.width
-        }
+          top: `${_h + top}rpx`
+        };
       } else {
         return {
-          bottom: `${_h+120}rpx`,
-          // width: this.width
-        }
+          bottom: `${_h + 120}rpx`
+        };
       }
-
     }
   },
   /**
    * 页面渲染前
    * @return {[type]} [description]
    */
-  created() {
-
-  },
+  created() {},
   /**
    * 数据监听
    * @type {Object}
@@ -112,7 +109,6 @@ export default {
   watch: {
     display(value) {
       if (value) {
-
       }
     }
   },
@@ -120,9 +116,7 @@ export default {
    * 页面加载执行
    * @return {[type]} [description]
    */
-  async mounted() {
-
-  },
+  async mounted() {},
   methods: {
     /**
      * 执行关闭
@@ -142,17 +136,16 @@ export default {
     }
   }
 };
-
 </script>
+
 <style lang="scss" scoped="true">
 .task-popups {
   position: fixed;
   z-index: 1000;
   height: 104px;
   min-width: 300px;
-  border-radius: 0px 52px 52px 0px;
+  border-radius: 0 52px 52px 0;
   left: 0;
-  // bottom: 15vh;
   overflow: hidden;
 
   .task-popups__bg {
@@ -173,7 +166,7 @@ export default {
   font-size: 24px;
   font-family: PingFang SC;
   font-weight: 400;
-  color: #FFFFFF;
+  color: #ffffff;
   line-height: 36px;
   position: absolute;
   z-index: 10002;
@@ -196,7 +189,7 @@ export default {
   font-size: 24px;
   font-family: PingFang SC;
   font-weight: 400;
-  color: #FFFFFF;
+  color: #ffffff;
   line-height: 36px;
   overflow: hidden;
   white-space: nowrap;
@@ -206,7 +199,7 @@ export default {
 .task-popups__icon {
   width: 48px;
   height: 48px;
-  background: #53C41A;
+  background: #53c41a;
   border-radius: 50%;
   position: absolute;
   z-index: 10002;
@@ -217,7 +210,7 @@ export default {
 
   .iconbtn_select {
     font-size: 32px;
-    color: #FFFFFF;
+    color: #ffffff;
     line-height: 48px;
   }
 }
@@ -234,7 +227,7 @@ export default {
 
   .iconfont {
     font-size: 24px;
-    color: #FFFFFF;
+    color: #ffffff;
     line-height: 24px;
   }
 }
@@ -255,5 +248,4 @@ export default {
     transform: none;
   }
 }
-
 </style>

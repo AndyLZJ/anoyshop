@@ -2,22 +2,22 @@
   <view class="tasl-lists" :data-theme="theme">
     <view class="tasl-lists__header">
       <view class="__header_item first" @click="showModalDate = true">
-        {{date}}
-        <le-icon type="iconarrow-down" size="24rpx" color="#BEBEBE" style="padding-left: 4rpx;"></le-icon>
+        {{ date }}
+        <le-icon type="iconarrow-down" size="24rpx" color="#BEBEBE" style="padding-left: 4rpx"></le-icon>
       </view>
       <view class="__header_item" @click="showModalType = true">
-        {{type==0?'全部':""}}
-        {{type==1?'收入':""}}
-        {{type==2?'支出':""}}
-        <le-icon type="iconarrow-down" size="24rpx" color="#BEBEBE" style="padding-left: 4rpx;"></le-icon>
+        {{ type == 0 ? '全部' : '' }}
+        {{ type == 1 ? '收入' : '' }}
+        {{ type == 2 ? '支出' : '' }}
+        <le-icon type="iconarrow-down" size="24rpx" color="#BEBEBE" style="padding-left: 4rpx"></le-icon>
       </view>
     </view>
     <view class="tasl-lists__content">
-      <view class="__item" v-for="item,index in logList" :key="index">
-        <view class="__item_title">{{item.remark}}</view>
-        <view class="__item_date" v-if="item.start_time">{{ item.start_time | timeFormat("mm月dd日")}}</view>
-        <view class="__item_number_add" v-if="item.type == 'add'">+{{item.number}}</view>
-        <view class="__item_number_del" v-if="item.type == 'del'">{{item.number}}</view>
+      <view class="__item" v-for="(item, index) in logList" :key="index">
+        <view class="__item_title">{{ item.remark }}</view>
+        <view class="__item_date" v-if="item.start_time">{{ item.start_time | timeFormat('mm月dd日') }}</view>
+        <view class="__item_number_add" v-if="item.type == 'add'">+{{ item.number }}</view>
+        <view class="__item_number_del" v-if="item.type == 'del'">{{ item.number }}</view>
       </view>
       <!--<view class="__empty" v-if="logList.length<1">
                 <image src="http://manongyun.oss-cn-hangzhou.aliyuncs.com/Qmpaas/task-list-empty.png"></image>
@@ -25,7 +25,11 @@
             </view> -->
     </view>
     <he-load-more v-if="logList.length > 0" :status="loadStatus"></he-load-more>
-    <he-no-content-yet image="http://manongyun.oss-cn-hangzhou.aliyuncs.com/Qmpaas/task-list-empty.png" v-if="isNothing" text="暂无相关明细"></he-no-content-yet>
+    <he-no-content-yet
+      image="http://manongyun.oss-cn-hangzhou.aliyuncs.com/Qmpaas/task-list-empty.png"
+      v-if="isNothing"
+      text="暂无相关明细"
+    ></he-no-content-yet>
     <he-popup mode="bottom" v-model="showModalDate" :borderRadius="16">
       <view class="he-select-date" :data-theme="theme">
         <view class="he-header">
@@ -34,75 +38,106 @@
         </view>
         <view class="he-body flex align-center justify-between">
           <view class="he-body-date">
-            <swiper class="he-body-date__swiper" :current="data1" :autoplay="false" :vertical="true" next-margin="160rpx" previous-margin="160rpx" @change="(e)=>{ data1 =  e.detail.current}">
+            <swiper
+              class="he-body-date__swiper"
+              :current="data1"
+              :autoplay="false"
+              :vertical="true"
+              next-margin="160rpx"
+              previous-margin="160rpx"
+              @change="
+                e => {
+                  data1 = e.detail.current;
+                }
+              "
+            >
               <swiper-item v-for="index in 3" :key="index">
                 <!-- #ifdef H5 -->
-                <view class="he-body-date__item" :class="{'active':index==(data1+1)}">{{getYear(index)-1}}年</view>
+                <view class="he-body-date__item" :class="{ active: index == data1 + 1 }"
+                  >{{ getYear(index) - 1 }}年</view
+                >
                 <!-- #endif -->
                 <!--  #ifdef MP-WEIXIN -->
-                <view class="he-body-date__item" :class="{'active':index==data1}">{{getYear(index)}}年</view>
+                <view class="he-body-date__item" :class="{ active: index == data1 }">{{ getYear(index) }}年</view>
                 <!-- #endif -->
               </swiper-item>
             </swiper>
           </view>
           <view class="he-body-date">
-            <swiper class="he-body-date__swiper" :current="data2" :autoplay="false" :vertical="true" next-margin="160rpx" previous-margin="160rpx" @change="(e)=>{ data2 =  e.detail.current}">
+            <swiper
+              class="he-body-date__swiper"
+              :current="data2"
+              :autoplay="false"
+              :vertical="true"
+              next-margin="160rpx"
+              previous-margin="160rpx"
+              @change="
+                e => {
+                  data2 = e.detail.current;
+                }
+              "
+            >
               <swiper-item v-for="index in 12" :key="index">
                 <!-- #ifdef H5 -->
-                <view class="he-body-date__item" :class="{'active':index==(data2+1)}">{{(index)}}月</view>
+                <view class="he-body-date__item" :class="{ active: index == data2 + 1 }">{{ index }}月</view>
                 <!-- #endif -->
                 <!--  #ifdef MP-WEIXIN -->
-                <view class="he-body-date__item" :class="{'active':index==data2}">{{(index+1)}}月</view>
+                <view class="he-body-date__item" :class="{ active: index == data2 }">{{ index + 1 }}月</view>
                 <!-- #endif -->
               </swiper-item>
             </swiper>
           </view>
-          <view class="he-body-line" style="position: absolute;top: 40%;">
-          </view>
+          <view class="he-body-line" style="position: absolute; top: 40%"> </view>
         </view>
-        <view class="he-body-btn" :style="{backgroundColor: themeColor}" @click="handleModalDate">
-          确定
-        </view>
+        <view class="he-body-btn" :style="{ backgroundColor: themeColor }" @click="handleModalDate"> 确定 </view>
       </view>
     </he-popup>
     <he-popup mode="bottom" v-model="showModalType" :borderRadius="16">
       <view class="he-select-sex" :data-theme="theme">
         <view class="he-header">
           <text class="he-header__title">类型筛选</text>
-          <text class="iconfont iconpopup_close fr" @click="showModalType = false;"></text>
+          <text class="iconfont iconpopup_close fr" @click="showModalType = false"></text>
         </view>
         <view class="he-body">
           <view class="he-body-sex">
-            <swiper class="he-body-sex__swiper" :current="typeSelect" :autoplay="false" :vertical="true" next-margin="40px" previous-margin="40px" @change="(e)=>{ typeSelect =  e.detail.current}">
+            <swiper
+              class="he-body-sex__swiper"
+              :current="typeSelect"
+              :autoplay="false"
+              :vertical="true"
+              next-margin="40px"
+              previous-margin="40px"
+              @change="
+                e => {
+                  typeSelect = e.detail.current;
+                }
+              "
+            >
               <swiper-item>
-                <view class="he-body-sex__item" :class="{'active':0===typeSelect}">全部</view>
+                <view class="he-body-sex__item" :class="{ active: 0 === typeSelect }">全部</view>
               </swiper-item>
               <swiper-item>
-                <view class="he-body-sex__item" :class="{'active':1===typeSelect}">收入</view>
+                <view class="he-body-sex__item" :class="{ active: 1 === typeSelect }">收入</view>
               </swiper-item>
               <swiper-item>
-                <view class="he-body-sex__item" :class="{'active':2===typeSelect}">支出</view>
+                <view class="he-body-sex__item" :class="{ active: 2 === typeSelect }">支出</view>
               </swiper-item>
             </swiper>
           </view>
-          <view class="he-body-line">
-          </view>
+          <view class="he-body-line"> </view>
         </view>
-        <view class="he-body-btn" :style="{backgroundColor: themeColor}" @click="handleModalType">
-          确定
-        </view>
+        <view class="he-body-btn" :style="{ backgroundColor: themeColor }" @click="handleModalType"> 确定 </view>
       </view>
     </he-popup>
   </view>
 </template>
 <script type="text/javascript">
-import heNoContentYet from "@/components/he-no-content-yet.vue";
-import heLoadMore from "@/components/he-load-more.vue";
-import hePopup from "@/components/he-popup.vue";
-
+import heNoContentYet from '@/components/he-no-content-yet.vue';
+import heLoadMore from '@/components/he-load-more.vue';
+import hePopup from '@/components/he-popup.vue';
 
 export default {
-  name: "index",
+  name: 'index',
   components: {
     heNoContentYet,
     heLoadMore,
@@ -111,7 +146,7 @@ export default {
   data() {
     return {
       typeSelect: 0,
-      date: "",
+      date: '',
       data1: 2,
       data2: 0,
       type: 0,
@@ -119,16 +154,16 @@ export default {
       showModalType: false,
       logList: [],
       isNothing: false,
-      loadStatus: "loadmore",
+      loadStatus: 'loadmore',
       page: {
         current: 1,
-        count: 1,
+        count: 1
       },
       where: {
-        date: "",
+        date: '',
         type: 0
       }
-    }
+    };
   },
   computed: {
     /**
@@ -138,7 +173,7 @@ export default {
     month() {
       let _month = this.data2 + 1;
       let _year = this.getYear(this.data1);
-      if (_year % 4 == 0 && _year % 100 != 0 || _year % 400 == 0) {
+      if ((_year % 4 == 0 && _year % 100 != 0) || _year % 400 == 0) {
         if (_month == 2) {
           return 29;
         }
@@ -164,7 +199,6 @@ export default {
     // },
     showModalType(value) {
       if (value === false) {
-
       }
     }
   },
@@ -175,7 +209,7 @@ export default {
   mounted() {
     this.data2 = this.getMonth();
     this.date = this.getYear(this.data1) + '年' + (this.data2 + 1) + '月';
-    console.log("this.date ", this.date)
+    console.log('this.date ', this.date);
     this.handleInitialize();
   },
   /**
@@ -186,13 +220,13 @@ export default {
     let that = this;
     if (this.page.count > this.page.current) {
       this.page.current++;
-      this.loadStatus = "loading";
-      this.handleLoadData().then(function(res) {
+      this.loadStatus = 'loading';
+      this.handleLoadData().then(function (res) {
         that.logList.push(...res);
-        that.loadStatus = "loadmore";
+        that.loadStatus = 'loadmore';
       });
     } else {
-      this.loadStatus = "nomore";
+      this.loadStatus = 'nomore';
     }
   },
   methods: {
@@ -202,24 +236,24 @@ export default {
     // 例子：
     // (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
     // (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18
-    format(date, fmt) { //author: meizz
+    format(date, fmt) {
+      //author: meizz
       let t = this.timestampToTime(date);
       date = new Date(t);
-      console.log("date", date)
+      console.log('date', date);
       var o = {
-        "M+": date.getMonth() + 1, //月份
-        "d+": date.getDate(), //日
-        "h+": date.getHours(), //小时
-        "m+": date.getMinutes(), //分
-        "s+": date.getSeconds(), //秒
-        "q+": Math.floor((date.getMonth() + 3) / 3), //季度
-        "S": date.getMilliseconds() //毫秒
+        'M+': date.getMonth() + 1, //月份
+        'd+': date.getDate(), //日
+        'h+': date.getHours(), //小时
+        'm+': date.getMinutes(), //分
+        's+': date.getSeconds(), //秒
+        'q+': Math.floor((date.getMonth() + 3) / 3), //季度
+        S: date.getMilliseconds() //毫秒
       };
-      if (/(y+)/.test(fmt))
-        fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+      if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
       for (var k in o)
-        if (new RegExp("(" + k + ")").test(fmt))
-          fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        if (new RegExp('(' + k + ')').test(fmt))
+          fmt = fmt.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length));
       return fmt;
     },
     /**
@@ -269,7 +303,7 @@ export default {
     handleModalType() {
       this.type = this.typeSelect;
       this.handleInitialize();
-      this.showModalType = false
+      this.showModalType = false;
     },
     /**
      * 执行初始化数据
@@ -280,7 +314,7 @@ export default {
       this.handleLoadData(0, 1).then(data => {
         this.logList = data;
         this.isNothing = this.logList.length === 0;
-        this.loadStatus = this.logList.length < 10 ? "nomore" : "loadmore";
+        this.loadStatus = this.logList.length < 10 ? 'nomore' : 'loadmore';
       });
     },
     /**
@@ -289,55 +323,57 @@ export default {
      */
     handleLoadData() {
       let that = this;
-      return new Promise(function(resolve, reject) {
-        that.$heshop.plugin("get", {
-          include: "task",
-          model: "log",
-          year: that.getYear(that.data1),
-          month: that.data2 + 1,
-          type: that.type
-        }).page(that.page.current, 20).then(res => {
-          let { data, headers } = res;
-          // #ifdef MP-WEIXIN
-          that.page = {
-            current: +headers["X-Pagination-Current-Page"],
-            count: +headers["X-Pagination-Page-Count"],
-          };
-          // #endif
-          // #ifdef H5
-          that.page = {
-            current: +headers["x-pagination-current-page"],
-            count: +headers["x-pagination-page-count"],
-          };
-          // #endif
-          resolve(data);
-        }).catch(err => {
-          reject(err)
-        })
+      return new Promise(function (resolve, reject) {
+        that.$heshop
+          .plugin('get', {
+            include: 'task',
+            model: 'log',
+            year: that.getYear(that.data1),
+            month: that.data2 + 1,
+            type: that.type
+          })
+          .page(that.page.current, 20)
+          .then(res => {
+            let { data, headers } = res;
+            // #ifdef MP-WEIXIN
+            that.page = {
+              current: +headers['X-Pagination-Current-Page'],
+              count: +headers['X-Pagination-Page-Count']
+            };
+            // #endif
+            // #ifdef H5
+            that.page = {
+              current: +headers['x-pagination-current-page'],
+              count: +headers['x-pagination-page-count']
+            };
+            // #endif
+            resolve(data);
+          })
+          .catch(err => {
+            reject(err);
+          });
       });
-
     }
   }
-}
-
+};
 </script>
 <style lang="scss" scoped>
 page {
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
 }
 
 .tasl-lists {
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   padding: 20px;
   min-height: 100vh;
-  width: 750rpx;
+  width: 750px;
   background-color: RGBA(245, 245, 245, 1);
 
   &__header {
     display: flex;
     width: 710px;
     height: 80px;
-    background: #FFFFFF;
+    background: #ffffff;
     border-radius: 16px;
     padding: 16px 0;
 
@@ -349,7 +385,7 @@ page {
     }
 
     .__header_item.first {
-      border-right: 1px solid #E5E5E5;
+      border-right: 1px solid #e5e5e5;
     }
   }
 
@@ -360,7 +396,7 @@ page {
       position: relative;
       width: 710px;
       height: 120px;
-      background: #FFFFFF;
+      background: #ffffff;
       border-radius: 16px;
       margin-top: 16px;
 
@@ -386,7 +422,6 @@ page {
         color: #999999;
       }
 
-
       &_number_add {
         position: absolute;
         right: 24px;
@@ -394,7 +429,7 @@ page {
         font-size: 28px;
         font-family: PingFang SC;
         font-weight: bold;
-        color: #53C41A;
+        color: #53c41a;
         line-height: 36px;
       }
 
@@ -405,7 +440,7 @@ page {
         font-size: 28px;
         font-family: PingFang SC;
         font-weight: bold;
-        color: #53C41A;
+        color: #53c41a;
         line-height: 36px;
       }
     }
@@ -418,7 +453,6 @@ page {
         width: 320px;
         height: 320px;
       }
-
     }
 
     .__empty_tips {
@@ -433,30 +467,29 @@ page {
   }
 
   .he-select-date {
-    height: 620rpx;
+    height: 620px;
     padding: 0 32px;
   }
 
   .he-body-date {
     width: 50%;
-    height: 400rpx;
+    height: 400px;
     position: relative;
     z-index: 100;
   }
 
   .he-body-date__swiper {
-    height: 400rpx;
+    height: 400px;
   }
 
   .he-body-date__item {
-    height: 80rpx;
-    font-size: 28rpx;
+    height: 80px;
+    font-size: 28px;
     font-family: PingFang SC;
     font-weight: 500;
     color: #666666;
-    line-height: 80rpx;
+    line-height: 80px;
     text-align: center;
-
   }
 
   .he-header__title {
@@ -475,8 +508,8 @@ page {
   .he-body-item {
     width: 100%;
     height: 80px;
-    border-bottom: 1px solid #E5E5E5;
-    font-size: 28rpx;
+    border-bottom: 1px solid #e5e5e5;
+    font-size: 28px;
     font-family: PingFang SC;
     font-weight: 500;
     color: #666666;
@@ -485,15 +518,15 @@ page {
   }
 
   .he-body-item.active {
-    color: #E60B30;
+    color: #e60b30;
   }
 
   .he-body-line {
     position: absolute;
     width: 100%;
     height: 80px;
-    border-top: 1px solid #E5E5E5;
-    border-bottom: 1px solid #E5E5E5;
+    border-top: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
     top: 145px;
     left: 0;
   }
@@ -514,19 +547,18 @@ page {
     width: 28px;
     height: 28px;
     line-height: 1;
-    color: #9D9D9D;
+    color: #9d9d9d;
     margin-top: 18px;
   }
 
   .he-select-sex {
-    height: 460rpx;
+    height: 460px;
     padding: 0 32px;
   }
 
   .he-body-sex {
     position: relative;
   }
-
 
   .he-select-sex .he-body-line {
     top: 80px;
@@ -542,7 +574,7 @@ page {
 
   .he-body-sex__item {
     height: 80px;
-    font-size: 28rpx;
+    font-size: 28px;
     font-family: PingFang SC;
     font-weight: 500;
     color: #666666;
@@ -551,7 +583,7 @@ page {
   }
 
   .he-body-sex__item.active {
-    color: #E60B30;
+    color: #e60b30;
   }
 }
 
@@ -566,15 +598,14 @@ page {
 .he-body-btn {
   width: 686px;
   height: 80px;
-  background: #E60B30;
+  background: #e60b30;
   border-radius: 40px;
   font-size: 30px;
   font-family: PingFang SC;
   font-weight: 500;
-  color: #FFFFFF;
+  color: #ffffff;
   text-align: center;
   line-height: 80px;
   margin-top: 20px;
 }
-
 </style>

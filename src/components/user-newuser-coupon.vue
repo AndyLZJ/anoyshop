@@ -5,35 +5,19 @@
  * @LastEditTime: 2021-06-05 17:02:18
  * @LastEditors: fjt
 -->
-
 <template>
-  <he-popup
-    mode="center"
-    v-model="showModal"
-    background-color="transparent"
-    :zoom="false"
-    width="100%"
-    height="100%"
-  >
+  <he-popup mode="center" v-model="showModal" background-color="transparent" :zoom="false" width="100%" height="100%">
     <view @touchmove.stop.prevent="() => {}" class="le-popup">
       <view class="he-box">
-        <view
-          class="he-box__close flex align-center justify-center"
-          @click="closeModal"
-        >
+        <view class="he-box__close flex align-center justify-center" @click="closeModal">
           <text class="iconfont iconpopup_close"></text>
         </view>
-        <image
-          class="le-box-image"
-          :src="ipAddress + '/login-newuser-coupon.png'"
-        />
+        <image class="le-box-image" :src="ipAddress + '/login-newuser-coupon.png'" />
         <view class="le-content">
           <scroll-view scroll-y class="le-body">
             <view class="he-item flex" v-for="(item, key) in coupon" :key="key">
               <view class="he-left">
-                <view class="le-price">{{
-                  item.coupon.sub_price | setNumber
-                }}</view>
+                <view class="le-price">{{ item.coupon.sub_price | setNumber }}</view>
                 <view class="le-limit">
                   <template v-if="Number(item.coupon.min_price) > 0">
                     满{{ Number(item.coupon.min_price) }}可用
@@ -48,11 +32,7 @@
               </view>
               <view class="le-right flex-sub">
                 <view class="le-name">{{ item.coupon.name }}</view>
-                <view class="le-desc">{{
-                  item.coupon.appoint_type === 1
-                    ? "全部商品可用"
-                    : "部分商品可用"
-                }}</view>
+                <view class="le-desc">{{ item.coupon.appoint_type === 1 ? '全部商品可用' : '部分商品可用' }}</view>
               </view>
             </view>
           </scroll-view>
@@ -64,14 +44,14 @@
 </template>
 
 <script>
-import HePopup from "@/components/he-popup";
+import HePopup from '@/components/he-popup';
 
 export default {
   props: {
     value: Boolean,
     coupon: Array,
     // #ifdef H5
-    wechatUrl: String,
+    wechatUrl: String
     // #endif
   },
   components: { HePopup },
@@ -81,14 +61,14 @@ export default {
         return this.value;
       },
       set: function (val) {
-        this.$emit("input", val);
-      },
-    },
+        this.$emit('input', val);
+      }
+    }
   },
   filters: {
     setNumber: function (num) {
       return Number(num);
-    },
+    }
   },
   methods: {
     closeModal: function () {
@@ -96,7 +76,7 @@ export default {
       this.showModal = false;
       // #ifndef H5
       uni.navigateBack({
-        delta: 1,
+        delta: 1
       });
       // #endif
       // #ifdef H5
@@ -106,11 +86,11 @@ export default {
           uni.switchTab({
             url: _this.wechatUrl
           });
-        },
+        }
       });
       // #endif
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -152,7 +132,7 @@ export default {
   width: 630px;
   margin: 0 auto;
   background: #ee4444;
-  border-radius: 0px 0px 16px 16px;
+  border-radius: 0 0 16px 16px;
   padding: 32px 32px 0 32px;
   .le-body {
     min-height: 160px;
@@ -179,7 +159,7 @@ export default {
       margin-top: 37px;
     }
     .le-price::before {
-      content: "￥";
+      content: '￥';
       font-size: 24px;
       font-weight: 500;
     }
@@ -221,12 +201,7 @@ export default {
       background-position: center;
       background-size: 2px 14px;
       background-repeat: repeat-y;
-      background-image: linear-gradient(
-        to top,
-        #ee4444 0%,
-        #ee4444 50%,
-        transparent 0%
-      );
+      background-image: linear-gradient(to top, #ee4444 0%, #ee4444 50%, transparent 0%);
     }
   }
   .le-right {

@@ -187,7 +187,7 @@ module.exports = {
             .then(res => {
               console.log('执行了分享转发公共合计', res);
             })
-            .catch(error => {});
+            .catch(() => {});
         }
       }, 1000);
     }

@@ -1,20 +1,14 @@
 <template>
   <view class="he-page-content">
     <view class="he-card he-header flex flex-direction align-center">
-      <image
-        class="he-header__icon"
-        :src="ipAddress + '/logistics-icon.png'"
-      ></image>
+      <image class="he-header__icon" :src="ipAddress + '/logistics-icon.png'"></image>
       <text class="he-header-express">{{ name }}</text>
       <view class="he-header--numbering flex align-center">
         <text class="he-numbering">运单编号：{{ no }}</text>
         <text class="he-header-copy" @click="copy(no)">复制</text>
       </view>
     </view>
-    <view
-      class="he-card he-body"
-      :class="state === 0 ? '' : ' flex justify-center'"
-    >
+    <view class="he-card he-body" :class="state === 0 ? '' : ' flex justify-center'">
       <he-no-content-yet
         class="he-body-no-content"
         v-if="state !== 0"
@@ -27,10 +21,7 @@
           <view class="le-date">{{ item.date }}</view>
           <view class="le-time">{{ item.time }}</view>
         </view>
-        <view
-          class="he-desc"
-          :class="index === 0 ? 'he-newest-desc' : 'he-order-desc'"
-        >
+        <view class="he-desc" :class="index === 0 ? 'he-newest-desc' : 'he-order-desc'">
           {{ item.desc }}
         </view>
       </view>
@@ -39,18 +30,18 @@
 </template>
 
 <script>
-import heNoContentYet from "../../components/he-no-content-yet.vue";
+import heNoContentYet from '../../components/he-no-content-yet.vue';
 export default {
-  name: "logistics",
+  name: 'logistics',
   components: {
-    heNoContentYet,
+    heNoContentYet
   },
   data() {
     return {
-      name: "",
-      no: "",
+      name: '',
+      no: '',
       list: [],
-      state: 1,
+      state: 1
     };
   },
   methods: {
@@ -60,39 +51,34 @@ export default {
     getLogistics: function (no, mobile, name) {
       let _this = this;
       this.$heshop
-        .express("post", {
+        .express('post', {
           no,
           mobile,
-          name,
-        }).then(function (res) {
+          name
+        })
+        .then(function (res) {
           let list = res.list;
           _this.state = res.state;
           for (let i = 0; i < list.length; i++) {
-            let date = _this.$h.timeFormat(
-              new Date(list[i].datetime.replace(/\-/g, "/")),
-              "mm-dd"
-            );
-            let time = _this.$h.timeFormat(
-              new Date(list[i].datetime.replace(/\-/g, "/")),
-              "hh:MM"
-            );
+            let date = _this.$h.timeFormat(new Date(list[i].datetime.replace(/\-/g, '/')), 'mm-dd');
+            let time = _this.$h.timeFormat(new Date(list[i].datetime.replace(/\-/g, '/')), 'hh:MM');
             list[i].date = date;
             list[i].time = time;
           }
           _this.list = list;
         });
-    },
+    }
   },
   onLoad(options) {
     this.name = options.name;
     this.no = options.no;
     if (options.title) {
       uni.setNavigationBarTitle({
-        title: options.title,
+        title: options.title
       });
     }
     this.getLogistics(options.no, options.mobile, options.name);
-  },
+  }
 };
 </script>
 

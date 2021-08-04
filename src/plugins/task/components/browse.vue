@@ -7,20 +7,24 @@
           <div class="task-cbrowse-mark"></div>
         </div>
         <div class="task-cbrowse-txt">10s</div>
-        <div class="task-cbrowse-tips" v-if="isComplete">
-          任务完成
-        </div>
+        <div class="task-cbrowse-tips" v-if="isComplete">任务完成</div>
         <div class="task-cbrowse-tips" v-else>
-          {{cbrowseTips}}
+          {{ cbrowseTips }}
           <!-- 浏览商品{{taskGoods.log>taskGoods.total?taskGoods.total-1:taskGoods.log}}/{{taskGoods.total}} -->
         </div>
       </div>
     </view>
-    <taskpopups v-model="item.display" :title="item.remark" :index="index" v-for="(item, index) in popupsList" :key="index"></taskpopups>
+    <taskpopups
+      v-model="item.display"
+      :title="item.remark"
+      :index="index"
+      v-for="(item, index) in popupsList"
+      :key="index"
+    ></taskpopups>
   </div>
 </template>
 <script>
-import taskpopups from "@/plugins/task/components/popups.vue";
+import taskpopups from '@/plugins/task/components/popups.vue';
 export default {
   components: {
     taskpopups
@@ -51,7 +55,7 @@ export default {
         status: 0
       },
       timeoutID: null
-    }
+    };
   },
   /**
    * 计算属性
@@ -66,7 +70,7 @@ export default {
       } else {
         num = taskGoods.log;
       }
-      return "浏览商品" + num + "/" + taskGoods.total;
+      return '浏览商品' + num + '/' + taskGoods.total;
     }
   },
   mounted() {
@@ -97,79 +101,90 @@ export default {
      * @return {[type]} [description]
      */
     statusTaskGoods() {
-      this.$heshop.plugin("get", { include: "task", model: "score", type: 'single', keyword: 'browse' }).then(res => {
-        if (res == null) {
-          this.getTaskGoods();
-        } else if (res.status === 0) {
-
-        } else if (res.status === 1) {
-
-        } else {
-          this.taskGoods = {};
-        }
-      }).catch(err => {
-        console.log("err", err)
-      })
+      this.$heshop
+        .plugin('get', { include: 'task', model: 'score', type: 'single', keyword: 'browse' })
+        .then(res => {
+          if (res == null) {
+            this.getTaskGoods();
+          } else if (res.status === 0) {
+          } else if (res.status === 1) {
+          } else {
+            this.taskGoods = {};
+          }
+        })
+        .catch(err => {
+          console.log('err', err);
+        });
     },
     /**
      * 获取任务信息
      * @return {[type]} [description]
      */
     getTaskGoods() {
-      this.$heshop.plugin("get", { include: "task", model: "task", keyword: "browse" }).then(res => {
-        console.log("加载获取浏览商品信息数据", res)
-        if (res.status) {
-          this.taskGoods = res;
-          this.timeoutID = setTimeout(res => {
-            this.onTaskBrowse();
-            console.log("不管3721就是执行了")
-            this.taskGoods.log++;
-            if (this.taskGoods.log == this.taskGoods.total) {
-              this.isComplete = true;
-            }
-            setTimeout(res => {
-              if (this.taskGoods.log >= this.taskGoods.total) {
-                this.taskGoods.status = 0;
+      this.$heshop
+        .plugin('get', { include: 'task', model: 'task', keyword: 'browse' })
+        .then(res => {
+          console.log('加载获取浏览商品信息数据', res);
+          if (res.status) {
+            this.taskGoods = res;
+            this.timeoutID = setTimeout(res => {
+              this.onTaskBrowse();
+              console.log('不管3721就是执行了');
+              this.taskGoods.log++;
+              if (this.taskGoods.log == this.taskGoods.total) {
+                this.isComplete = true;
               }
-            }, 1000)
-          }, 12000)
-        }
-      }).catch(err => {
-        console.log("err", err)
-      })
+              setTimeout(res => {
+                if (this.taskGoods.log >= this.taskGoods.total) {
+                  this.taskGoods.status = 0;
+                }
+              }, 1000);
+            }, 12000);
+          }
+        })
+        .catch(err => {
+          console.log('err', err);
+        });
     },
     onTaskBrowse() {
       //添加插件信息提交
       //用于延时测试数据
-      let task_status = this.$manifest("task", "status");
+      let task_status = this.$manifest('task', 'status');
       let that = this;
 
-      console.log("查看浏览商品的VM", this, this.goods_id)
+      console.log('查看浏览商品的VM', this, this.goods_id);
 
       let goods_id = this.goods_id;
 
       if (task_status) {
-        this.$heshop.plugin('post', { include: 'task', model: 'task' }, {
-          "number": goods_id,
-          "keyword": "browse"
-        }).then(res => {
-          if (Object.prototype.toString.call(res) == '[object Object]') {
-            that.$nextTick(() => {
-              that.popupsList.push({
-                display: true,
-                remark: res.msg
-              })
-            })
-          }
-        }).catch(err => {
-          console.log("获取错误信息")
-        });
+        this.$heshop
+          .plugin(
+            'post',
+            { include: 'task', model: 'task' },
+            {
+              number: goods_id,
+              keyword: 'browse'
+            }
+          )
+          .then(res => {
+            if (Object.prototype.toString.call(res) === '[object Object]') {
+              that.$nextTick(() => {
+                that.popupsList.push({
+                  display: true,
+                  remark: res.msg
+                });
+              });
+            }
+          })
+          .catch(() => {
+            console.log('获取错误信息');
+          });
       }
     }
   }
-}
-
+};
 </script>
+
 <style lang="less" scoped>
 .task-cbrowse {
   position: fixed;
@@ -194,7 +209,7 @@ export default {
   left: 18px;
   width: 140px;
   height: 56px;
-  background: linear-gradient(0deg, #E9621F 0%, #FFB541 100%);
+  background: linear-gradient(0deg, #e9621f 0%, #ffb541 100%);
   border-radius: 8px;
   padding: 0;
   margin: 0;
@@ -207,11 +222,10 @@ export default {
   font-size: 18px;
   font-family: PingFang SC;
   font-weight: 500;
-  color: #FFFFFF;
+  color: #ffffff;
   line-height: 36px;
   width: 100%;
   text-align: center;
-
 }
 
 .task-cbrowse-line {
@@ -221,7 +235,7 @@ export default {
   overflow: hidden;
   width: 80px;
   height: 8px;
-  background: #C6551D;
+  background: #c6551d;
   border-radius: 4px;
 }
 
@@ -231,7 +245,7 @@ export default {
   top: 0;
   width: 40%;
   height: 8px;
-  background: #FFDD83;
+  background: #ffdd83;
   border-radius: 4px;
 
   animation-duration: 10s;
@@ -246,7 +260,7 @@ export default {
   font-size: 18px;
   font-family: PingFang SC;
   font-weight: 500;
-  color: #FFFFFF;
+  color: #ffffff;
   line-height: 36px;
 }
 
@@ -261,5 +275,4 @@ export default {
     width: 100%;
   }
 }
-
 </style>
