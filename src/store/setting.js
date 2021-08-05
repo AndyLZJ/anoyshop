@@ -9,7 +9,9 @@ const setting = {
       data: []
     },
     addressJson: [],
-    subscribe: []
+    subscribe: [],
+    // 是否授权
+    auth: false
   },
   mutations: {
     setting(state, data) {
@@ -36,6 +38,9 @@ const setting = {
     },
     subscribe: function (state, data) {
       state.subscribe = data;
+    },
+    setAuth(state, data) {
+      state.auth = data;
     }
   },
   getters: {
@@ -105,6 +110,9 @@ const setting = {
     },
     getOpeningad: function (state) {
       return state.setting.openingad;
+    },
+    getCopyright(state) {
+      return state.setting.copyright_information;
     }
   },
   actions: {
@@ -218,6 +226,13 @@ const setting = {
       $heshop.subscribe('get').then(function (response) {
         console.log('response-subscribe', response);
         commit('subscribe', response);
+      });
+    },
+    getAuth({ commit }) {
+      let $heshop = this._vm.$heshop;
+      $heshop.cloud('get').then(response => {
+        console.log(response);
+        commit('setAuth', response);
       });
     }
   }

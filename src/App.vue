@@ -38,6 +38,7 @@ export default {
     this.$store.dispatch('user/visit');
     // 获取商城设置
     this.$store.dispatch('setting/getSetting');
+    this.$store.dispatch('setting/getAuth');
     // 获取主题色
     this.$store.dispatch('setting/getTheme');
     // #ifndef H5
