@@ -11,7 +11,8 @@ const setting = {
     addressJson: [],
     subscribe: [],
     // 是否授权
-    auth: false
+    auth: false,
+    isAuth: false
   },
   mutations: {
     setting(state, data) {
@@ -41,6 +42,9 @@ const setting = {
     },
     setAuth(state, data) {
       state.auth = data;
+    },
+    setIsAuth(state, data) {
+      state.isAuth = data;
     }
   },
   getters: {
@@ -233,6 +237,7 @@ const setting = {
       $heshop.cloud('get').then(response => {
         console.log(response);
         commit('setAuth', response);
+        commit('setIsAuth', true);
       });
     }
   }
