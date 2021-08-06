@@ -30,9 +30,9 @@
 
 @font-face {
   font-family: 'iconfont'; /* Project id 2111115 */
-  src: url('//at.alicdn.com/t/font_2111115_dpap8l2ayc8.woff2?t=1625016472123') format('woff2'),
-    url('//at.alicdn.com/t/font_2111115_dpap8l2ayc8.woff?t=1625016472123') format('woff'),
-    url('//at.alicdn.com/t/font_2111115_dpap8l2ayc8.ttf?t=1625016472123') format('truetype');
+  src: url('//at.alicdn.com/t/font_2111115_e80fxm46tt7.woff2?t=1627961206772') format('woff2'),
+    url('//at.alicdn.com/t/font_2111115_e80fxm46tt7.woff?t=1627961206772') format('woff'),
+    url('//at.alicdn.com/t/font_2111115_e80fxm46tt7.ttf?t=1627961206772') format('truetype');
 }
 
 .iconfont {
@@ -41,6 +41,14 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.iconfenxiaozhuangshi:before {
+  content: '\e6d6';
+}
+
+.iconshuzishanchu:before {
+  content: '\e6d1';
 }
 
 .iconpopup_close2:before {

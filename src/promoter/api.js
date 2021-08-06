@@ -162,3 +162,17 @@ export function applyPromoter(applyContent = []) {
       });
   });
 }
+
+// 分销商中心
+export function personalCenter() {
+  return new Promise((resolve, reject) => {
+    service
+      .promoter('get')
+      .then(response => {
+        resolve(response);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
