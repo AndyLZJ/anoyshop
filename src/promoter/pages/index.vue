@@ -246,7 +246,7 @@ export default {
   },
   methods: {
     init() {
-      // receiveRecruitToken();
+      receiveRecruitToken();
       goods(
         1,
         {

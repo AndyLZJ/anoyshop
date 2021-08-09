@@ -19,6 +19,7 @@ export function goods(page = 1, keyword = { search: '', sort_key: 'created_time'
       })
       .catch(error => {
         console.log(error);
+        reject(error);
       });
   });
 }
@@ -80,9 +81,7 @@ export function useAgreement() {
           content_key: 'use_agreement'
         }
       )
-      .then(response => {
-        resolve(response);
-      })
+      .then(resolve)
       .catch(error => {
         reject(error);
       });
@@ -122,9 +121,7 @@ export function receiveRecruitToken() {
       .promoter('get', {
         behavior: 'recruiting'
       })
-      .then(response => {
-        resolve(response);
-      })
+      .then(resolve)
       .catch(error => {
         reject(error);
       });
@@ -138,9 +135,7 @@ export function applyMonitoring() {
       .promoter('get', {
         behavior: 'apply_check'
       })
-      .then(response => {
-        resolve(response);
-      })
+      .then(resolve)
       .catch(error => {
         reject(error);
       });
@@ -154,9 +149,7 @@ export function applyPromoter(applyContent = []) {
       .promoter('post', {
         apply_content: applyContent
       })
-      .then(response => {
-        resolve(response);
-      })
+      .then(resolve)
       .catch(error => {
         reject(error);
       });
@@ -168,9 +161,21 @@ export function personalCenter() {
   return new Promise((resolve, reject) => {
     service
       .promoter('get')
-      .then(response => {
-        resolve(response);
+      .then(resolve)
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
+// 获取申请结果
+export function applyAudit() {
+  return new Promise((resolve, reject) => {
+    service
+      .promoter('get', {
+        behavior: 'apply_audit'
       })
+      .then(resolve)
       .catch(error => {
         reject(error);
       });

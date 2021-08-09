@@ -326,7 +326,8 @@
           "path": "pages/dynamic",
           "style": {
             "navigationBarTitleText": "动态",
-            "enablePullDownRefresh": true
+            "enablePullDownRefresh": true,
+            "navigationStyle": "custom"
           }
         },
         {

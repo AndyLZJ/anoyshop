@@ -2,7 +2,7 @@
   <view class="he-page-content" :data-theme="theme" :class="loading ? 'flex justify-center align-center' : ''">
     <he-loading size="50" mode="flower" v-if="loading"></he-loading>
     <template v-else>
-      <template v-if="promoterStatus === -1 || promoterStatus === -2">
+      <template v-if="promoterStatus === -1 || promoterStatus === -2 || isApplyAgain">
         <image :src="adsPictures" class="he-ads"></image>
         <!-- 满足条件： 满足的条件 -->
         <view class="he-card he-condition flex flex-direction align-center" v-if="!isApply && type !== 1">
@@ -15,7 +15,7 @@
           <view class="he-center">
             <template v-if="!status">
               <template v-if="type === 5">购买一件指定商品，方可申请成为分销商</template>
-              <template v-else-if="type === 4"> 购买任意一件商品，方可申请成为分销商 </template>
+              <template v-else-if="type === 4"> 购买任意一件商品，方可申请成为分销商</template>
               <template v-else-if="type === 3 || type === 2">
                 <template v-if="type === 3">
                   累计消费次数需达到
@@ -30,7 +30,7 @@
             </template>
             <template v-else>
               <template v-if="type === 5">您已购买一件指定商品，可申请成为分销商</template>
-              <template v-else-if="type === 4"> 您已购买任意一件商品，可申请成为分销商 </template>
+              <template v-else-if="type === 4"> 您已购买任意一件商品，可申请成为分销商</template>
               <template v-else-if="type === 3 || type === 2">
                 <template v-if="type === 3">
                   您的累计消费次数已达到
@@ -54,13 +54,13 @@
               <view>
                 已消费
                 <text class="he-hit">
-                  <template v-if="type === 2"> ￥ </template>
+                  <template v-if="type === 2"> ￥</template>
                   {{ status ? denominator : numerator }}
                 </text>
-                <template v-if="type === 3"> 次 </template>
+                <template v-if="type === 3"> 次</template>
               </view>
               <view v-if="!status">
-                <template v-if="type === 2"> ￥ </template>
+                <template v-if="type === 2"> ￥</template>
                 {{ denominator }}
               </view>
             </view>
@@ -82,21 +82,9 @@
             <view class="__br"></view>
             {{ isBeInvited ? '邀请人：行走的CD' : '' }}
           </view>
-          <view class="he-item flex align-center">
-            <view class="he-hit">姓名</view>
-            <input type="text" placeholder="请输入真实姓名" />
-          </view>
-          <view class="he-item flex align-center">
-            <view class="he-hit">手机号</view>
-            <input type="text" placeholder="请输入手机号" />
-          </view>
-          <view class="he-item flex align-center">
-            <view class="he-hit">性别</view>
-            <input type="text" placeholder="请输入性别" />
-          </view>
-          <view class="he-item he-textarea flex align-start">
-            <view class="he-hit">地址</view>
-            <textarea :disable-default-padding="true" type="text" class="he-input" placeholder="请输入地址" />
+          <view class="he-item flex align-center" v-for="(item, index) in apply_content" :key="index">
+            <view class="he-hit">{{ item.name }}</view>
+            <input type="text" v-model="item.value" :placeholder="`请输入${item.name}`" />
           </view>
           <view class="he-protocol flex align-center" v-if="isAgreement">
             <he-radio class="he-radio" v-model="isAgree"></he-radio>
@@ -113,10 +101,13 @@
         <button class="cu-btn he-go-btn" @click="routerIndex">去逛逛</button>
       </view>
       <!-- 商家拒绝 -->
-      <view v-if="promoterStatus === 3" class="he-refuse--box he-result--box flex flex-direction align-center">
+      <view
+        v-if="promoterStatus === 3 && !isApplyAgain"
+        class="he-refuse--box he-result--box flex flex-direction align-center"
+      >
         <image class="he-image" :src="ipAddress + '/promoter/refuse-apply.png'"></image>
         <text class="he-text">不好意思，商家拒绝了您的申请</text>
-        <text class="he-information--text">拒绝理由：暂时不招募新分销商了</text>
+        <text class="he-information--text">拒绝理由：{{ note }}</text>
         <view>
           <button class="cu-btn he-left-btn" @click="applyAgain">再次申请</button>
           <button class="cu-btn he-go-btn" @click="routerIndex">去逛逛</button>
@@ -129,7 +120,7 @@
 <script>
 import heRadio from './../../components/he-radio.vue';
 import heLoading from '../../components/he-loading.vue';
-import { applyMonitoring, applyPromoter, useAgreement } from '../api';
+import { applyAudit, applyMonitoring, applyPromoter, useAgreement } from '../api';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -154,7 +145,11 @@ export default {
       denominator: null,
       isApply: false,
       // 是否为再次申请
-      isApplyAgain: false
+      isApplyAgain: false,
+      // 申请内容
+      apply_content: [],
+      // 拒绝理由
+      note: null
     };
   },
   computed: {
@@ -183,6 +178,13 @@ export default {
         this.$nextTick(() => {
           this.progressAnimation(response.percentage);
         });
+      });
+    } else if (this.promoterStatus === 3) {
+      // 申请被拒绝 获取拒绝理由
+      applyAudit().then(response => {
+        console.log(response);
+        this.note = response.note;
+        this.loading = false;
       });
     } else {
       this.loading = false;
@@ -233,16 +235,71 @@ export default {
     },
     // 再次申请
     applyAgain() {
-      this.isApply = true;
+      this.isApplyAgain = true;
+      this.loading = true;
+      // 需要再次监测是否满足条件
+      this.getMonitoring().then(response => {
+        this.loading = false;
+        // 异步保证元素存在
+        this.$nextTick(() => {
+          this.progressAnimation(response.percentage);
+        });
+      });
     },
     // 提交申请
-    submitApply() {},
+    submitApply() {
+      // 需要填写申请信息
+      if (this.isAgreement) {
+        if (this.isAgree) {
+          // 判断表单信息不能为空
+          const item = this.apply_content.find(item => {
+            return !item.value;
+          });
+          if (item) {
+            uni.showToast({
+              title: `填写完整${item.name}`,
+              icon: 'none'
+            });
+          } else {
+            // 条件通过 可调用接口申请
+            applyPromoter(this.apply_content).then(response => {
+              let userInfo = uni.getStorageSync('userInfo');
+              console.log(response);
+              console.log(userInfo);
+              const { status } = response;
+              // status 1 待审核 2 审核通过
+              userInfo.promoter_status = status;
+              // promoter_show 原本就是1的话 是清退用户 入口一直存在 不需要修改
+              if (userInfo.promoter_show === 0 && status === 2) {
+                // 开启分销中心入口
+                userInfo.promoter_show = 1;
+              }
+              console.log(userInfo);
+              uni.setStorageSync('userInfo', userInfo);
+              console.log('申请成功！');
+            });
+          }
+        } else {
+          uni.showToast({
+            title: '请勾选分销协议',
+            icon: 'none'
+          });
+        }
+      }
+    },
     // 立即申请
     apply() {
       // 是否需要填写申请信息
       console.log('申请信息');
       if (!!this.promoterSetting.need_apply) {
         this.isApply = 1;
+        this.apply_content = this.promoterSetting.apply_content.map(item => {
+          return {
+            name: item.name,
+            value: ''
+          };
+        });
+        console.log(this.apply_content);
       } else {
         // 不需要填写申请信息 直接申请
         applyPromoter().then(response => {
@@ -272,10 +329,12 @@ export default {
 .he-page-content {
   overflow: hidden;
 }
+
 .he-ads {
   width: 100%;
   height: 360px;
 }
+
 .he-card {
   margin: 24px 20px 46px 20px;
 }
@@ -283,6 +342,7 @@ export default {
 .he-condition {
   padding: 72px 0 80px 0;
   background-color: #fff;
+
   .he-progress--bar {
     margin-top: 56px;
     margin-bottom: 16px;
@@ -290,6 +350,7 @@ export default {
     height: 16px;
     background: #fef3f4;
     border-radius: 8px;
+
     .he-slider {
       width: 40px;
       height: 40px;
@@ -301,6 +362,7 @@ export default {
       right: 0;
       transform: translateY(-12px);
     }
+
     .he-progress {
       border-radius: 8px;
       height: 16px;
@@ -309,9 +371,11 @@ export default {
       @include background_color('background_color');
     }
   }
+
   .he-top {
     margin-bottom: 24px;
   }
+
   .he-title {
     font-size: 28px;
     @extend .font-family-sc;
@@ -319,17 +383,21 @@ export default {
     color: #222222;
     line-height: 36px;
   }
+
   .iconwarning,
   .iconsuccess {
     font-size: 40px;
     margin-right: 16px;
   }
+
   .iconwarning {
     color: #fbad15;
   }
+
   .iconsuccess {
     color: #53c41a;
   }
+
   .he-center {
     font-size: 24px;
     @extend .font-family-sc;
@@ -337,9 +405,11 @@ export default {
     color: #666666;
     line-height: 36px;
   }
+
   .he-hit {
     @include font_color('font_color');
   }
+
   .he-btn {
     width: 400px;
     height: 80px;
@@ -351,6 +421,7 @@ export default {
     font-weight: 500;
     color: #ffffff;
   }
+
   .he-bottom {
     width: 560px;
     height: 40px;
@@ -364,36 +435,44 @@ export default {
 .he-form {
   padding: 16px 25px 40px 25px;
   overflow: hidden;
+
   .he-hit {
     font-size: 26px;
     @extend .font-family-sc;
     font-weight: 500;
     color: #222222;
   }
+
   .he-item {
     border-bottom: 1px solid #e5e5e5;
     height: 100px;
+
     &:first-child {
       height: auto;
       min-height: 80px;
     }
+
     .he-hit {
       width: 155px;
     }
   }
+
   .he-textarea {
     padding-top: 37px;
     height: auto;
+
     .he-input {
       height: 150px;
     }
   }
+
   .he-protocol {
     margin: 32px 0 0 0;
     font-size: 24px;
     @extend .font-family-sc;
     font-weight: 500;
     color: #999999;
+
     .cu-btn {
       padding: 0;
       background-color: transparent;
@@ -403,18 +482,22 @@ export default {
       font-weight: 500;
       color: #1890ff;
     }
-    .he-radio/deep/ {
+
+    .he-radio /deep/ {
       display: inline-block;
       margin-right: 9px;
+
       .he-radio {
         width: 24px;
         height: 24px;
       }
+
       .he-select {
         font-size: 15px;
       }
     }
   }
+
   .he-submit {
     @include background_color('background_color');
     height: 80px;
@@ -430,10 +513,12 @@ export default {
 
 .he-result--box {
   padding-top: 160px;
+
   .he-image {
     width: 317px;
     height: 320px;
   }
+
   .he-text {
     font-size: 28px;
     @extend .font-family-sc;
@@ -441,6 +526,7 @@ export default {
     color: #222222;
     line-height: 34px;
   }
+
   .he-go-btn {
     height: 80px;
     @include background_color('background_color');
@@ -462,7 +548,9 @@ export default {
     color: #999999;
     line-height: 34px;
     margin-top: 8px;
+    max-width: 480px;
   }
+
   .cu-btn {
     &:first-child {
       margin-right: 20px;
@@ -477,6 +565,7 @@ export default {
       background-color: transparent;
       padding: 26px 64px;
     }
+
     &:last-child {
       margin-left: 20px;
     }
