@@ -94,6 +94,13 @@
     "usingComponents": true
   },
   "h5": {
+    "sdkConfigs": {
+      "maps": {
+        "qqmap": {
+          "key": ""
+        }
+      }
+    },
     "publicPath": "/assets/wechat",
     "router": {
       "base": "/",

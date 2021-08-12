@@ -1,3 +1,7 @@
+// #ifdef MP-WEIXIN
+import QQMapWX from '../static/mp-weixin/js/qqmap-wx-jssdk.min';
+// #endif
+
 const setting = {
   namespaced: true,
   state: {
@@ -25,7 +29,6 @@ const setting = {
       state.location = data;
     },
     setSys(state, data) {
-      console.log(data);
       state.sys = data;
     },
     theme(state, data) {
@@ -103,7 +106,9 @@ const setting = {
       return index;
     },
     getPicLimit: function (state) {
-      let limit = state.setting.storage_limit.pic_limit;
+      console.log(state.setting.storage_limit);
+      let limit = state.setting.storage_limit?.pic_limit || 2;
+      console.log(limit);
       return limit * 1024 * 1024;
     },
     shareSetting: function (state) {
@@ -117,6 +122,9 @@ const setting = {
     },
     getCopyright(state) {
       return state.setting.copyright_information;
+    },
+    getMapSdk(state) {
+      return state.setting.kb_express_setting.map_sdk;
     }
   },
   actions: {
@@ -142,12 +150,56 @@ const setting = {
       uni.removeStorageSync($storageKey.setting);
       dispatch('getSetting');
     },
-    getLocation: function ({ commit }) {
-      uni.getLocation({
-        type: 'wgs84',
-        success: function (res) {
-          commit('setLocation', res);
-        }
+    getLocation: function ({ commit, getters, state }) {
+      console.log(state.setting.setting_collection?.location_setting.tencent_key);
+      console.log(arguments);
+      let $wechat = this._vm.$wechat;
+      console.log(getters);
+      return new Promise((resolve, reject) => {
+        //  #ifdef MP-WEIXIN
+        const qqmapsdk = new QQMapWX({
+          key: state.setting.setting_collection?.location_setting.tencent_key
+        });
+        uni.getLocation({
+          success(response) {
+            const latitude = response.latitude;
+            const longitude = response.longitude;
+            qqmapsdk.reverseGeocoder({
+              location: {
+                latitude,
+                longitude
+              },
+              success(res) {
+                resolve(res);
+              },
+              fail(error) {
+                console.log(error);
+              }
+            });
+          },
+          fail(error) {
+            console.log(error);
+          }
+        });
+        //  #endif
+        //  #ifdef H5
+        let $jsonp = this._vm.$jsonp;
+        $wechat.getLocation({
+          success(response) {
+            const latitude = response.latitude;
+            const longitude = response.longitude;
+            $jsonp(
+              `https://apis.map.qq.com/ws/geocoder/v1/?key=${state.setting.setting_collection?.location_setting.tencent_key}&location=${latitude},${longitude}&output=jsonp`
+            )
+              .then(response => {
+                resolve(response);
+              })
+              .catch(error => {
+                console.log(error);
+              });
+          }
+        });
+        // #endif
       });
     },
     getSys: function ({ commit }) {
@@ -235,7 +287,6 @@ const setting = {
     getAuth({ commit }) {
       let $heshop = this._vm.$heshop;
       $heshop.cloud('get').then(response => {
-        console.log(response);
         commit('setAuth', response);
         commit('setIsAuth', true);
       });

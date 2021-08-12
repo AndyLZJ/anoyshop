@@ -108,6 +108,7 @@
     <template v-if="task_browse && copy_task_browse">
       <taskbrowse :display="is_browse" :goods_id="goods_id" ref="taskbrowse"></taskbrowse>
     </template>
+    <HeLoginModel />
   </view>
 </template>
 <script>
@@ -127,6 +128,8 @@ import heNavbar from '../../components/he-navbar.vue';
 import { mapGetters } from 'vuex';
 import taskpopups from '@/plugins/task/components/popups.vue';
 import taskbrowse from '@/plugins/task/components/browse.vue';
+import HeLoginModel from '../../components/he-login-layout.vue';
+
 export default {
   name: 'detail',
   components: {
@@ -144,11 +147,11 @@ export default {
     detailBar,
     heNavbar,
     taskpopups,
-    taskbrowse
+    taskbrowse,
+    HeLoginModel
   },
   computed: {
     ...mapGetters('setting', {
-      address: 'getLocation',
       goodsSetting: 'goodsSetting',
       navbarHeight: 'getNavBarHeight',
       statusBarHeight: 'statusBarHeight'
@@ -188,8 +191,9 @@ export default {
     }
   },
   onShow() {
-    console.log(this.task_browse);
-    this.handleTaskBrowseLog();
+    if (this.isLogin) {
+      this.handleTaskBrowseLog();
+    }
   },
   data() {
     return {
@@ -227,16 +231,12 @@ export default {
     };
   },
   onHide() {
-    console.log(this.$refs['taskbrowse']);
-    // console.log('执行清理', this.$refs['taskbrowse'].timeoutID);
     if (this.$refs['taskbrowse'] && this.$refs['taskbrowse'].timeoutID) {
       clearTimeout(this.$refs['taskbrowse'].timeoutID);
       this.copy_task_browse = 0;
     }
   },
   onUnload() {
-    console.log(this.$refs['taskbrowse']);
-    // console.log('执行清理', this.$refs['taskbrowse'].timeoutID);
     if (this.$refs['taskbrowse'] && this.$refs['taskbrowse'].timeoutID) {
       clearTimeout(this.$refs['taskbrowse'].timeoutID);
       this.copy_task_browse = 0;
@@ -262,10 +262,9 @@ export default {
             this.is_browse = true;
           }
           this.copy_task_browse = this.is_browse;
-          console.log(this.is_browse);
         })
-        .catch(err => {
-          console.log('查看错误信息');
+        .catch(() => {
+          // Don't do
         });
     },
     getDetail: function getDetail(id, callback) {

@@ -63,6 +63,7 @@
         <text>加载中...</text>
       </view>
     </he-toast>
+    <HeLoginModel />
   </view>
 </template>
 
@@ -74,6 +75,7 @@ import heCart from '../../components/he-cart.vue';
 import cartItem from './components/cart-item.vue';
 import heProductsFeatured from '../../components/he-products-featured.vue';
 import heLoading from '../../components/he-loading';
+import HeLoginModel from '../../components/he-login-layout.vue';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -85,7 +87,8 @@ export default {
     heCart,
     cartItem,
     heLoading,
-    heProductsFeatured
+    heProductsFeatured,
+    HeLoginModel
   },
   data() {
     return {

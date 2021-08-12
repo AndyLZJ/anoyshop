@@ -7,7 +7,8 @@ const apply = {
     menus: [],
     userInfo: {},
     token: '',
-    roles: ''
+    roles: '',
+    showLoginModel: false
   },
   mutations: {
     login(state, provider) {
@@ -38,9 +39,16 @@ const apply = {
     },
     setMenu(state, provider) {
       state.menus = provider;
+    },
+    setLoginModel(state, data) {
+      state.showLoginModel = data;
     }
   },
-  actions: {}
+  actions: {
+    layout({ commit }) {
+      commit('logout');
+    }
+  }
 };
 
 export default apply;

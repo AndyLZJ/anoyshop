@@ -100,8 +100,10 @@
         :data-index="index"
       ></component>
     </view>
+    <HeLoginModel />
   </scroll-view>
 </template>
+
 <script type="text/javascript">
 //组件列表
 import titles from '../fitment/title/title.vue';
@@ -118,6 +120,8 @@ import rubik from '../fitment/rubik/rubik.vue';
 import notice from '../fitment/notice/notice.vue';
 import coupon from '../fitment/coupon/coupon.vue';
 import task from '../fitment/task/task.vue';
+import HeLoginModel from '../../components/he-login-layout.vue';
+
 export default {
   components: {
     videos,
@@ -133,7 +137,8 @@ export default {
     rubik,
     notice,
     coupon,
-    task
+    task,
+    HeLoginModel
   },
   data() {
     return {

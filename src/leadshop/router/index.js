@@ -51,15 +51,20 @@ const initRouter = (routerMap = {}, isCustom = false) => {
             next();
           } else {
             let toPath = '/';
+            console.log($store);
+            // console.log()
             if (to.path !== loginPage) {
               toPath = to.fullPath;
-              next({
-                path: loginPage,
-                query: {
-                  redirect: toPath
-                },
-                method: 'navigateTo'
-              });
+              console.log(toPath);
+              console.log($store);
+              $store.state.apply.showLoginModel = true;
+              // next({
+              //   path: loginPage,
+              //   query: {
+              //     redirect: toPath
+              //   },
+              //   method: 'switchTab'
+              // });
             } else {
               next();
             }

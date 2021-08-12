@@ -6,23 +6,23 @@
         <text class="iconfont iconpopup_close fr" @click="showModal = false"></text>
       </view>
       <view class="he-body flex align-center">
-        <view class="he-body__item" @click="active = 0" :class="active === 0 ? 'he-body__item-1' : 'he-body__item-0'">{{
-          province
-        }}</view>
+        <view class="he-body__item" @click="active = 0" :class="active === 0 ? 'he-body__item-1' : 'he-body__item-0'"
+          >{{ province }}
+        </view>
         <view
           class="he-body__item"
           v-if="provinceIndex !== -1"
           @click="active = 1"
           :class="active === 1 ? 'he-body__item-1' : 'he-body__item-0'"
-          >{{ city }}</view
-        >
+          >{{ city }}
+        </view>
         <view
           class="he-body__item"
           v-if="cityIndex !== -1"
           @click="active = 2"
           :class="active === 2 ? 'he-body__item-1' : 'he-body__item-0'"
-          >{{ district }}</view
-        >
+          >{{ district }}
+        </view>
       </view>
       <view class="he-footer">
         <template v-if="list.length > 0">
@@ -38,8 +38,8 @@
               :class="provinceIndex === index ? 'he-scroll-item-1' : 'he-scroll-item-0'"
               v-for="(item, index) in list"
               :key="index"
-              >{{ item.name }}</view
-            >
+              >{{ item.name }}
+            </view>
             <template v-if="provinceIndex !== -1">
               <view
                 class="he-scroll-item"
@@ -52,8 +52,8 @@
                 :class="cityIndex === index ? 'he-scroll-item-1' : 'he-scroll-item-0'"
                 v-for="(item, index) in list[provinceIndex].list"
                 :key="index"
-                >{{ item.name }}</view
-              >
+                >{{ item.name }}
+              </view>
               <template v-if="cityIndex !== -1">
                 <view
                   class="he-scroll-item"
@@ -66,8 +66,8 @@
                   :class="districtIndex === index ? 'he-scroll-item-1' : 'he-scroll-item-0'"
                   v-for="(item, index) in list[provinceIndex].list[cityIndex].list"
                   :key="index"
-                  >{{ item.name }}</view
-                >
+                  >{{ item.name }}
+                </view>
               </template>
             </template>
           </scroll-view>
@@ -80,6 +80,7 @@
 <script>
 import hePopup from './he-popup.vue';
 import { mapActions, mapGetters } from 'vuex';
+
 export default {
   name: 'he-select-address',
   components: {
@@ -113,8 +114,8 @@ export default {
   },
   computed: {
     showModal: {
-      get: function () {
-        return this.value;
+      get: function ({ value }) {
+        return value;
       },
       set: function (val) {
         this.$emit('input', val);
@@ -190,6 +191,7 @@ export default {
   }
 };
 </script>
+
 <style scoped lang="scss">
 .he-select-address {
   height: 63vh;
