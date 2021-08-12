@@ -1,20 +1,7 @@
 import Vue from 'vue';
 import axios from './axios.js';
 import cache from './cache.js';
-function redLoadFun() {
-  console.log(Vue.prototype.$store);
-  Vue.prototype.$store.dispatch('apply/logout');
-  console.log(Vue.prototype.$store.state);
-  uni.reLaunch({
-    url: '/pages/user/login',
-    success(response) {
-      console.log(response);
-    },
-    fail(error) {
-      console.log(error);
-    }
-  });
-}
+
 export default function server(options, instance) {
   //设置初始化URL
   axios.defaults.baseURL = options.AppURL;

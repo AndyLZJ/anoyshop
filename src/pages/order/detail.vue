@@ -11,7 +11,7 @@
       <view class="he-detail">
         <view class="he-order-detail">
           <detail-logistics
-            v-if="detail.status >= 202 && detail.freight.length > 0"
+            v-if="detail.status >= 201 && detail.freight.length > 0"
             :freight="detail.freight"
             :order-id="detail.id"
           ></detail-logistics>

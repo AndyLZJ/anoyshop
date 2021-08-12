@@ -457,7 +457,7 @@ export default {
       }
     },
     shopping: function () {
-      if (!this.isLogin) return uni.navigateTo({ url: '/pages/user/login' });
+      if (!this.isLogin) return this.$store.commit('apply/setLoginModel', true);
       if (this.shoppingType === 'cart') {
         this.cart();
       } else if (this.shoppingType === 'buy') {
@@ -504,9 +504,7 @@ export default {
         })
         .catch(function (err) {
           if (err.status === 401) {
-            uni.navigateTo({
-              url: '/pages/user/login'
-            });
+            _this.$store.commit('apply/setLoginModel', true);
           }
           _this.$h.toast(err.data.message);
         });

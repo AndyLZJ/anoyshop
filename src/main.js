@@ -61,7 +61,7 @@ Vue.prototype.$heshop = Heshop.connect({
     console.log(Vue.prototype);
     // #ifdef H5
     const { origin, pathname } = window.location;
-    window.location.href = origin + pathname + `?r=wechat#/pages/user/login`;
+    window.location.href = origin + pathname + `?r=wechat#/pages/user/index`;
     // #endif
 
     // #ifndef H5
@@ -71,15 +71,7 @@ Vue.prototype.$heshop = Heshop.connect({
       console.log(e);
     }
     console.log('执行');
-    uni.reLaunch({
-      url: '/pages/user/login',
-      success(response) {
-        console.log(response);
-      },
-      fail(error) {
-        console.log(error);
-      }
-    });
+    this.$store.commit('apply/setLoginModel', true);
     // #endif
   },
   ErrorFun: function (error) {
@@ -151,7 +143,7 @@ const app = new Vue({
       '/pages/live/index',
       '/pages/index/demo'
     ],
-    loginPage: '/pages/user/index'
+    loginPage: '/pages/user/login'
   }),
   ...App
 });

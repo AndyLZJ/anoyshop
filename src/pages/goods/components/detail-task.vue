@@ -1,15 +1,10 @@
 <template>
   <view class="detail-parameter" v-if="$manifest('task', 'status') && is_display">
-    <view class="he-top">
-      <view class="he-item">
-        <view style="width: 100%">
-          <text class="he-item__label he-item__label2">活动</text>
-          <text class="he-item__value he-item__value2">
-            {{ getShowTextInfo(taskList) }}
-          </text>
-          <div class="clear"></div>
-        </view>
-      </view>
+    <view style="width: 100%" class="flex align-start">
+      <text class="he-item__label">活动</text>
+      <text class="he-item__value">
+        {{ getShowTextInfo(taskList) }}
+      </text>
     </view>
   </view>
 </template>
@@ -76,32 +71,13 @@ export default {
   }
 };
 </script>
+
 <style scoped>
 .detail-parameter {
   margin: 20px 20px 0 20px;
   background: #ffffff;
   border-radius: 16px;
-  padding: 16px 24px 8px 24px;
-}
-
-.he-bottom {
-  border-top: 1px solid #e5e5e5;
-}
-
-.clear {
-  clear: both;
-}
-
-.iconbtn_arrow {
-  font-size: 22px;
-  width: 22px;
-  height: 22px;
-  color: RGBA(190, 190, 190, 1);
-}
-
-.he-item {
-  min-height: 72 rpx;
-  position: relative;
+  padding: 28px 24px;
 }
 
 .he-item__label {
@@ -109,39 +85,14 @@ export default {
   font-family: PingFang SC;
   font-weight: 500;
   color: #999999;
-  float: left;
-  display: inline-block;
-  line-height: 72px;
 }
 
 .he-item__value {
-  width: calc(100% - 75px);
+  width: calc(100% - 91px);
   font-size: 24px;
   font-family: PingFang SC;
   font-weight: 500;
   color: #222222;
-  margin-left: 10px;
-  display: inline-block;
-  float: right;
-  padding-top: 19 rpx;
-}
-
-.he-item__value-0 {
-  color: #999999;
-}
-
-.iconproductdetails_goodsservices {
-  font-size: 22px;
-  color: RGBA(162, 162, 162, 1);
-}
-
-.he-serve__value {
-  font-size: 22px;
-  margin: 0 0 0 7px;
-}
-
-.he-service {
-  margin: 10px 31px 10px 0;
-  padding: 8px 0;
+  margin-left: 21px;
 }
 </style>

@@ -9,20 +9,34 @@
         <button v-if="canIUseGetUserProfile" class="cu-btn" @click="login">微信一键授权登录</button>
         <button v-else class="cu-btn" open-type="getUserInfo" @getuserinfo="login">微信一键授权登录</button>
         <!-- #endif -->
+        <!-- #ifdef H5 -->
+        <button class="cu-btn" @click="decryptUserInfo">微信一键授权登录</button>
+        <!-- #endif -->
         <view class="assist-text" @click="notLogIn">暂不登录</view>
       </view>
     </he-popup>
+    <user-newuser-coupon
+      v-model="isNewuser"
+      :coupon="userInfo.register && userInfo.register.coupon_list"
+    ></user-newuser-coupon>
   </view>
 </template>
 
 <script>
 import hePopup from './he-popup.vue';
 import { mapActions } from 'vuex';
+import userNewuserCoupon from './user-newuser-coupon.vue';
 
 export default {
   name: 'he-login-model',
   components: {
-    hePopup
+    hePopup,
+    userNewuserCoupon
+  },
+  data() {
+    return {
+      isNewuser: false
+    };
   },
   computed: {
     showModal: {
@@ -38,8 +52,11 @@ export default {
     // #ifndef H5
     canIUseGetUserProfile: function () {
       return uni.canIUse('getUserProfile');
-    }
+    },
     // #endif
+    userInfo: function () {
+      return this.$store.state.apply.userInfo;
+    }
   },
   methods: {
     ...mapActions({
@@ -66,7 +83,7 @@ export default {
             // });
           }
           console.log(getCurrentPages());
-          uni.navigateBack({ delta: 1 });
+          // uni.navigateBack({ delta: 1 });
           setTimeout(() => {
             let index = this.$store.getters['setting/getCartIndex'];
             this.$store.dispatch('cart/getCartNumber').then(response => {

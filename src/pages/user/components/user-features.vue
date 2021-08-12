@@ -184,7 +184,7 @@ export default {
         .then(res => {
           console.log('查看绑定手机号任务是否开启', res);
           if (res.status) {
-            this.binding = res;
+            // this.binding = res;
             this.getTaskBinding();
           }
         })
@@ -272,9 +272,9 @@ export default {
           if (res.status) {
             const value = uni.getStorageSync('statusTaskPerfect');
             // 逻辑有问题
-            if (!value) {
-              this.perfect = res;
-            }
+            // if (!value) {
+            //   this.perfect = res;
+            // }
             this.getTaskPerfect();
           }
         })
@@ -363,7 +363,7 @@ export default {
           this.navigateTo('/pages/user/bind-phone');
         }
       } else {
-        this.navigateTo('/pages/user/login');
+        this.$store.commit('apply/setLoginModel', true);
       }
     },
     // #ifndef H5

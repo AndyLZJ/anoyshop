@@ -125,6 +125,7 @@
     ></taskpopups>
     <!-- 测试使用 -->
     <!--     <cartoon :score="100" title="测试" v-model="is_cartoon"></cartoon> -->
+    <HeLoginModel />
   </view>
 </template>
 <script type="text/javascript">
@@ -161,6 +162,8 @@ import { mapGetters, mapActions } from 'vuex';
 import openidad from './ad.vue';
 import cartoon from '@/plugins/task/components/cartoon.vue';
 import taskpopups from '@/plugins/task/components/popups.vue';
+import HeLoginModel from '../../components/he-login-layout.vue';
+
 export default {
   components: {
     videos,
@@ -188,7 +191,8 @@ export default {
     // #endif
     openidad,
     taskpopups,
-    cartoon
+    cartoon,
+    HeLoginModel
   },
   data() {
     return {
