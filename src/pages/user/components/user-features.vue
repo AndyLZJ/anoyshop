@@ -267,7 +267,7 @@ export default {
       let that = this;
       //判断当前任务是否打开
       that.$heshop
-        .plugin('get', { include: 'task', model: 'task', keyword: 'perfect', today: 0 })
+        .plugin('get', { include: 'task', model: 'task', keyword: 'perfect' })
         .then(res => {
           if (res.status) {
             const value = uni.getStorageSync('statusTaskPerfect');
@@ -294,7 +294,7 @@ export default {
         return true;
       }
       this.$heshop
-        .plugin('get', { include: 'task', model: 'score', type: 'single', keyword: 'perfect' })
+        .plugin('get', { include: 'task', model: 'score', type: 'single', keyword: 'perfect', today: 0 })
         .then(res => {
           console.log('查看用户绑定信息', res);
           //判断如果存在的状态下

@@ -36,6 +36,7 @@
       <taskPopups :key="index" v-model="item.display" :title="item.remark" :index="index" />
     </template>
     <he-copyright></he-copyright>
+    <HeLoginModel />
   </view>
 </template>
 
@@ -48,6 +49,7 @@ import heProductsFeatured from '../../components/he-products-featured.vue';
 import heCopyright from './components/he-copyright.vue';
 import taskPopups from '../../plugins/task/components/popups.vue';
 import { mapActions, mapGetters } from 'vuex';
+import HeLoginModel from '../../components/he-login-layout.vue';
 
 export default {
   components: {
@@ -57,7 +59,8 @@ export default {
     heProductsFeatured,
     heCopyright,
     userCoupon,
-    taskPopups
+    taskPopups,
+    HeLoginModel
   },
   data() {
     return {

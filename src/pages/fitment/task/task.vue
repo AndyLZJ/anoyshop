@@ -183,7 +183,7 @@ export default {
     getRemark(task) {
       if (task.remark) {
         let data = task.remark.split('，');
-        if (task.keyword == 'signin') {
+        if (task.keyword === 'signin') {
           return data[0] + '，' + data[1];
         }
         return data[0] + '\n' + data[1];

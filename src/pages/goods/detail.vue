@@ -127,6 +127,7 @@ import heNavbar from '../../components/he-navbar.vue';
 import { mapGetters } from 'vuex';
 import taskpopups from '@/plugins/task/components/popups.vue';
 import taskbrowse from '@/plugins/task/components/browse.vue';
+
 export default {
   name: 'detail',
   components: {
@@ -148,7 +149,6 @@ export default {
   },
   computed: {
     ...mapGetters('setting', {
-      address: 'getLocation',
       goodsSetting: 'goodsSetting',
       navbarHeight: 'getNavBarHeight',
       statusBarHeight: 'statusBarHeight'
@@ -190,6 +190,7 @@ export default {
   onShow() {
     console.log(this.task_browse);
     this.handleTaskBrowseLog();
+    // console.log(this.address);
   },
   data() {
     return {
@@ -360,6 +361,7 @@ export default {
     }
   },
   onLoad(options) {
+    console.count('onload');
     this.task_browse = options.task_browse ? options.task_browse : null;
     this.copy_task_browse = this.task_browse;
     this.popupsList = [];

@@ -1,10 +1,10 @@
 <template>
   <view class="he-copyright flex flex-direction align-center">
-    <template v-if="!getCopyright">
+    <template v-if="($h.test.isEmpty(getCopyright) || !auth) && isAuth">
       <image class="he-copyright__image" :src="ipAddress + '/copy-logo.png'" />
       <text class="he-copyright__text">Powered By Leadshop © 2021</text>
     </template>
-    <template v-else>
+    <template v-else-if="!$h.test.isEmpty(getCopyright) && auth">
       <image class="he-copyright__image" :src="getCopyright.mobile_copyright_icon" />
       <text class="he-copyright__text">{{ getCopyright.mobile_copyright_content }}</text>
     </template>
@@ -19,10 +19,14 @@ export default {
   computed: {
     ...mapGetters('setting', {
       getCopyright: 'getCopyright'
-    })
-  },
-  mounted() {
-    console.log(this.getCopyright);
+    }),
+    auth({ $store }) {
+      console.log($store.state.setting.auth);
+      return $store.state.setting.auth;
+    },
+    isAuth({ $store }) {
+      return $store.state.setting.isAuth;
+    }
   }
 };
 </script>

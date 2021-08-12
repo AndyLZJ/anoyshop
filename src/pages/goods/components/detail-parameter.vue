@@ -4,18 +4,18 @@
       <view class="he-item flex justify-between align-center" @click="shopping">
         <view>
           <text class="he-item__label">规格</text>
-          <text class="he-item__value" :class="select ? '' : 'he-item__value-0'">{{
-            select ? '已选择:' + select.param_value.split('_').join('/') : '请选择'
-          }}</text>
+          <text class="he-item__value" :class="select ? '' : 'he-item__value-0'"
+            >{{ select ? '已选择:' + select.param_value.split('_').join('/') : '请选择' }}
+          </text>
         </view>
         <view class="iconfont iconbtn_arrow"></view>
       </view>
       <view class="he-item flex justify-between align-center" @click="isSd = true">
         <view>
           <text class="he-item__label">运费</text>
-          <text class="he-item__value" :class="shipping ? '' : 'he-item__value-0'">{{
-            shipping ? '送至' + shipping : '请先选择配送地址'
-          }}</text>
+          <text class="he-item__value" :class="shipping ? '' : 'he-item__value-0'"
+            >{{ shipping ? '送至' + shipping : '请先选择配送地址' }}
+          </text>
         </view>
         <view class="iconfont iconbtn_arrow"></view>
       </view>
@@ -56,12 +56,14 @@
     <detail-args v-model="isArgs" :list="goodsArgs"></detail-args>
   </view>
 </template>
+
 <script>
 import detailFreeShipping from './detail-free-shipping.vue';
 import detailService from './detail-service.vue';
 import heSelectAddress from '../../../components/he-select-address.vue';
 import detailShippingAddress from './detail-shipping-address.vue';
 import detailArgs from './detail-args.vue';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'detail-parameter',
@@ -98,6 +100,11 @@ export default {
         return [];
       }
     }
+  },
+  computed: {
+    ...mapGetters('user', {
+      list: 'getAddress'
+    })
   },
   data() {
     return {
@@ -143,12 +150,30 @@ export default {
         .catch(function (err) {
           _this.$toError(err);
         });
+    },
+    getDefaultAddress() {
+      this.$heshop
+        .address('get', {
+          behavior: 'default'
+        })
+        .then(response => {
+          console.log(response);
+          if (this.$h.test.isEmpty(response)) {
+            this.$store.dispatch('setting/getLocation').then(response => {
+              this.selectAddress(response.result.ad_info);
+            });
+          } else {
+            this.selectAddress(response);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   },
   filters: {
     parameterStr(data) {
       let str = '';
-      console.log(data);
       for (let i = 0; i < data.slice(0, 2).length; i++) {
         str += data.slice(0, 2)[i].name + ',';
       }
@@ -158,9 +183,31 @@ export default {
       }
       return str;
     }
+  },
+  mounted() {
+    if (this.isLogin) {
+      this.getDefaultAddress();
+    } else {
+      this.$store
+        .dispatch('setting/getLocation')
+        .then(response => {
+          if (response.status === 0) {
+            this.selectAddress(response.result.ad_info);
+          } else {
+            uni.showToast({
+              title: response.message,
+              icon: 'none'
+            });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
   }
 };
 </script>
+
 <style scoped>
 .detail-parameter {
   margin: 20px 20px 0 20px;

@@ -40,6 +40,7 @@ export default {
     return {
       name: '',
       no: '',
+      code: '',
       list: [],
       state: 1
     };
@@ -48,13 +49,14 @@ export default {
     copy: function (content) {
       this.uniCopy({ content });
     },
-    getLogistics: function (no, mobile, name) {
+    getLogistics: function (no, mobile, name, code) {
       let _this = this;
       this.$heshop
         .express('post', {
           no,
           mobile,
-          name
+          name,
+          code
         })
         .then(function (res) {
           let list = res.list;
@@ -72,12 +74,13 @@ export default {
   onLoad(options) {
     this.name = options.name;
     this.no = options.no;
+    this.code = options.code;
     if (options.title) {
       uni.setNavigationBarTitle({
         title: options.title
       });
     }
-    this.getLogistics(options.no, options.mobile, options.name);
+    this.getLogistics(options.no, options.mobile, options.name, options.code);
   }
 };
 </script>

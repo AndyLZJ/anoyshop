@@ -2,11 +2,10 @@
   <view class="detail-parameter" v-if="$manifest('task', 'status') && is_display">
     <view class="he-top">
       <view class="he-item">
-        <view style="width: 100%;">
+        <view style="width: 100%">
           <text class="he-item__label he-item__label2">活动</text>
           <text class="he-item__value he-item__value2">
-<!--             {{taskList['goods'].status?taskList['goods'].declare:''}} {{taskList['order'].status?taskList['order'].declare:''}} -->
-            {{getShowTextInfo(taskList)}}
+            {{ getShowTextInfo(taskList) }}
           </text>
           <div class="clear"></div>
         </view>
@@ -14,24 +13,23 @@
     </view>
   </view>
 </template>
+
 <script>
 export default {
-  name: "detail-task",
-  props: {
-
-  },
+  name: 'detail-task',
+  props: {},
   data() {
     return {
       taskList: {}
-    }
+    };
   },
   computed: {
-    is_display() {
-      if (Object.getOwnPropertyNames(this.taskList).length > 0) {
-        if (this.taskList['goods'] && this.taskList['goods'].status) {
+    is_display({ taskList }) {
+      if (Object.getOwnPropertyNames(taskList).length > 0) {
+        if (taskList['goods'] && taskList['goods'].status) {
           return true;
         }
-        if (this.taskList['order'] && this.taskList['order'].status) {
+        if (taskList['order'] && taskList['order'].status) {
           return true;
         }
       }
@@ -49,12 +47,12 @@ export default {
     getShowTextInfo(taskList) {
       let a = taskList['goods'].status;
       let b = taskList['order'].status;
-      let text = "";
+      let text = '';
       if (a) {
         text += taskList['goods'].declare;
       }
       if (a && b) {
-        text += "，";
+        text += '，';
       }
       if (b) {
         text += taskList['order'].declare;
@@ -66,27 +64,28 @@ export default {
      * @return {[type]} [description]
      */
     handleTaskList() {
-      this.$heshop.plugin("get", { include: "task", model: "task" }).then(res => {
-        this.taskList = res;
-      }).catch(err => {
-        console.log("handleTaskList", err)
-      })
-    },
+      this.$heshop
+        .plugin('get', { include: 'task', model: 'task' })
+        .then(res => {
+          this.taskList = res;
+        })
+        .catch(err => {
+          console.log('handleTaskList', err);
+        });
+    }
   }
-}
-
+};
 </script>
 <style scoped>
 .detail-parameter {
   margin: 20px 20px 0 20px;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 16px;
   padding: 16px 24px 8px 24px;
 }
 
 .he-bottom {
-
-  border-top: 1px solid #E5E5E5;
+  border-top: 1px solid #e5e5e5;
 }
 
 .clear {
@@ -101,7 +100,7 @@ export default {
 }
 
 .he-item {
-  min-height: 72rpx;
+  min-height: 72 rpx;
   position: relative;
 }
 
@@ -115,7 +114,6 @@ export default {
   line-height: 72px;
 }
 
-
 .he-item__value {
   width: calc(100% - 75px);
   font-size: 24px;
@@ -125,9 +123,8 @@ export default {
   margin-left: 10px;
   display: inline-block;
   float: right;
-  padding-top: 19rpx;
+  padding-top: 19 rpx;
 }
-
 
 .he-item__value-0 {
   color: #999999;
@@ -147,5 +144,4 @@ export default {
   margin: 10px 31px 10px 0;
   padding: 8px 0;
 }
-
 </style>

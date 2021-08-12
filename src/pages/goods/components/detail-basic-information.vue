@@ -4,8 +4,10 @@
       <view class="he-top flex align-center justify-between">
         <view>
           <text class="he-price he-price_task" v-if="is_task"
-            >{{ task.task_number }}<text style="font-size: 12px">积分+¥</text>{{ task.task_price }}</text
-          >
+            >{{ task.task_number }}
+            <text style="font-size: 12px">积分+¥</text>
+            {{ task.task_price }}
+          </text>
           <text class="he-price" v-else>{{ price }}</text>
           <text class="he-old-price">¥{{ linePrice }}</text>
         </view>
@@ -31,7 +33,7 @@
               <template v-if="Number(item.min_price) > 0">
                 满{{ Number(item.min_price) }}减{{ Number(item.sub_price) }}
               </template>
-              <template v-else> {{ Number(item.sub_price) }}元无门槛 </template>
+              <template v-else> {{ Number(item.sub_price) }}元无门槛</template>
             </view>
             <view class="he-coupon-edge he-coupon-item-right">
               <view class="he-edge-doc"></view>
@@ -48,6 +50,7 @@
     <detail-coupon v-model="isCoupon" :coupon="newCoupon"></detail-coupon>
   </view>
 </template>
+
 <script>
 import heShare from '../../../components/he-share.vue';
 import detailCoupon from './detail-coupon.vue';
@@ -60,9 +63,9 @@ export default {
   },
   props: {
     is_task: {
-      type: Boolean,
+      type: Number,
       default: function () {
-        return false;
+        return 0;
       }
     },
     task: [Object, Array],
@@ -146,7 +149,9 @@ export default {
             .then(res => {
               console.log('执行了分享接口', res);
             })
-            .catch(error => {});
+            .catch(() => {
+              //  Don't do
+            });
         }
       }, 1000);
     },
@@ -195,6 +200,7 @@ export default {
   }
 };
 </script>
+
 <style scoped lang="scss">
 .detail-basic-information {
   background: #ffffff;
@@ -266,6 +272,7 @@ export default {
   font-size: 32px;
   color: RGBA(153, 153, 153, 1);
 }
+
 .he-subtitle {
   font-size: 22px;
   font-family: PingFang SC;
@@ -276,6 +283,7 @@ export default {
   word-wrap: break-word;
   word-break: normal;
 }
+
 .he-coupon {
   width: 662px;
   height: 64px;

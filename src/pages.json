@@ -135,6 +135,12 @@
       }
     },
     {
+      "path": "pages/order/package",
+      "style": {
+        "navigationBarTitleText": "包裹详情"
+      }
+    },
+    {
       "path": "pages/order/logistics",
       "style": {
         "navigationBarTitleText": "查看物流"

@@ -1,6 +1,20 @@
+import Vue from 'vue';
 import axios from './axios.js';
 import cache from './cache.js';
-
+function redLoadFun() {
+  console.log(Vue.prototype.$store);
+  Vue.prototype.$store.dispatch('apply/logout');
+  console.log(Vue.prototype.$store.state);
+  uni.reLaunch({
+    url: '/pages/user/login',
+    success(response) {
+      console.log(response);
+    },
+    fail(error) {
+      console.log(error);
+    }
+  });
+}
 export default function server(options, instance) {
   //设置初始化URL
   axios.defaults.baseURL = options.AppURL;
@@ -69,6 +83,7 @@ export default function server(options, instance) {
           //重新加载当前页面
           options.redLoadFun();
         } else {
+          console.log('1221212112');
           return Promise.reject(error.response);
         }
       } else if (response.status == 420) {
@@ -95,6 +110,7 @@ export default function server(options, instance) {
               if (data && data.token) {
                 cache.set('token', data.token);
                 //重新加载当前页面
+                // redLoadFun();
                 options.redLoadFun();
               }
             })
@@ -105,6 +121,7 @@ export default function server(options, instance) {
                 cache.remove('token');
                 cache.remove('userInfo');
                 //重新加载当前页面
+                // redLoadFun();
                 options.redLoadFun();
               } else {
                 return Promise.reject(error.response);
