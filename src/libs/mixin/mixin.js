@@ -39,6 +39,15 @@ module.exports = {
         }
       }
       return false;
+    },
+    $shareData({shareSetting, storeSetting}) {
+      return {
+        title: shareSetting?.describe
+          ? shareSetting?.describe
+          : `欢迎光临${storeSetting?.name} 挑选好物`,
+        path: '/pages/index/index',
+        imageUrl: shareSetting.cover_img ? shareSetting?.cover_img : storeSetting?.logo
+      }
     }
   },
   onLoad(options) {
@@ -94,27 +103,16 @@ module.exports = {
       }
     },
     $shareAppMessage: function (args) {
-      console.log(this.shareSetting);
-      args = args || {
-        title: this.shareSetting?.describe
-          ? this.shareSetting?.describe
-          : `欢迎光临${this.storeSetting?.name} 挑选好物`,
-        path: '/pages/index/index',
-        imageUrl: this.shareSetting.cover_img ? this.shareSetting?.cover_img : this.storeSetting?.logo
-      };
+      args = args || this.$shareData;
       if (this.isLogin && args && args.path) {
-        console.log('判断成功，需要添加分享链接');
         this.toTaskonShare();
         //处理统一传参问题
-        if (args.path.indexOf('?') == -1) {
-          console.log('有直接参数');
+        if (args.path.indexOf('?') === -1) {
           args.path = args.path + '?task_uid=' + this.$store.state.apply.userInfo.id;
         } else {
-          console.log('没有直接参数');
           args.path = args.path + '&task_uid=' + this.$store.state.apply.userInfo.id;
         }
       }
-      console.log('打印分享链接', args.path);
       return args;
     },
     uniCopy: function ({ content, success, error }) {

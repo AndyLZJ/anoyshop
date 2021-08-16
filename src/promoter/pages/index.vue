@@ -22,7 +22,7 @@
               <view class="iconfont icondistribution_dynamic"></view>
               <view>动态</view>
             </view>
-            <view class="he-router" @click="routerLeaderboard">
+            <view class="he-router" @click="routerLeaderboard" v-if="rank.enable">
               <view class="iconfont icondistribution_list"></view>
               <view>榜单</view>
             </view>
@@ -37,7 +37,8 @@
               <view :style="[progressStyle]" class="he-progress--rate"></view>
             </view>
             <view class="he-prompt">
-              升级至{{ detail.next_level.name }}，还需{{ detail.next_level.lack.condition
+              升级至{{ detail.next_level.name }}，还需{{
+                detail.next_level.lack.condition
               }}{{ detail.next_level.lack.lack_num }}
             </view>
           </view>
@@ -113,7 +114,7 @@
               <view class="">
                 <view class="he-good--price">￥{{ good.price }}</view>
                 <view class="he-good--share">
-                  <text class="iconfont iconproductdetails_share" />
+                  <text class="iconfont iconproductdetails_share"/>
                   <text class="he-good--commission">预计赚¥{{ good.commission }}</text>
                 </view>
               </view>
@@ -126,28 +127,28 @@
             <text class="he-title">推广赚钱</text>
           </view>
           <view class="he-card--body flex flex-wrap">
-            <button class="cu-btn basis-df flex justify-between">
+            <button class="cu-btn basis-df flex justify-between" @click="promotionSpace">
               <view>
                 <view class="he-title">推广空间</view>
                 <view class="he-desc">专属动态空间</view>
               </view>
-              <image class="he-image" :src="ipAddress + '/promoter-promotion-space.png'" />
+              <image class="he-image" :src="ipAddress + '/promoter-promotion-space.png'"/>
             </button>
             <button class="cu-btn basis-df flex justify-between" @click="routerMaterial">
               <view>
                 <view class="he-title">推广素材</view>
                 <view class="he-desc">便捷复制素材</view>
               </view>
-              <image class="he-image" :src="ipAddress + '/promoter-promotion-material.png'" />
+              <image class="he-image" :src="ipAddress + '/promoter-promotion-material.png'"/>
             </button>
-            <button class="cu-btn basis-df flex justify-between">
+            <button class="cu-btn basis-df flex justify-between" @click="promotionShop">
               <view>
                 <view class="he-title">推广店铺</view>
                 <view class="he-desc">邀请逛店铺</view>
               </view>
               <image class="he-image" :src="ipAddress + '/promoter-promotion-shop.png'"></image>
             </button>
-            <button class="cu-btn basis-df flex justify-between">
+            <button class="cu-btn basis-df flex justify-between" @click="inviteDistributors">
               <view>
                 <view class="he-title">邀请分销商</view>
                 <view class="he-desc">邀请好友加入</view>
@@ -157,21 +158,29 @@
           </view>
         </view>
       </view>
-      <down-grade v-model="isDowngrade" />
+      <down-grade v-model="isDowngrade"/>
+      <he-share
+        v-model="isShare"
+      />
     </template>
   </view>
 </template>
 
 <script>
-import { goods, personalCenter, receiveRecruitToken } from '../api';
+import {goods, personalCenter, receiveRecruitToken} from '../api';
 import DownGrade from './components/downgrade.vue';
 import heLoading from '../../components/he-loading.vue';
+import heShare from './../../components/he-share.vue';
+import {mapGetters} from 'vuex';
+
+let systemInfo = uni.getSystemInfoSync();
 
 export default {
   name: 'index',
   components: {
     DownGrade,
-    heLoading
+    heLoading,
+    heShare
   },
   data() {
     return {
@@ -227,7 +236,12 @@ export default {
       detail: {},
       progressStyle: {
         width: 0
-      }
+      },
+      isShare: false,
+      shareType: 0, // 0 推广店铺 1 推广空间 2 邀请函
+      systemInfo: systemInfo,
+      canvasWidth: systemInfo.windowWidth / 414,
+      canvasHeight: systemInfo.windowWidth / 375
     };
   },
   computed: {
@@ -239,6 +253,44 @@ export default {
     // 用户信息
     userInfo: function () {
       return this.$store.state.apply.userInfo;
+    },
+    ...mapGetters({
+      rank: 'setting/getPromoterRank'
+    }),
+    shareData({shareType}) {
+      if (shareType === 1) {
+        let imageUrl = '';
+        // #ifndef H5
+        imageUrl = `${this.ipAddress}/share-dynamic-space.png`
+        // #endif
+        // #ifdef H5
+        imageUrl = `${this.ipAddress}/share-dynamic-space-icon.png`
+        // #endif
+        return {
+          title: `${this.$store.state.apply.userInfo.nickname}的空间`,
+          path: `/promoter/pages/dynamic?UID=${this.$store.state.apply.userInfo.id}`,
+          imageUrl: imageUrl,
+          // #ifdef H5
+          desc: '尖端好物，尽在我的空间，欢迎常来逛逛'
+          // #endif
+        };
+      } else if (shareType === 2) {
+        let imageUrl = '';
+        // #ifndef H5
+        imageUrl = `${this.ipAddress}/share-join-promoter.png`
+        // #endif
+        // #ifdef H5
+        imageUrl = `${this.ipAddress}/share-join-promoter-icon.png`
+        // #endif
+        return {
+          title: `推广商品，赚佣金！`,
+          path: `/promoter/pages/recruit`,
+          imageUrl: imageUrl,
+          // #ifdef H5
+          desc: '欢迎加入我们的分销团队，一起赚佣金'
+          // #endif
+        };
+      }
     }
   },
   mounted() {
@@ -266,7 +318,7 @@ export default {
         // 计算进度条长度
         if (response.next_level) {
           // get_num 当前数量 all_num 总数
-          const { all_num, get_num } = response.next_level.lack;
+          const {all_num, get_num} = response.next_level.lack;
           style.width = `${(get_num / all_num) * 100}%`;
         }
         // 回调赋值 等渲染出来
@@ -317,9 +369,12 @@ export default {
       });
     },
     initCanvas() {
+      console.log(this.canvasWidth);
+      console.log(this.systemInfo);
+      const rem = this.canvasWidth;
       let context = uni.createCanvasContext('he-view');
       context.beginPath();
-      context.arc(177.5, 100, 80, 0, 2 * Math.PI);
+      context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), 0, 2 * Math.PI);
       context.setFillStyle('#FFFFFF');
       context.shadowOffsetX = 1;
       context.shadowOffsetY = 5;
@@ -327,26 +382,79 @@ export default {
       context.shadowColor = 'rgba(0,0,0,0.1)';
       context.fill();
       context.beginPath();
-      context.arc(177.5, 100, 80, 0, Math.PI * 2 * 0.59, false);
+      context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), 0, Math.PI * 2 * 0.59, false);
       context.lineWidth = 8;
       context.lineCap = 'round';
       context.strokeStyle = '#FE9D51';
       context.stroke();
       context.beginPath();
-      context.arc(177.5, 100, 80, Math.PI * 2 * 0.59, Math.PI * 2 * 0.8, false);
+      context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), Math.PI * 2 * 0.59, Math.PI * 2 * 0.8, false);
       context.lineWidth = 8;
       context.lineCap = 'round';
       context.strokeStyle = '#623CEB';
       context.stroke();
       context.beginPath();
-      context.arc(177.5, 100, 80, Math.PI * 2 * 0.8, Math.PI * 2, false);
+      context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), Math.PI * 2 * 0.8, Math.PI * 2, false);
       context.lineWidth = 8;
       context.lineCap = 'round';
       context.strokeStyle = '#2379FC';
       context.stroke();
+      context.setFontSize(uni.upx2px(22));
+      context.textAlign = 'center';
+      context.setFillStyle('#666666');
+      context.fillText('累计佣金', 177.5 * rem, 90 * rem);
+      context.setFontSize(uni.upx2px(52));
+      context.setFillStyle('#222222');
+      context.font = 'normal bold DIN';
+      context.fillText('4,826.00', 177.5 * rem, 120 * rem);
       context.draw();
+    },
+    // 推广空间
+    promotionSpace() {
+      this.shareType = 1;
+      // #ifdef H5
+      this.$wechat.updateShareData(this.shareData);
+      // #endif
+      this.isShare = true;
+    },
+    // 推广店铺
+    promotionShop() {
+      this.shareType = 0;
+      // #ifdef H5
+      this.$wechat.updateShareData(this.$shareData);
+      // #endif
+      this.isShare = true;
+    },
+    // 邀请分销商
+    inviteDistributors() {
+      this.shareType = 2;
+      // #ifdef H5
+      this.$wechat.updateShareData(this.shareData);
+      // #endif
+      this.isShare = true;
+    }
+  },
+  // #ifdef H5
+  beforeDestroy() {
+    this.$wechat.updateShareData(this.$shareAppMessage());
+  },
+  // #endif
+  // #ifndef H5
+  onShareAppMessage(event) {
+    if (event.from === 'button') {
+      return this.$shareAppMessage(this.shareData);
+    } else {
+      return this.$shareAppMessage(this.$shareData);
+    }
+  },
+  onShareTimeline(event) {
+    if (event.from === 'button') {
+      return this.$shareAppMessage(this.shareData);
+    } else {
+      return this.$shareAppMessage(this.$shareData);
     }
   }
+  // #endif
 };
 </script>
 
@@ -400,8 +508,8 @@ export default {
       font-size: 48px;
     }
 
-    &:first-child {
-      margin-right: 48px;
+    &:last-child {
+      margin-left: 48px;
     }
   }
 }

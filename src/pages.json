@@ -141,6 +141,12 @@
       }
     },
     {
+      "path": "pages/order/package",
+      "style": {
+        "navigationBarTitleText": "包裹详情"
+      }
+    },
+    {
       "path": "pages/order/logistics",
       "style": {
         "navigationBarTitleText": "查看物流"
@@ -326,8 +332,8 @@
           "path": "pages/dynamic",
           "style": {
             "navigationBarTitleText": "动态",
-            "enablePullDownRefresh": true,
-            "navigationStyle": "custom"
+            "navigationStyle": "custom",
+            "disableScroll": true
           }
         },
         {
@@ -382,6 +388,12 @@
           "path": "pages/create-dynamic",
           "style": {
             "navigationBarTitleText": "发布动态"
+          }
+        },
+        {
+          "path": "pages/dynamic-goods",
+          "style": {
+            "navigationBarTitleText": "添加商品"
           }
         },
         {

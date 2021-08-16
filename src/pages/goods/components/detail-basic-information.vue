@@ -1,53 +1,63 @@
 <template>
   <view :data-theme="theme">
     <view class="detail-basic-information">
-      <view class="he-top flex align-center justify-between">
-        <view>
-          <text class="he-price he-price_task" v-if="is_task"
-            >{{ task.task_number }}<text style="font-size: 12px">积分+¥</text>{{ task.task_price }}</text
-          >
-          <text class="he-price" v-else>{{ price }}</text>
-          <text class="he-old-price">¥{{ linePrice }}</text>
-        </view>
-        <text class="fr he-sale">已售{{ sales + virtual_sales }}{{ unit }}</text>
+      <view class="promoter" v-if="isPromoter">
+        <text class="iconfont iconaftersalesdetails-refund"></text>
+        <text>分销赚</text>
+        <text>￥{{commission}}</text>
       </view>
-      <view class="he-bottom flex justify-between">
-        <text class="he-name he-line-2">{{ name }}</text>
-        <view class="he-share flex flex-direction align-center justify-between" @click="setShare">
-          <view class="iconfont iconproductdetails_share"></view>
-          <text class="he-share__text">分享</text>
-        </view>
-      </view>
-      <view class="he-subtitle" v-if="!$h.test.isEmpty(goodsIntroduce)">
-        {{ goodsIntroduce }}
-      </view>
-      <view class="he-coupon flex align-center" @click="isCoupon = true" v-if="!$h.test.isEmpty(coupon)">
-        <view class="he-coupon-left flex align-center">
-          <view class="he-coupon-item flex align-center" :key="index" v-for="(item, index) in coupon">
-            <view class="he-coupon-edge he-coupon-item-left">
-              <view class="he-edge-doc"></view>
-            </view>
-            <view class="he-coupon-item-center">
-              <template v-if="Number(item.min_price) > 0">
-                满{{ Number(item.min_price) }}减{{ Number(item.sub_price) }}
-              </template>
-              <template v-else> {{ Number(item.sub_price) }}元无门槛 </template>
-            </view>
-            <view class="he-coupon-edge he-coupon-item-right">
-              <view class="he-edge-doc"></view>
-            </view>
-          </view>
-        </view>
-        <view class="he-coupon-right flex align-center justify-end">
-          <text class="he-coupon-right-text">领券</text>
-          <text class="iconfont iconbtn_arrow"></text>
-        </view>
-      </view>
+     <view class="base-box">
+       <view class="he-top flex align-center justify-between">
+         <view>
+           <text class="he-price he-price_task" v-if="is_task"
+           >{{ task.task_number }}
+             <text style="font-size: 12px">积分+¥</text>
+             {{ task.task_price }}
+           </text>
+           <text class="he-price" v-else>{{ price }}</text>
+           <text class="he-old-price">¥{{ linePrice }}</text>
+         </view>
+         <text class="fr he-sale">已售{{ sales + virtual_sales }}{{ unit }}</text>
+       </view>
+       <view class="he-bottom flex justify-between">
+         <text class="he-name he-line-2">{{ name }}</text>
+         <view class="he-share flex flex-direction align-center justify-between" @click="setShare">
+           <view class="iconfont iconproductdetails_share"></view>
+           <text class="he-share__text">分享</text>
+         </view>
+       </view>
+       <view class="he-subtitle" v-if="!$h.test.isEmpty(goodsIntroduce)">
+         {{ goodsIntroduce }}
+       </view>
+       <view class="he-coupon flex align-center" @click="isCoupon = true" v-if="!$h.test.isEmpty(coupon)">
+         <view class="he-coupon-left flex align-center">
+           <view class="he-coupon-item flex align-center" :key="index" v-for="(item, index) in coupon">
+             <view class="he-coupon-edge he-coupon-item-left">
+               <view class="he-edge-doc"></view>
+             </view>
+             <view class="he-coupon-item-center">
+               <template v-if="Number(item.min_price) > 0">
+                 满{{ Number(item.min_price) }}减{{ Number(item.sub_price) }}
+               </template>
+               <template v-else> {{ Number(item.sub_price) }}元无门槛</template>
+             </view>
+             <view class="he-coupon-edge he-coupon-item-right">
+               <view class="he-edge-doc"></view>
+             </view>
+           </view>
+         </view>
+         <view class="he-coupon-right flex align-center justify-end">
+           <text class="he-coupon-right-text">领券</text>
+           <text class="iconfont iconbtn_arrow"></text>
+         </view>
+       </view>
+     </view>
     </view>
     <he-share v-model="isShare" :post-data="{ goods_id: goodsId }" :is_task="is_task"></he-share>
     <detail-coupon v-model="isCoupon" :coupon="newCoupon"></detail-coupon>
   </view>
 </template>
+
 <script>
 import heShare from '../../../components/he-share.vue';
 import detailCoupon from './detail-coupon.vue';
@@ -60,9 +70,9 @@ export default {
   },
   props: {
     is_task: {
-      type: Boolean,
+      type: Number,
       default: function () {
-        return false;
+        return 0;
       }
     },
     task: [Object, Array],
@@ -120,6 +130,20 @@ export default {
       default: function () {
         return '';
       }
+    },
+    // 是否为分销商品
+    isPromoter: {
+      type: Number,
+      default: function () {
+        return 0;
+      }
+    },
+    // 分销佣金
+    commission: {
+      type: String,
+      default: function () {
+        return '0';
+      }
     }
   },
   data() {
@@ -146,7 +170,9 @@ export default {
             .then(res => {
               console.log('执行了分享接口', res);
             })
-            .catch(error => {});
+            .catch(() => {
+              //  Don't do
+            });
         }
       }, 1000);
     },
@@ -195,14 +221,35 @@ export default {
   }
 };
 </script>
+
 <style scoped lang="scss">
 .detail-basic-information {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 32px 24px 28px 24px;
   margin: 20px 20px 0 20px;
+  background-color: #FFEBDE;
+  border-radius: 16px;
 }
 
+.promoter {
+  padding: 21px 24px;
+  color: #FF7C24;
+  text:not(:first-child) {
+    font-size: 28px;
+    font-family: PingFang SC;
+    font-weight: 500;
+  }
+  text:nth-child(2) {
+    margin-right: 7px;
+  }
+  .iconaftersalesdetails-refund {
+    font-size: 30px;
+    margin-right: 12px;
+  }
+}
+.base-box {
+  background: #ffffff;
+  padding: 32px 24px 28px 24px;
+  border-radius: 16px;
+}
 .he-top {
   margin-bottom: 17px;
 }
@@ -266,6 +313,7 @@ export default {
   font-size: 32px;
   color: RGBA(153, 153, 153, 1);
 }
+
 .he-subtitle {
   font-size: 22px;
   font-family: PingFang SC;
@@ -276,6 +324,7 @@ export default {
   word-wrap: break-word;
   word-break: normal;
 }
+
 .he-coupon {
   width: 662px;
   height: 64px;

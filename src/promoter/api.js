@@ -1,47 +1,43 @@
 import Vue from 'vue';
-import { transformPageHeaders } from './helper';
+import {transformPageHeaders} from './helper';
 
 const service = Vue.prototype.$heshop;
 
 // 获取分销商商品
-export function goods(page = 1, keyword = { search: '', sort_key: 'created_time', sort_value: 'ASC' }, size = 10) {
+export function goods(page = 1, keyword = {search: '', sort_key: 'created_time', sort_value: 'ASC'}, size = 10) {
   return new Promise((resolve, reject) => {
     service
       .promotergoods('get', keyword)
       .page(page, size)
       .then(response => {
         transformPageHeaders(response);
-        const { data, pagination } = response;
+        const {data, pagination} = response;
         resolve({
           data: data,
           pagination
         });
       })
-      .catch(error => {
-        console.log(error);
-        reject(error);
-      });
+      .catch(reject);
   });
 }
 
-export function promotermaterial(page = 1, type = 0, size = 10) {
+export function promotermaterial(page = 1, type = 0, content = '', size = 10) {
   return new Promise((resolve, reject) => {
     service
       .promotermaterial('get', {
-        type: type
+        type: type,
+        content
       })
       .page(page, size)
       .then(response => {
         transformPageHeaders(response);
-        const { data, pagination } = response;
+        const {data, pagination} = response;
         resolve({
           data: data,
           pagination
         });
       })
-      .catch(error => {
-        reject(error);
-      });
+      .catch(reject);
   });
 }
 
@@ -61,9 +57,7 @@ export function recruit() {
       .then(response => {
         resolve(response.content);
       })
-      .catch(error => {
-        reject(error);
-      });
+      .catch(reject);
   });
 }
 
@@ -82,9 +76,7 @@ export function useAgreement() {
         }
       )
       .then(resolve)
-      .catch(error => {
-        reject(error);
-      });
+      .catch(reject);
   });
 }
 
@@ -102,15 +94,13 @@ export function agreement() {
         }
       )
       .then(response => {
-        const { agreement_content, agreement_title } = response.content;
+        const {agreement_content, agreement_title} = response.content;
         resolve({
           agreement_content: agreement_content,
           agreement_title: agreement_title
         });
       })
-      .catch(error => {
-        reject(error);
-      });
+      .catch(reject);
   });
 }
 
@@ -122,9 +112,7 @@ export function receiveRecruitToken() {
         behavior: 'recruiting'
       })
       .then(resolve)
-      .catch(error => {
-        reject(error);
-      });
+      .catch(reject);
   });
 }
 
@@ -136,9 +124,7 @@ export function applyMonitoring() {
         behavior: 'apply_check'
       })
       .then(resolve)
-      .catch(error => {
-        reject(error);
-      });
+      .catch(reject);
   });
 }
 
@@ -150,21 +136,14 @@ export function applyPromoter(applyContent = []) {
         apply_content: applyContent
       })
       .then(resolve)
-      .catch(error => {
-        reject(error);
-      });
+      .catch(reject);
   });
 }
 
 // 分销商中心
 export function personalCenter() {
   return new Promise((resolve, reject) => {
-    service
-      .promoter('get')
-      .then(resolve)
-      .catch(error => {
-        reject(error);
-      });
+    service.promoter('get').then(resolve).catch(reject);
   });
 }
 
@@ -176,8 +155,99 @@ export function applyAudit() {
         behavior: 'apply_audit'
       })
       .then(resolve)
-      .catch(error => {
-        reject(error);
-      });
+      .catch(reject);
   });
+}
+
+// 空间动态列表
+export function promoterzone(page = 1) {
+  return new Promise((resolve, reject) => {
+    service
+      .promoterzone('get')
+      .page(page, 10)
+      .then(response => {
+        transformPageHeaders(response);
+        const {data, pagination} = response;
+        resolve({
+          data: data,
+          pagination
+        });
+      })
+      .catch(reject);
+  });
+}
+
+// 动态点赞
+export function dynamicLike(zone_id) {
+  return new Promise((resolve, reject) => {
+    service
+      .promoterzone(
+        'post',
+        {
+          behavior: 'vote'
+        },
+        {
+          zone_id: zone_id
+        }
+      )
+      .then(resolve)
+      .then(reject);
+  });
+}
+
+// 删除动态
+export function dynamicDel(zone_id) {
+  return new Promise((resolve, reject) => {
+    service.promoterzone('delete', zone_id).then(resolve).then(reject);
+  });
+}
+
+// 发布动态
+export function publishDynamic(body = {}) {
+  return new Promise((resolve, reject) => {
+    service
+      .promoterzone('post', body)
+      .then(resolve)
+      .catch(reject);
+  });
+}
+
+// 动态详情
+export function dynamicDetail(id) {
+  id = parseInt(id)
+  return new Promise((resolve, reject) => {
+    service
+      .promoterzone('get', id)
+      .then(resolve)
+      .catch(reject);
+  });
+}
+
+// 编辑动态详情
+export function dynamicEdit(id, body) {
+  id = parseInt(id)
+  return new Promise((resolve, reject) => {
+    service
+      .promoterzone('put', id, body)
+      .then(resolve)
+      .catch(reject);
+  });
+}
+
+// 搜索普通商品
+export function searchGoods(page = 1, keyword = {}) {
+  return new Promise((resolve, reject) => {
+    service.search('post', {
+      include: 'goods'
+    }, {
+      keyword: keyword
+    }).page(page, 10).then(response => {
+      transformPageHeaders(response);
+      const {data, pagination} = response;
+      resolve({
+        data: data,
+        pagination
+      });
+    }).catch(reject);
+  })
 }

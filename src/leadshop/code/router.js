@@ -129,6 +129,9 @@ class Router {
     const rule = {
       method: 'reLaunch'
     };
+    console.log('路由跳转');
+    console.log(arg);
+    console.log('路由跳转');
     if (typeof arg === 'string') {
       rule.path = arg;
     } else if (typeof arg === 'object') {

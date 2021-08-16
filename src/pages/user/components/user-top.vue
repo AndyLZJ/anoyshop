@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     navigateTo: function () {
-      uni.navigateTo({ url: '/pages/user/login' });
+      this.$store.commit('apply/setLoginModel', true);
     }
   }
 };

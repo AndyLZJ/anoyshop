@@ -260,7 +260,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .he-list-item {
   width: 150px;
   height: 150px;

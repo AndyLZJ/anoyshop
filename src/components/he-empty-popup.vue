@@ -27,15 +27,15 @@ export default {
   },
   computed: {
     showModal: {
-      get: function () {
-        return this.value;
+      get: function ({ value }) {
+        return value;
       },
       set: function (val) {
         this.$emit('input', val);
       }
     },
-    style: function () {
-      return this.emptyStyle;
+    style: function ({ emptyStyle }) {
+      return emptyStyle;
     }
   },
   methods: {

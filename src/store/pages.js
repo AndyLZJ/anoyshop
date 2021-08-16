@@ -16,7 +16,6 @@ const pages = {
      */
     setAttribute(state, data) {
       let { index, key, value } = data;
-      let { status } = state;
       state.page[index][key] = JSON.parse(JSON.stringify(value));
     },
     /**
@@ -80,10 +79,9 @@ const pages = {
     /**
      * 添加元件
      * @param  {[type]} state [description]
-     * @param  {[type]} data  [description]
      * @return {[type]}       [description]
      */
-    pushPagesComs(context, data) {
+    pushPagesComs(context) {
       let { dragIndex, coms, page, status, position } = context.state;
       let element = JSON.parse(JSON.stringify(coms));
       //数据阻隔，否则在激活状态下，在顶部的增加数据会错乱

@@ -27,12 +27,14 @@
       <index-b :list="item.children" v-else-if="item.type === 2"></index-b>
       <index-c :list="item.children" v-else-if="item.type === 3"></index-c>
     </view>
+    <HeLoginModel />
   </view>
 </template>
 <script>
 import indexA from './component/index-a.vue';
 import indexB from './component/index-b.vue';
 import indexC from './component/index-c.vue';
+import HeLoginModel from '../../components/he-login-layout.vue';
 import { mapActions } from 'vuex';
 
 export default {
@@ -40,7 +42,8 @@ export default {
   components: {
     indexA,
     indexB,
-    indexC
+    indexC,
+    HeLoginModel
   },
   data() {
     return {

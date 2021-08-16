@@ -36,6 +36,7 @@
       <taskPopups :key="index" v-model="item.display" :title="item.remark" :index="index" />
     </template>
     <he-copyright></he-copyright>
+    <HeLoginModel />
   </view>
 </template>
 
@@ -48,6 +49,7 @@ import heProductsFeatured from '../../components/he-products-featured.vue';
 import heCopyright from './components/he-copyright.vue';
 import taskPopups from '../../plugins/task/components/popups.vue';
 import { mapActions, mapGetters } from 'vuex';
+import HeLoginModel from '../../components/he-login-layout.vue';
 
 export default {
   components: {
@@ -57,7 +59,8 @@ export default {
     heProductsFeatured,
     heCopyright,
     userCoupon,
-    taskPopups
+    taskPopups,
+    HeLoginModel
   },
   data() {
     return {
@@ -239,25 +242,28 @@ export default {
         str = str.replace(/%s/, arg[i]);
       }
       return str;
+    },
+    getShowData() {
+      if (this.isLogin) {
+        this.getOrderTotal();
+        this.getCouponTotal();
+        this.handleLoadData();
+        this.setCartNumber();
+        //处理积分领取
+        this.popupsList = [];
+        this.handleTaskSign();
+
+        //延时执行数据
+        setTimeout(() => {
+          this.$refs['features'].handleLoad();
+          this.handleTaskInvite();
+        }, 1000);
+      }
+      uni.login();
     }
   },
   onShow() {
-    if (this.isLogin) {
-      this.getOrderTotal();
-      this.getCouponTotal();
-      this.handleLoadData();
-      this.setCartNumber();
-      //处理积分领取
-      this.popupsList = [];
-      this.handleTaskSign();
-
-      //延时执行数据
-      setTimeout(() => {
-        this.$refs['features'].handleLoad();
-        this.handleTaskInvite();
-      }, 1000);
-    }
-    uni.login();
+    this.getShowData();
   }
 };
 </script>

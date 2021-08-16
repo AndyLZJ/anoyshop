@@ -174,9 +174,7 @@ export default {
             });
           // #endif
         } else {
-          uni.navigateTo({
-            url: '/pages/user/login'
-          });
+          this.$store.commit('apply/setLoginModel', true);
         }
       }
     }

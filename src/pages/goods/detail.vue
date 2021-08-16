@@ -46,6 +46,8 @@
         :virtual_sales="detail.virtual_sales"
         :line-price="detail.line_price"
         :goods-introduce="detail.body.goods_introduce"
+        :is-promoter="detail.is_promoter"
+        :commission="detail.commission"
       ></detail-basic-information>
       <detail-parameter
         :unit="detail.unit"
@@ -108,8 +110,10 @@
     <template v-if="task_browse && copy_task_browse">
       <taskbrowse :display="is_browse" :goods_id="goods_id" ref="taskbrowse"></taskbrowse>
     </template>
+    <HeLoginModel />
   </view>
 </template>
+
 <script>
 import detailBanner from './components/detail-banner.vue';
 import detailBasicInformation from './components/detail-basic-information.vue';
@@ -127,6 +131,8 @@ import heNavbar from '../../components/he-navbar.vue';
 import { mapGetters } from 'vuex';
 import taskpopups from '@/plugins/task/components/popups.vue';
 import taskbrowse from '@/plugins/task/components/browse.vue';
+import HeLoginModel from '../../components/he-login-layout.vue';
+
 export default {
   name: 'detail',
   components: {
@@ -144,11 +150,11 @@ export default {
     detailBar,
     heNavbar,
     taskpopups,
-    taskbrowse
+    taskbrowse,
+    HeLoginModel
   },
   computed: {
     ...mapGetters('setting', {
-      address: 'getLocation',
       goodsSetting: 'goodsSetting',
       navbarHeight: 'getNavBarHeight',
       statusBarHeight: 'statusBarHeight'
@@ -188,8 +194,9 @@ export default {
     }
   },
   onShow() {
-    console.log(this.task_browse);
-    this.handleTaskBrowseLog();
+    if (this.$store.state.apply.is_login) {
+      this.handleTaskBrowseLog();
+    }
   },
   data() {
     return {
@@ -210,7 +217,8 @@ export default {
       isTouch: false,
       detail: {
         slideshow: [],
-        goods_args: []
+        goods_args: [],
+        is_promoter: 0
       },
       /**
        * 判断是否从积分任务过来
@@ -227,16 +235,12 @@ export default {
     };
   },
   onHide() {
-    console.log(this.$refs['taskbrowse']);
-    // console.log('执行清理', this.$refs['taskbrowse'].timeoutID);
     if (this.$refs['taskbrowse'] && this.$refs['taskbrowse'].timeoutID) {
       clearTimeout(this.$refs['taskbrowse'].timeoutID);
       this.copy_task_browse = 0;
     }
   },
   onUnload() {
-    console.log(this.$refs['taskbrowse']);
-    // console.log('执行清理', this.$refs['taskbrowse'].timeoutID);
     if (this.$refs['taskbrowse'] && this.$refs['taskbrowse'].timeoutID) {
       clearTimeout(this.$refs['taskbrowse'].timeoutID);
       this.copy_task_browse = 0;
@@ -262,10 +266,9 @@ export default {
             this.is_browse = true;
           }
           this.copy_task_browse = this.is_browse;
-          console.log(this.is_browse);
         })
-        .catch(err => {
-          console.log('查看错误信息');
+        .catch(() => {
+          // Don't do
         });
     },
     getDetail: function getDetail(id, callback) {

@@ -33,8 +33,8 @@ export default {
   },
   computed: {
     showModal: {
-      get: function () {
-        return this.value;
+      get: function ({ value }) {
+        return value;
       },
       set: function (val) {
         this.$emit('input', val);
@@ -50,6 +50,7 @@ export default {
   overflow: hidden;
   margin-bottom: 60px;
 }
+
 .he-close {
   position: absolute;
   right: 0;
@@ -57,6 +58,7 @@ export default {
   width: 84px;
   height: 84px;
 }
+
 .he-header__text {
   font-size: 28px;
   font-family: PingFang SC;
@@ -65,20 +67,25 @@ export default {
   text-align: center;
   margin-top: 32px;
 }
+
 .iconpopup_close {
   font-size: 20px;
   color: #999999;
 }
+
 .he-body {
   padding: 0 32px;
-  height: calc(50vh - 80px);
+  max-height: calc(50vh - 80px);
 }
+
 .he-item {
   padding: 32px 0;
+
   &:not(:last-child) {
     border-bottom: 1px solid #e5e5e5;
   }
 }
+
 .he-name {
   width: 100px;
   // 固定宽度
@@ -89,6 +96,7 @@ export default {
   color: #999999;
   line-height: 30px;
 }
+
 .he-item__bottom {
   font-size: 24px;
   font-family: PingFang SC;

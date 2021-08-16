@@ -209,6 +209,7 @@ export default {
       return ((num1 * baseNum - num2 * baseNum) / baseNum).toFixed(precision);
     },
     computeVal(type) {
+      console.log(this.max);
       try {
         if (!this.disabledInput) uni.hideKeyboard();
         if (this.disabled) return;
@@ -220,9 +221,11 @@ export default {
           value = this.calcPlus(this.inputVal, this.step);
         }
         value = +value;
+        console.log(value);
         if (value < this.min || value > this.max) {
           return;
         }
+        console.log('占内存');
         this.inputVal = value;
         this.handleChange(value, type);
       } catch (e) {}

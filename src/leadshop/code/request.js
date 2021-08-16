@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import axios from './axios.js';
 import cache from './cache.js';
 
@@ -69,6 +70,7 @@ export default function server(options, instance) {
           //重新加载当前页面
           options.redLoadFun();
         } else {
+          console.log('1221212112');
           return Promise.reject(error.response);
         }
       } else if (response.status == 420) {
@@ -95,6 +97,7 @@ export default function server(options, instance) {
               if (data && data.token) {
                 cache.set('token', data.token);
                 //重新加载当前页面
+                // redLoadFun();
                 options.redLoadFun();
               }
             })
@@ -105,6 +108,7 @@ export default function server(options, instance) {
                 cache.remove('token');
                 cache.remove('userInfo');
                 //重新加载当前页面
+                // redLoadFun();
                 options.redLoadFun();
               } else {
                 return Promise.reject(error.response);

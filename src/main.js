@@ -19,6 +19,9 @@ import siteinfo from 'siteInfo';
 // #ifdef H5
 import VueLazyload from 'vue-lazyload';
 import WeChat from './static/h5/js/wechat.js';
+import { VueJsonp } from 'vue-jsonp';
+
+Vue.use(VueJsonp);
 // #endif
 
 Vue.component('he-image', heImage);
@@ -53,8 +56,23 @@ Vue.prototype.$heshop = Heshop.connect({
     loginReset: '/app/leadmall/reset'
   },
   redLoadFun: function () {
-    Vue.prototype.$store.commit('apply/logout');
-    uni.reLaunch({ url: '/pages/user/login' });
+    console.log('执行回调');
+    console.log(Vue);
+    console.log(Vue.prototype);
+    // #ifdef H5
+    const { origin, pathname } = window.location;
+    window.location.href = origin + pathname + `?r=wechat#/pages/user/index`;
+    // #endif
+
+    // #ifndef H5
+    try {
+      Vue.prototype.$store.commit('apply/logout');
+    } catch (e) {
+      console.log(e);
+    }
+    console.log('执行');
+    this.$store.commit('apply/setLoginModel', true);
+    // #endif
   },
   ErrorFun: function (error) {
     let status = error.response.status;
@@ -123,6 +141,7 @@ const app = new Vue({
       '/pages/coupon/detail',
       '/plugins/task/mall',
       '/pages/live/index',
+      '/pages/cart/index',
       '/pages/index/demo'
     ],
     loginPage: '/pages/user/login'

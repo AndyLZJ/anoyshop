@@ -17,7 +17,6 @@ const initRouter = (routerMap = {}, isCustom = false) => {
   // 路由全局拦截器 在这里处理登录、授权等相关操作
   router.beforeEach((to, from, next) => {
     try {
-      console.log('to', to);
       // 开启$store
       const $store = store();
       // 开启$Cloud
@@ -38,10 +37,8 @@ const initRouter = (routerMap = {}, isCustom = false) => {
         //判断用户是否登陆
         if ($store.getters.token) {
           if (to.path == loginPage) {
-            console.log('我已登录，执行跳转', 1);
             next('/');
           } else {
-            console.log('我已登录，执行跳转', to);
             next();
           }
         } else {
@@ -53,13 +50,14 @@ const initRouter = (routerMap = {}, isCustom = false) => {
             let toPath = '/';
             if (to.path !== loginPage) {
               toPath = to.fullPath;
-              next({
-                path: loginPage,
-                query: {
-                  redirect: toPath
-                },
-                method: 'navigateTo'
-              });
+              $store.state.apply.showLoginModel = true;
+              // next({
+              //   path: loginPage,
+              //   query: {
+              //     redirect: toPath
+              //   },
+              //   method: 'switchTab'
+              // });
             } else {
               next();
             }

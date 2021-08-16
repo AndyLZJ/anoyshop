@@ -12,6 +12,10 @@
       <text>运费{{ freightAmount === 0 ? '(包邮免运费)' : '' }}</text>
       <text>¥{{ freightAmount | floatPrice }}</text>
     </view>
+    <view class="he-item flex justify-between align-center" v-if="promoterReduced">
+      <text>分销自购优惠</text>
+      <text>¥{{ promoterReduced | floatPrice }}</text>
+    </view>
     <template v-if="$manifest('task', 'status') && coupon_stacking && isTask">
       <view class="he-item flex justify-between align-center" @click="isCoupon = true">
         <text>优惠券</text>
@@ -43,6 +47,7 @@
 </template>
 <script>
 import submitCoupon from './submit-coupon.vue';
+
 export default {
   name: 'submit-price',
   data() {
@@ -105,6 +110,10 @@ export default {
     is_task: {
       type: [Number],
       default: 1
+    },
+    promoterReduced: {
+      type: [Number, String],
+      default: 0
     }
   },
   methods: {

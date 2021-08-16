@@ -88,6 +88,7 @@
       <he-share v-model="isShare" :post-data="{ coupon_id: shareId }" coupon-type="coupon"></he-share>
     </template>
     <detail-invalid v-model="isInvaild" :title="invaildStr"></detail-invalid>
+    <HeLoginModel />
   </view>
 </template>
 <script>
@@ -96,6 +97,7 @@ import heProductsFeatured from '../../components/he-products-featured.vue';
 import heShare from '../../components/he-share.vue';
 import detailInvalid from './components/detail-invalid.vue';
 import heLoading from '../../components/he-loading.vue';
+import HeLoginModel from '../../components/he-login-layout.vue';
 // #ifdef H5
 import heOpenSubscribe from '@/components/he-open-subscribe.vue';
 // #endif
@@ -187,8 +189,9 @@ export default {
     heLoading,
     detailInvalid,
     // #ifdef H5
-    heOpenSubscribe
+    heOpenSubscribe,
     // #endif
+    HeLoginModel
   },
   onLoad(options) {
     let id = null;
@@ -301,9 +304,7 @@ export default {
         couponRequire();
         // #endif
       } else {
-        uni.navigateTo({
-          url: '/pages/user/login'
-        });
+        _this.$store.commit('apply/setLoginModel', true);
       }
     },
     redirectTo: function () {

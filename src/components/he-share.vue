@@ -5,6 +5,10 @@
         <view class="he-share__content">
           <view class="he-share__title">分享</view>
           <view class="flex he-share__bottom justify-center align-center">
+            <button class="cu-btn he-share__icon lex flex-direction" @click="confirmPromoter" v-if="isPromoter">
+              <image :src="ipAddress + '/promoter-material.png'" class="he-top__image"></image>
+              <view class="he-bottom">推广素材</view>
+            </button>
             <!--#ifndef H5-->
             <button class="cu-btn he-share__icon he-share__friend flex flex-direction" open-type="share">
               <image :src="ipAddress + '/share-icon-wechat.png'" class="he-top__image"></image>
@@ -53,6 +57,10 @@ export default {
     },
     couponType: {
       type: [Object, String]
+    },
+    isPromoter: {
+      type: [Boolean],
+      default: false
     }
   },
   data() {
@@ -89,8 +97,12 @@ export default {
     // #ifdef H5
     openWechat: function () {
       this.isWeChat = true;
-    }
+    },
     // #endif
+    confirmPromoter() {
+      this.showModal = false;
+      this.$emit('confirmPromoter');
+    }
   }
 };
 </script>

@@ -125,6 +125,7 @@
     </view>
   </he-popup>
 </template>
+
 <script>
 import HePopup from '@/components/he-popup.vue';
 import heNumberBox from './he-number-box.vue';
@@ -287,7 +288,13 @@ export default {
     goodsData: function () {
       return this.goods.param && this.goods.param.goods_data;
     },
-    limitBuyValue: function () {
+    limitBuyValue: function ({ goods, stocks }) {
+      console.log('limit_buy_status');
+      console.log(goods.limit_buy_status);
+      console.log('limit_buy_value');
+      console.log(goods.limit_buy_value);
+      console.log('stocks');
+      console.log(stocks);
       if (this.goods.limit_buy_status === 1) {
         return this.goods.limit_buy_value;
       } else {
@@ -448,7 +455,7 @@ export default {
       }
     },
     shopping: function () {
-      if (!this.isLogin) return uni.navigateTo({ url: '/pages/user/login' });
+      if (!this.isLogin) return this.$store.commit('apply/setLoginModel', true);
       if (this.shoppingType === 'cart') {
         this.cart();
       } else if (this.shoppingType === 'buy') {
@@ -495,11 +502,9 @@ export default {
         })
         .catch(function (err) {
           if (err.status === 401) {
-            uni.navigateTo({
-              url: '/pages/user/login'
-            });
+            _this.$store.commit('apply/setLoginModel', true);
           }
-          _this.$h.toast(err.data.message);
+          // _this.$h.toast(err.data.message);
         });
     },
     buy: function () {
@@ -507,8 +512,9 @@ export default {
       this.showModal = false;
       let _this = this;
       this.showSelect.goods_number = this.number;
+      console.log(this.showSelect);
       uni.navigateTo({
-        url: '/pages/order/submit?data=' + JSON.stringify([this.showSelect]) + '&is_task=' + this.is_task,
+        url: '/pages/order/submit?is_task=' + this.is_task,
         success: function (res) {
           res.eventChannel.emit('acceptDataFromOpenerPage', {
             data: [_this.showSelect]
@@ -529,7 +535,7 @@ export default {
         if (!data) return;
         // 初始
         this.showSelect = {};
-        this.number = 1;
+        this.number = this.goods.min_number;
         let newData = JSON.parse(JSON.stringify(data));
 
         for (let i = 0, iLen = newData.length; i < iLen; i++) {

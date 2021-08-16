@@ -204,8 +204,7 @@ export default {
         .then(res => {
           console.log('查看绑定手机号任务是否开启', res);
           if (res.status) {
-            this.binding = res;
-            this.getTaskBinding();
+            this.getTaskBinding(res);
           }
         })
         .catch(err => {
@@ -216,11 +215,10 @@ export default {
      * 获取获取设置状态
      * @return {[type]} [description]
      */
-    getTaskBinding() {
+    getTaskBinding(e = {}) {
       //用于单次提示
       const value = uni.getStorageSync('statusTaskBinding');
       if (value) {
-        this.binding = {};
         return true;
       }
       this.$heshop
@@ -229,18 +227,20 @@ export default {
           console.log('判断是否完成过该任务');
           //判断如果存在的状态下
           if (res && res.status === 0 && !this.is_binding) {
+            this.binding = {};
             this.is_binding = true;
             this.popupsList.push({
               display: true,
               remark: res.remark
             });
             this.$parent.handleLoadData();
-            this.binding = {};
             uni.setStorageSync('statusTaskBinding', 1);
           } else if (res && res.status === 1) {
             this.binding = {};
+            uni.setStorageSync('statusTaskBinding', 1);
           } else {
             //如果没有记录的状态下
+            this.binding = e;
             this.setTaskBinding();
           }
         })
@@ -287,15 +287,15 @@ export default {
       let that = this;
       //判断当前任务是否打开
       that.$heshop
-        .plugin('get', { include: 'task', model: 'task', keyword: 'perfect', today: 0 })
+        .plugin('get', { include: 'task', model: 'task', keyword: 'perfect' })
         .then(res => {
           if (res.status) {
-            const value = uni.getStorageSync('statusTaskPerfect');
+            // const value = uni.getStorageSync('statusTaskPerfect');
             // 逻辑有问题
-            if (!value) {
-              this.perfect = res;
-            }
-            this.getTaskPerfect();
+            // if (!value) {
+            //   this.perfect = res;
+            // }
+            this.getTaskPerfect(res);
           }
         })
         .catch(err => {
@@ -306,15 +306,14 @@ export default {
      * 获取获取设置状态
      * @return {[type]} [description]
      */
-    getTaskPerfect() {
+    getTaskPerfect(e = {}) {
       //用于单次提示
       const value = uni.getStorageSync('statusTaskPerfect');
       if (value) {
-        this.perfect = {};
         return true;
       }
       this.$heshop
-        .plugin('get', { include: 'task', model: 'score', type: 'single', keyword: 'perfect' })
+        .plugin('get', { include: 'task', model: 'score', type: 'single', keyword: 'perfect', today: 0 })
         .then(res => {
           console.log('查看用户绑定信息', res);
           //判断如果存在的状态下
@@ -328,8 +327,10 @@ export default {
             uni.setStorageSync('statusTaskPerfect', 1);
           } else if (res && res.status === 1) {
             this.perfect = {};
+            uni.setStorageSync('statusTaskPerfect', 1);
           } else {
             //如果没有记录的状态下
+            this.perfect = e;
             this.setTaskPerfect();
           }
         })
@@ -354,13 +355,14 @@ export default {
         .then(res => {
           console.log('重新执行用户绑定信息', res);
           if (res && res.msg) {
-            this.popupsList.push({
-              display: true,
-              remark: res.msg
-            });
-            this.$parent.handleLoadData();
-            this.perfect = {};
-            uni.setStorageSync('statusTaskPerfect', 1);
+            this.getTaskPerfect();
+            // this.popupsList.push({
+            //   display: true,
+            //   remark: res.msg
+            // });
+            // this.$parent.handleLoadData();
+            // this.perfect = {};
+            // uni.setStorageSync('statusTaskPerfect', 1);
           }
         })
         .catch(err => {
@@ -383,7 +385,7 @@ export default {
           this.navigateTo('/pages/user/bind-phone');
         }
       } else {
-        this.navigateTo('/pages/user/login');
+        this.$store.commit('apply/setLoginModel', true);
       }
     },
     // #ifndef H5
