@@ -191,7 +191,7 @@ export default {
     }
   },
   onShow() {
-    if (this.isLogin) {
+    if (this.$store.state.apply.is_login) {
       this.handleTaskBrowseLog();
     }
   },
