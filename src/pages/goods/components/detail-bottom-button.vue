@@ -125,19 +125,21 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch('cart/getCartNumber').then(response => {
-      if (response !== 0) {
-        this.isNaNBool = true;
-      } else {
-        this.isNaNBool = false;
-      }
-      this.badge = response + '';
-    });
+    if (this.isLogin) {
+      this.$store.dispatch('cart/getCartNumber').then(response => {
+        if (response !== 0) {
+          this.isNaNBool = true;
+        } else {
+          this.isNaNBool = false;
+        }
+        this.badge = response + '';
+      });
+    }
   },
   watch: {
     '$store.state.cart.cart_num': {
       handler(val) {
-        if (val) {
+        if (val && this.isLogin) {
           this.$store.dispatch('cart/getCartNumber').then(response => {
             if (response !== 0) {
               this.isNaNBool = true;

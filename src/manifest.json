@@ -13,7 +13,8 @@
     "enable": false
   },
   "app-plus": {
-    /* 5+App特有相关 */ "usingComponents": true,
+    /* 5+App特有相关 */
+    "usingComponents": true,
     "splashscreen": {
       "alwaysShowBeforeRender": true,
       "waiting": true,
@@ -64,7 +65,8 @@
     /* 快应用特有相关 */
   },
   "mp-weixin": {
-    /* 微信小程序特有相关 */ "appid": "",
+    /* 微信小程序特有相关 */
+    "appid": "",
     "setting": {
       "urlCheck": false
     },

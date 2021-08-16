@@ -506,7 +506,7 @@ export default {
           if (err.status === 401) {
             _this.$store.commit('apply/setLoginModel', true);
           }
-          _this.$h.toast(err.data.message);
+          // _this.$h.toast(err.data.message);
         });
     },
     buy: function () {

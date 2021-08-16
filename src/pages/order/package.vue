@@ -1,7 +1,7 @@
 <template>
   <view class="he-page-content">
     <view class="pk-top flex align-center">
-      <text class="pk-top-text">{{ freight.length + '个包裹被发出' }}</text>
+      <text class="pk-top-text">{{ freight.length + '个包裹已发出' }}</text>
     </view>
     <view
       class="pk-card flex flex-direction"
@@ -34,7 +34,7 @@
         <text class="card__top-right flex align-center" :class="item.type !== 2 ? 'iconfont iconbtn_arrow' : ''"></text>
       </view>
       <view class="card__mid flex-grow-1 flex flex-wrap">
-        <view v-for="(pkimg, Iindex) in item.goods" :key="Iindex" style="margin-left: 8px">
+        <view v-for="(pkimg, Iindex) in item.goods" :key="Iindex" style="margin: 0 0 8rpx 8rpx; position: relative">
           <he-image :image-style="{ borderRadius: '8rpx' }" :src="pkimg.goods.goods_image" :width="152" :height="152">
           </he-image>
           <view class="imgnext flex justify-center align-center" v-show="pkimg.bag_goods_number !== 1">{{
@@ -42,7 +42,7 @@
           }}</view>
         </view>
       </view>
-      <view class="card__down flex-shrink-0 flex align-center">{{ '共' + item.goods.length + '件商品' }}</view>
+      <view class="card__down flex-shrink-0 flex align-center">{{ '共' + item.bag_goods_total + '件商品' }}</view>
     </view>
   </view>
 </template>
@@ -179,15 +179,19 @@ export default {
       }
     }
     .card__mid {
-      padding: 24px 0px 24px 0px;
+      padding: 24px 0 16px 0;
       .imgnext {
         width: 152px;
         height: 40px;
-        background: #000000;
-        opacity: 0.5;
+        background: rgba(0, 0, 0, 0.5);
         border-radius: 8px;
         z-index: 10;
-        margin-top: -40px;
+        //margin-top: -40px;
+        font-size: 22px;
+        font-family: PingFang SC;
+        color: #ffffff;
+        position: absolute;
+        bottom: 0;
       }
     }
     .card__down {

@@ -2,7 +2,7 @@
   <view class="detail-logistics flex align-center" @click="navigateTo">
     <text class="iconfont iconorderdetails_logistics"></text>
     <view class="pk-info">
-      {{ '订单被拆分为' + freight.length + '包裹' }}
+      {{ '订单被拆分为' + freight.length + '个包裹' }}
     </view>
     <text class="iconfont iconbtn_arrow"></text>
   </view>

@@ -100,6 +100,10 @@ export default {
             });
           }, 1000);
           this.$store.commit('apply/setLoginModel', false);
+          // console.log()
+          if (this.$parent.__route__ === 'pages/user/index' || this.$parent.__route__ === 'pages/cart/index') {
+            this.$parent.getShowData();
+          }
         });
       } else {
         this.decryptUserInfo().then(() => {
@@ -132,9 +136,15 @@ export default {
             });
           }, 1000);
           this.$store.commit('apply/setLoginModel', false);
+          if (this.$parent.__route__ === 'pages/user/index' || this.$parent.__route__ === 'pages/cart/index') {
+            this.$parent.getShowData();
+          }
         });
       }
     }
+  },
+  mounted() {
+    console.log(this.$parent);
   }
 };
 </script>

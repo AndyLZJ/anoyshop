@@ -242,25 +242,28 @@ export default {
         str = str.replace(/%s/, arg[i]);
       }
       return str;
+    },
+    getShowData() {
+      if (this.isLogin) {
+        this.getOrderTotal();
+        this.getCouponTotal();
+        this.handleLoadData();
+        this.setCartNumber();
+        //处理积分领取
+        this.popupsList = [];
+        this.handleTaskSign();
+
+        //延时执行数据
+        setTimeout(() => {
+          this.$refs['features'].handleLoad();
+          this.handleTaskInvite();
+        }, 1000);
+      }
+      uni.login();
     }
   },
   onShow() {
-    if (this.isLogin) {
-      this.getOrderTotal();
-      this.getCouponTotal();
-      this.handleLoadData();
-      this.setCartNumber();
-      //处理积分领取
-      this.popupsList = [];
-      this.handleTaskSign();
-
-      //延时执行数据
-      setTimeout(() => {
-        this.$refs['features'].handleLoad();
-        this.handleTaskInvite();
-      }, 1000);
-    }
-    uni.login();
+    this.getShowData();
   }
 };
 </script>

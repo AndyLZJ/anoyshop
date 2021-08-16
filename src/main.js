@@ -141,6 +141,7 @@ const app = new Vue({
       '/pages/coupon/detail',
       '/plugins/task/mall',
       '/pages/live/index',
+      '/pages/cart/index',
       '/pages/index/demo'
     ],
     loginPage: '/pages/user/login'
