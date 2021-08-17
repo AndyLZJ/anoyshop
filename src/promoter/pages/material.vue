@@ -131,7 +131,7 @@ export default {
       };
     }
   },
-  mounted() {
+  onLoad() {
     this.init();
   },
   methods: {

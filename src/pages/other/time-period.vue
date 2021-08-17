@@ -17,13 +17,7 @@
             v-for="(x, y) in item.info"
             :key="y"
           >
-            <view v-if="!x.isDayOne && !x.isDayTwo && !x.isDayThree">{{ x.day }}</view>
-            <view v-if="x.isDayOne">今天</view>
-            <view v-if="x.isDayTwo">明天</view>
-            <view v-if="x.isDayThree">后天</view>
-            <!-- <view v-if="x.isChoosed && !x.isSpace">选择</view> -->
-            <!-- <view v-if="x.currentRangeStartDate && !x.isSpace">入住</view> -->
-            <!-- <view v-if="x.currentRangeEndDate">离店</view> -->
+            <view>{{ x.day }}</view>
           </view>
         </view>
       </view>
@@ -35,22 +29,23 @@
 </template>
 
 <script>
+console.log(new Date());
 export default {
   data() {
     return {
       weekData: ['日', '一', '二', '三', '四', '五', '六'],
       totalDate: [],
-      chooseOneDate: '', //单选模式当前点击的日期
-      currentRangeStartDate: '', //区域选择模式当前点击的开始日期
-      currentRangeEndDate: '', //区域选择模式当前点击的结束日期
+      chooseOneDate: this.$h.timeFormat(new Date(new Date() - 24 * 60 * 60 * 1000), 'yyyy-mm-dd'), //单选模式当前点击的日期
+      currentRangeStartDate: this.$h.timeFormat(new Date(new Date() - 24 * 60 * 60 * 1000), 'yyyy-mm-dd'), //区域选择模式当前点击的开始日期
+      currentRangeEndDate: this.$h.timeFormat(new Date, 'yyyy-mm-dd'), //区域选择模式当前点击的结束日期
       outIndex: 0, //当前点击外索引
       innerIndex: 0, //当前点击内索引
       isShow: false,
       option: {
-        chooseOneDate: '2019-12-11', //根据实际业务需求设置的默认单选日期，可为空,默认今天
+        chooseOneDate: this.$h.timeFormat(new Date(new Date() - 24 * 60 * 60 * 1000), 'yyyy-mm-dd'), //根据实际业务需求设置的默认单选日期，可为空,默认今天
         initStartDate: '2021-04-14', //可选起始时间，可为空,默认今天
-        initEndDate: '2021-08-20', //可选结束时间，可为空,默认4个月后
-        isRange: false, //是否开启范围选择，默认false
+        initEndDate: this.$h.timeFormat(new Date, 'yyyy-mm-dd'), //可选结束时间，可为空,默认4个月后
+        isRange: true, //是否开启范围选择，默认false
         isModal: false, //是否弹窗模式，默认false
         isShowSubmit: true //页面模式中是否显示页面模式底部的确定按钮，默认false
       }
@@ -63,6 +58,7 @@ export default {
         this.open();
       }, 0);
     }
+    console.log(this.chooseOneDate);
   },
   watch: {
     isShow(n) {
@@ -72,10 +68,6 @@ export default {
     }
   },
   computed: {
-    currentDateNum() {
-      //当前起始日期与结束日期之间的天数
-      return this.dateSpace(this.currentRangeStartDate, this.currentRangeEndDate);
-    },
     isDisabledBtn() {
       if (this.option.isRange) {
         return !(this.currentRangeStartDate && this.currentRangeEndDate);
@@ -127,13 +119,14 @@ export default {
           });
         } else {
           // 区域选择
-          this.$emit('change', {
+          uni.setStorageSync(this.$storageKey.time_period, {
             startDate: this.currentRangeStartDate,
             endDate: this.currentRangeEndDate,
-            dateNum: this.currentDateNum
           });
         }
-        this.close();
+        uni.navigateBack({
+          delta: 1
+        });
       }
     },
     dateFirstInit() {
@@ -364,15 +357,6 @@ export default {
             currentRangeEndDate: '',
             isRangeStyle: false
           };
-          // 处理今天明天后天
-          if (this.getNextDate(0) == _obj.date) {
-            _obj.isDayOne = true;
-          } else if (this.getNextDate(1) == _obj.date) {
-            _obj.isDayTwo = true;
-          }
-          if (this.getNextDate(2) == _obj.date) {
-            _obj.isDayThree = true;
-          }
 
           if (this.totalDate.length <= 1) {
             if (y == 0 && (i < _day || i > _dayEnd)) {
@@ -389,7 +373,7 @@ export default {
         // 处理星期
         let weekDate = `${_dateArr[y].split('-')[0]}-${_dateArr[y].split('-')[1]}-01`;
         for (var i = 0; i < this.weekInit(weekDate); i++) {
-          x['info'].unshift({ date: '', date: _dateArr[y], isSpace: true });
+          x['info'].unshift({date: '', date: _dateArr[y], isSpace: true});
         }
       });
     },
@@ -417,22 +401,26 @@ export default {
   background-color: #fff;
   z-index: 10001;
   transition: all 0.2s;
+
   &.move {
     top: 10vh;
   }
+
   &.init {
     top: 0;
     height: 100vh;
   }
+
   > .footer {
     height: 120px;
     width: 686px;
     margin: 0 auto;
     background-color: #fff;
     overflow: hidden;
+
     > button {
       color: #fff;
-      font-size: 26rpx;
+      font-size: 26 rpx;
       height: 80px;
       line-height: 80px;
       margin: 20px 0 20px 0;
@@ -443,9 +431,11 @@ export default {
       font-family: PingFang SC;
       font-weight: 500;
       color: #ffffff;
+
       &.hover {
         background-color: #f61;
       }
+
       &.disabled {
         background-color: #ccc;
       }
@@ -453,18 +443,20 @@ export default {
   }
 
   > .head {
-    height: 60rpx;
-    line-height: 60rpx;
+    height: 60 rpx;
+    line-height: 60 rpx;
     text-align: center;
     position: relative;
+
     > text {
       &:nth-child(1) {
       }
+
       &:nth-child(2) {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        right: 20rpx;
+        right: 20 rpx;
         color: #f63;
       }
     }
@@ -472,23 +464,28 @@ export default {
 
   > .main {
     height: calc(90vh - 240rpx);
+
     &.init {
       height: calc(100vh - 80rpx);
     }
+
     &.show_submit {
       height: calc(100vh - 200rpx);
     }
+
     .list {
       > .date {
-        padding: 0 25rpx;
+        padding: 0 25 rpx;
         display: flex;
         flex-wrap: wrap;
+
         > view {
           width: 99px;
           height: 112px;
           text-align: center;
           margin-bottom: 8px;
           position: relative;
+
           > view {
             &:nth-child(1) {
               font-size: 28px;
@@ -498,20 +495,24 @@ export default {
               line-height: 112px;
             }
           }
+
           &.disabled {
             /* background-color: #eee; */
             > view {
               color: #cccccc;
             }
           }
+
           &.weekend {
             > view {
               color: #f63;
             }
           }
+
           &.choosed {
             background: #bbbfc8;
             border-radius: 16px;
+
             > view {
               /* color: #fff; */
               /* font-size: 22rpx;
@@ -519,24 +520,28 @@ export default {
 							line-height: 50rpx; */
             }
           }
+
           &.range_space {
             background-color: #f5f5f5;
+
             > view {
               color: #333;
             }
           }
         }
       }
+
       > .title {
         font-size: 24px;
         font-family: PingFang SC;
         font-weight: 400;
         color: #222222;
-        height: 80rpx;
+        height: 80 rpx;
         display: flex;
         align-items: center;
         justify-content: center;
       }
+
       .title:nth-child(1) {
         border-top: 1px solid #e5e5e5;
       }
@@ -544,11 +549,12 @@ export default {
   }
 
   > .week {
-    height: 80rpx;
-    padding: 0 29rpx;
+    height: 80 rpx;
+    padding: 0 29 rpx;
     display: flex;
     align-items: center;
-    border-bottom: 1rpx solid #e5e5e5;
+    border-bottom: 1 rpx solid #e5e5e5;
+
     > view {
       width: 99px;
       font-size: 24px;

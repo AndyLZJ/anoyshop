@@ -102,7 +102,7 @@
               <text class="iconfont iconbtn_arrow"></text>
             </button>
           </view>
-          <view class="he-good flex">
+          <view class="he-good flex" @click="routerGoodsDetail">
             <he-image
               :image-style="{ borderRadius: '16px 0px 0px 16px' }"
               width="240"
@@ -113,7 +113,7 @@
               <view class="he-good--name he-line-2">2020新款可盐可甜格子衬衫连衣裙港风套装女复古chic两件套裙子夏</view>
               <view class="">
                 <view class="he-good--price">￥{{ good.price }}</view>
-                <view class="he-good--share">
+                <view class="he-good--share" @click.stop="shareGood">
                   <text class="iconfont iconproductdetails_share"/>
                   <text class="he-good--commission">预计赚¥{{ good.commission }}</text>
                 </view>
@@ -158,10 +158,13 @@
           </view>
         </view>
       </view>
-      <down-grade v-model="isDowngrade"/>
+      <down-grade v-model="isDowngrade" :level-name="detail.level_name" :is-up-down="detail.down_level_status"/>
       <he-share
         v-model="isShare"
+        :is-promoter="isPromoter"
+        @confirmPromoter="setPromoterMaterial"
       />
+      <promotion-material :info="good" v-model="showPromotionMaterial"></promotion-material>
     </template>
   </view>
 </template>
@@ -171,6 +174,7 @@ import {goods, personalCenter, receiveRecruitToken} from '../api';
 import DownGrade from './components/downgrade.vue';
 import heLoading from '../../components/he-loading.vue';
 import heShare from './../../components/he-share.vue';
+import promotionMaterial from './components/promotion-material.vue';
 import {mapGetters} from 'vuex';
 
 let systemInfo = uni.getSystemInfoSync();
@@ -180,7 +184,8 @@ export default {
   components: {
     DownGrade,
     heLoading,
-    heShare
+    heShare,
+    promotionMaterial
   },
   data() {
     return {
@@ -231,14 +236,17 @@ export default {
       },
       good: {},
       loading: true,
-      isDowngrade: false,
       // 分销个人中心详情
-      detail: {},
+      detail: {
+        down_level_status: 0
+      },
       progressStyle: {
         width: 0
       },
       isShare: false,
       shareType: 0, // 0 推广店铺 1 推广空间 2 邀请函
+      isPromoter: false,
+      showPromotionMaterial: false,
       systemInfo: systemInfo,
       canvasWidth: systemInfo.windowWidth / 414,
       canvasHeight: systemInfo.windowWidth / 375
@@ -257,18 +265,18 @@ export default {
     ...mapGetters({
       rank: 'setting/getPromoterRank'
     }),
-    shareData({shareType}) {
+    shareData({shareType, ipAddress, $store, good}) {
       if (shareType === 1) {
         let imageUrl = '';
         // #ifndef H5
-        imageUrl = `${this.ipAddress}/share-dynamic-space.png`
+        imageUrl = `${ipAddress}/share-dynamic-space.png`
         // #endif
         // #ifdef H5
-        imageUrl = `${this.ipAddress}/share-dynamic-space-icon.png`
+        imageUrl = `${ipAddress}/share-dynamic-space-icon.png`
         // #endif
         return {
-          title: `${this.$store.state.apply.userInfo.nickname}的空间`,
-          path: `/promoter/pages/dynamic?UID=${this.$store.state.apply.userInfo.id}`,
+          title: `${$store.state.apply.userInfo.nickname}的空间`,
+          path: `/promoter/pages/dynamic?UID=${$store.state.apply.userInfo.id}`,
           imageUrl: imageUrl,
           // #ifdef H5
           desc: '尖端好物，尽在我的空间，欢迎常来逛逛'
@@ -277,10 +285,10 @@ export default {
       } else if (shareType === 2) {
         let imageUrl = '';
         // #ifndef H5
-        imageUrl = `${this.ipAddress}/share-join-promoter.png`
+        imageUrl = `${ipAddress}/share-join-promoter.png`
         // #endif
         // #ifdef H5
-        imageUrl = `${this.ipAddress}/share-join-promoter-icon.png`
+        imageUrl = `${ipAddress}/share-join-promoter-icon.png`
         // #endif
         return {
           title: `推广商品，赚佣金！`,
@@ -290,6 +298,23 @@ export default {
           desc: '欢迎加入我们的分销团队，一起赚佣金'
           // #endif
         };
+      } else if (shareType === 3) {
+        return {
+          title: good.name,
+          path: '/pages/goods/detail?id=' + good.id,
+          imageUrl: good.slideshow[0]
+        }
+      }
+    },
+    // 升降级
+    isDowngrade: {
+      get({detail}) {
+        return detail.down_level_status === -1 || detail.down_level_status === 1;
+      },
+      set(val) {
+        if (!val) {
+          this.detail.down_level_status = 0;
+        }
       }
     }
   },
@@ -368,6 +393,11 @@ export default {
         url: '/promoter/pages/material'
       });
     },
+    routerGoodsDetail() {
+      uni.navigateTo({
+        url: `/pages/goods/detail?id=${this.good.id}`
+      });
+    },
     initCanvas() {
       console.log(this.canvasWidth);
       console.log(this.systemInfo);
@@ -423,6 +453,7 @@ export default {
       // #ifdef H5
       this.$wechat.updateShareData(this.$shareData);
       // #endif
+      this.isPromoter = false;
       this.isShare = true;
     },
     // 邀请分销商
@@ -431,7 +462,21 @@ export default {
       // #ifdef H5
       this.$wechat.updateShareData(this.shareData);
       // #endif
+      this.isPromoter = false;
       this.isShare = true;
+    },
+    // 商品分享
+    shareGood() {
+      this.shareType = 3;
+      // #ifdef H5
+      this.$wechat.updateShareData(this.shareData);
+      // #endif
+      this.isPromoter = true;
+      this.isShare = true;
+    },
+    // 设置分销推广
+    setPromoterMaterial() {
+      this.showPromotionMaterial = true;
     }
   },
   // #ifdef H5

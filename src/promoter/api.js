@@ -251,3 +251,82 @@ export function searchGoods(page = 1, keyword = {}) {
     }).catch(reject);
   })
 }
+
+// 分销等级
+export function promoterlevel() {
+  return new Promise((resolve, reject) => {
+    service.promoterlevel('get').then(resolve).catch(reject);
+  });
+}
+
+// 分销订单
+export function promoterorderList(page = 1, {time_type = 'all', time_start = '', time_end = ''}) {
+  return new Promise((resolve, reject) => {
+    service.promoterorder('get', {
+      time_type,
+      time_start,
+      time_end
+    }).page(page, 10).then(response => {
+      transformPageHeaders(response);
+      const {data, pagination} = response;
+      resolve({
+        data: data,
+        pagination
+      });
+    }).catch(reject);
+  });
+}
+
+// 分销订单统计
+export function promoterOrderCount({time_type = 'all', time_start = '', time_end = ''}) {
+  return new Promise((resolve, reject) => {
+    service.promoterorder('get', {
+      time_type,
+      time_start,
+      time_end,
+      behavior: 'count'
+    }).then(resolve).catch(reject);
+  })
+}
+
+// 分销商下线列表
+export function promoterChildList(page, parent) {
+  return new Promise((resolve, reject) => {
+    service.promoter('post', {
+      behavior: 'search',
+    }, {
+      parent: parent
+    }).page(page, 10).then(response => {
+      transformPageHeaders(response);
+      const {data, pagination} = response;
+      resolve({
+        data: data,
+        pagination
+      });
+    }).catch(reject);
+  })
+}
+
+//  分销商下线列表切换栏
+export function promoterChildCount() {
+  return new Promise((resolve, reject) => {
+    service.promoter('post', {
+      behavior: 'tab'
+    }, {}).then(resolve).catch(reject);
+  })
+}
+
+// 排行榜
+// ranking_dimension total_money:累计销售额 total_bonus:累计佣金 all_children:当前下线
+// ranking_time 1 今日 2 昨日  3 本月  默认汇总  ranking_dimension = all_children时不用传
+export function rankList({
+  ranking_dimension = '',
+  ranking_time = 1
+}) {
+  return new Promise((resolve, reject) => {
+    service.rank('get', {
+      ranking_dimension,
+      ranking_time
+    }).then(resolve).catch(reject);
+  })
+}

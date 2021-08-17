@@ -6,9 +6,9 @@
         class="he-image"
       />
       <view class="he-box flex flex-direction align-center">
-        <text class="he-instruction" v-if="!isUpDown"> 由于您当前的分销业绩不足 分销等级已降级至 </text>
-        <text v-else class="he-instruction"> 恭喜！您的分销等级已升级至 </text>
-        <text class="he-level">{{ level }}</text>
+        <text class="he-instruction" v-if="isUpDown < 0"> 由于您当前的分销业绩不足 分销等级已降级至 </text>
+        <text v-else-if="isUpDown > 0" class="he-instruction"> 恭喜！您的分销等级已升级至 </text>
+        <text class="he-level">{{ levelName }}</text>
         <button class="cu-btn he-btn" @click="showModel = false">我知道了</button>
       </view>
     </view>
@@ -29,12 +29,12 @@ export default {
       default: true
     },
     isUpDown: {
-      type: Boolean,
-      default: true
+      type: Number,
+      default: 0
     },
-    level: {
+    levelName: {
       type: String,
-      default: '白银分销商'
+      default: ''
     }
   },
   computed: {

@@ -9,20 +9,43 @@
           @click="switchLatitude(item)"
           :class="{ active: item.value === latitude.value }"
           v-for="(item, index) in rankingDimension"
-          >{{ item.name }}</view
+          :key="index"
+        >{{ item.name }}
+        </view
         >
       </view>
       <view class="when flex justify-around">
-        <view class="when-item flex-sub" @click="switchWhen(1)" :class="[{ active: when === 1 }]">今日</view>
-        <view class="when-item flex-sub" @click="switchWhen(2)" :class="[{ active: when === 2 }]">昨日</view>
-        <view class="when-item flex-sub" @click="switchWhen(3)" :class="[{ active: when === 3 }]">本月</view>
-        <view class="when-item flex-sub" @click="switchWhen(4)" :class="[{ active: when === 4 }]">汇总</view>
+        <view
+          class="when-item flex-sub"
+          @click="switchWhen(1)"
+          :class="[{ active: rankingTime === 1 }]">
+          今日
+        </view>
+        <view
+          class="when-item flex-sub"
+          @click="switchWhen(2)"
+          :class="[{ active: rankingTime === 2 }]">
+          昨日
+        </view>
+        <view
+          class="when-item flex-sub"
+          @click="switchWhen(3)"
+          :class="[{ active: rankingTime === 3 }]">
+          本月
+        </view>
+        <view
+          class="when-item flex-sub"
+          @click="switchWhen(null)"
+          :class="[{ active: rankingTime === null }]">
+          汇总
+        </view>
       </view>
       <view class="rank-yourself flex">
         <view class="title"
-          >我的
-          <br />
-          排名</view
+        >我的
+          <br/>
+          排名
+        </view
         >
         <he-image
           :width="80"
@@ -43,10 +66,11 @@
         <view class="table-head flex">
           <view class="col">排名</view>
           <view class="col">用户</view>
-          <view class="col">累计佣金</view>
+          <view class="col">{{ latitude.name }}</view>
         </view>
         <view class="table-body">
-          <view class="row flex" v-for="(item, index) in 50" :key="index">
+          <view class="row flex" v-for="(item, index) in list" :key="index">
+            <!-- 名次 -->
             <view class="col" :class="[index < 2 ? 'flex align-center justify-center' : '']">
               <template v-if="index > 2">{{ index + 1 }}</template>
               <template v-else>
@@ -54,6 +78,7 @@
               </template>
             </view>
             <view class="col flex align-center">
+              <!-- 头像 -->
               <view class="avatar flex align-center justify-center" :style="[avatarStyle(index)]">
                 <he-image
                   :image-style="{
@@ -61,10 +86,11 @@
                   }"
                   :width="80"
                   :height="80"
-                ></he-image>
+                  :src="item.user.avatar"
+                />
               </view>
-              <view class="name">侯靖靖</view></view
-            >
+              <view class="name">侯靖靖</view>
+            </view>
             <view class="col number">￥1482.62</view>
           </view>
         </view>
@@ -74,15 +100,17 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import {mapGetters} from 'vuex';
+import {rankList} from "../api";
 
 export default {
   name: 'leaderboard',
   data() {
     return {
       hCurrent: 1,
-      when: 1,
-      latitude: ''
+      rankingTime: 1,
+      latitude: '',
+      list: []
     };
   },
   computed: {
@@ -104,9 +132,8 @@ export default {
         return style;
       };
     },
-    rankingDimension({ rank }) {
-      const list = rank.ranking_dimension.map(item => {
-        console.log(item);
+    rankingDimension({rank}) {
+      return rank.ranking_dimension.map(item => {
         if (item === 'total_bonus') {
           return {
             name: '累计佣金',
@@ -124,11 +151,10 @@ export default {
           };
         }
       });
-      return list;
     },
-    latitudeStyle({ latitude }) {
+    latitudeStyle({latitude, rankingDimension}) {
       return index => {
-        const key = this.rankingDimension.findIndex(item => {
+        const key = rankingDimension.findIndex(item => {
           if (item.value === latitude.value) {
             return item;
           }
@@ -141,16 +167,24 @@ export default {
       };
     }
   },
-  mounted() {
-    console.log(this.rank);
+  onLoad() {
     this.latitude = this.rankingDimension[0];
+    this.getList();
   },
   methods: {
-    switchWhen(when) {
-      this.when = when;
+    switchWhen(rankingTime) {
+      this.rankingTime = rankingTime;
     },
     switchLatitude(item) {
       this.latitude = item;
+    },
+    async getList() {
+      const response = await rankList({
+        ranking_time: this.rankingTime,
+        ranking_dimension: this.latitude.value
+      });
+      this.list = this.list.concat(response);
+      console.log(response);
     }
   },
   filters: {
@@ -169,12 +203,8 @@ export default {
 };
 </script>
 
-<style scoped lang="less">
+<style scoped lang="scss">
 @import '../main.less';
-
-.he-page-content {
-  background-color: orange;
-}
 
 .header-bg {
   width: 750px;
@@ -186,9 +216,9 @@ export default {
 
 .body {
   width: 750px;
-  // height: 1400px;
+  min-height: calc(100vh - 312px);
   background: #ffffff;
-  border-radius: 16px 16px 0px 0px;
+  border-radius: 16px 16px 0 0;
   margin-top: -88px;
   position: relative;
   z-index: 10;
@@ -198,31 +228,35 @@ export default {
     content: ' ';
     overflow: hidden;
   }
+
   .latitude {
     height: 70px;
     background-color: #ffffff;
+
     .item {
       height: 80px;
       line-height: 80px;
       font-size: 28px;
-      font-family: PingFang SC;
+      @extend .font-family-sc;
       font-weight: 500;
       color: #ffffff;
       text-align: center;
       background-color: #4267b4;
+
       &.active {
         background-color: #ffffff;
         height: 88px;
         border-radius: 16px 16px 0 0;
 
         color: #222222;
+
         & + .item {
-          // background: bor;
           border-bottom-left-radius: 16px;
         }
       }
     }
   }
+
   .when {
     margin: 32px 32px 40px 32px;
     width: 686px;
@@ -230,52 +264,60 @@ export default {
     border: 1px solid #e5e5e5;
     border-radius: 16px;
     overflow: hidden;
+
     .when-item {
       font-size: 26px;
-      font-family: PingFang SC;
+      @extend .font-family-sc;
       font-weight: 500;
       color: #222222;
       line-height: 70px;
       text-align: center;
       background-color: #f5f5f5;
+
       &:not(:last-child) {
         border-right: 1px solid #e5e5e5;
       }
+
       &.active {
         background: #ffffff;
       }
     }
   }
+
   .rank-yourself {
     width: 686px;
-    // height: 140px;
     background: #ffffff;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.06);
     border-radius: 16px;
     margin: 0 32px 48px 32px;
     padding: 32px 30px;
+
     .title {
       font-size: 26px;
-      font-family: PingFang SC;
+      @extend .font-family-sc;
       font-weight: 500;
       color: #999999;
       margin-right: 25px;
     }
+
     .content {
       margin-left: 32px;
+
       .name {
         font-size: 26px;
-        font-family: PingFang SC;
+        @extend .font-family-sc;
         font-weight: 500;
         color: #222222;
         line-height: 48px;
       }
+
       .info {
         font-size: 22px;
-        font-family: PingFang SC;
+        @extend .font-family-sc;
         font-weight: 500;
         color: #999999;
         line-height: 32px;
+
         text:first-child {
           margin-right: 15px;
         }
@@ -286,58 +328,67 @@ export default {
   .table {
     padding: 0 32px;
   }
+
   .table-head {
     height: 64px;
     line-height: 64px;
     font-size: 26px;
-    font-family: PingFang SC;
+    @extend .font-family-sc;
     font-weight: 500;
     color: #999999;
     margin-bottom: 24px;
   }
+
   .col {
-    // background-color: red;
     &:first-child {
       width: 96px;
       text-align: center;
     }
+
     &:nth-child(2) {
       width: 320px;
       padding-left: 23px;
     }
+
     &:last-child {
       width: 238px;
       text-align: right;
       padding-right: 22px;
     }
+
     &:not(:last-child) {
       margin-right: 16px;
     }
   }
+
   .table-body {
     .row {
       height: 88px;
       line-height: 88px;
       margin-bottom: 32px;
+
       .rank-place {
         width: 56px;
         height: 56px;
       }
+
       .avatar {
         width: 84px;
         height: 84px;
         border-radius: 50%;
       }
+
       .name {
         font-size: 28px;
-        font-family: PingFang SC;
+        @extend .font-family-sc;
         font-weight: 500;
         color: #222222;
         margin-left: 21px;
       }
+
       .number {
         font-size: 28px;
-        font-family: PingFang SC;
+        @extend .font-family-sc;
         font-weight: bold;
         color: #222222;
       }
