@@ -126,6 +126,7 @@
     <!-- 测试使用 -->
     <!--     <cartoon :score="100" title="测试" v-model="is_cartoon"></cartoon> -->
     <HeLoginModel />
+    <he-float-window v-if="showFloatWindow" pages-url="index"></he-float-window>
   </view>
 </template>
 <script type="text/javascript">
@@ -163,6 +164,7 @@ import openidad from './ad.vue';
 import cartoon from '@/plugins/task/components/cartoon.vue';
 import taskpopups from '@/plugins/task/components/popups.vue';
 import HeLoginModel from '../../components/he-login-layout.vue';
+import heFloatWindow from '../../components/layout/he-float-window.vue';
 
 export default {
   components: {
@@ -192,7 +194,8 @@ export default {
     openidad,
     taskpopups,
     cartoon,
-    HeLoginModel
+    HeLoginModel,
+    heFloatWindow
   },
   data() {
     return {
@@ -221,7 +224,8 @@ export default {
       wechatUrl: '/',
       // #endif
       taskShare: false,
-      isShareCount: null
+      isShareCount: null,
+      showFloatWindow: false
     };
   },
   // #ifdef H5
@@ -269,7 +273,8 @@ export default {
       fixed: 'components/getSearchFixed',
       searchHeight: 'components/getSearchHeight',
       navbarHeight: 'setting/getNavBarHeight',
-      statusBarHeight: 'setting/statusBarHeight'
+      statusBarHeight: 'setting/statusBarHeight',
+      floatWindow: 'setting/getFloatWindow'
     }),
     is_ad() {
       return uni.getStorageSync('openingad') || false;
@@ -320,6 +325,9 @@ export default {
     // #endif
     if (this.isLogin) {
       this.setCartNumber();
+    }
+    if (this.floatWindow.decline === 0) {
+      this.showFloatWindow = true;
     }
   },
   methods: {
@@ -458,17 +466,10 @@ export default {
       }, 1000);
     }
   },
-  watch: {},
-  onLoad(options) {
-    console.log(options);
+  onLoad() {
     // #ifdef H5
     this.$wechat.updateShareData(this.$shareAppMessage());
     // #endif
-    let that = this;
-    // this.isShareCount = setInterval(() => {
-    //   console.log("定时执行判断页面分享获取")
-    //   that.handleTaskShare();
-    // }, 10000);
   },
   // #ifdef H5
   beforeDestroy() {
@@ -479,23 +480,19 @@ export default {
     this.$wechat.updateShareData(this.$shareAppMessage());
   },
   // #endif
-  // #ifndef H5
-  // onShareAppMessage() {
-  //   console.count('index:onShareAppMessage');
-  //   console.log(this.taskShare);
-  //   if (this.taskShare) return;
-  //   console.log('index::::' , this.$shareAppMessage(this.shareData));
-  //   return this.$shareAppMessage(this.shareData);
-  // },
-  // onShareTimeline() {
-  //   if (this.taskShare) return;
-  //   return this.$shareAppMessage(this.shareData);
-  // },
-  // #endif
   onPageScroll(e) {
+    console.log(e);
+    console.log(this.floatWindow.decline);
     let that = this;
     let scrollTop = parseInt(e.scrollTop);
     let isSatisfy = scrollTop >= that.searchTop + this.navbarHeight ? true : false;
+    if (this.floatWindow.decline) {
+      if (scrollTop > 100) {
+        this.showFloatWindow = true;
+      } else {
+        this.showFloatWindow = false;
+      }
+    }
     if (that.searchFixed === isSatisfy) {
       return false;
     }

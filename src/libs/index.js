@@ -14,6 +14,7 @@ import setTabBarItem from './function/setTabBarItem';
 import getQueryVariable from './function/getQueryVariable';
 // #endif
 import $parent from './function/$parent.js';
+import getSceneVariable from "./function/getSceneVariable";
 const $h = {
   timeFormat: timeFormat,
   floatPrice,
@@ -27,8 +28,9 @@ const $h = {
   $parent,
   // #ifdef H5
   setTabBarItem,
-  getQueryVariable
+  getQueryVariable,
   // #endif
+  getSceneVariable
 };
 
 uni.$h = $h;

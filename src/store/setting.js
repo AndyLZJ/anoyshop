@@ -133,10 +133,16 @@ const setting = {
     },
     getPromoterRank(state) {
       return state.setting.promoter_rank;
+    },
+    getCommissionSetting(state) {
+      return state.setting.commission_setting;
+    },
+    getFloatWindow(state) {
+      return state.setting.float_window;
     }
   },
   actions: {
-    getSetting: function ({ commit }) {
+    getSetting: function ({commit}) {
       let $heshop = this._vm.$heshop;
       let $storageKey = this._vm.$storageKey;
       if (uni.getStorageSync($storageKey.setting)) {
@@ -152,12 +158,12 @@ const setting = {
           console.error(err);
         });
     },
-    resetting: function ({ dispatch }) {
+    resetting: function ({dispatch}) {
       let $storageKey = this._vm.$storageKey;
       uni.removeStorageSync($storageKey.setting);
       dispatch('getSetting');
     },
-    getLocation: function ({ state }) {
+    getLocation: function ({state}) {
       let $wechat = this._vm.$wechat;
       return new Promise((resolve, reject) => {
         //  #ifdef MP-WEIXIN
@@ -206,14 +212,14 @@ const setting = {
         // #endif
       });
     },
-    getSys: function ({ commit }) {
+    getSys: function ({commit}) {
       uni.getSystemInfo({
         success: function (res) {
           commit('setSys', res);
         }
       });
     },
-    getTheme: function ({ commit }) {
+    getTheme: function ({commit}) {
       let $heshop = this._vm.$heshop;
       let $storageKey = this._vm.$storageKey;
       if (uni.getStorageSync($storageKey.theme_color)) {
@@ -232,7 +238,7 @@ const setting = {
           });
       }
     },
-    getTabBar: function ({ commit }) {
+    getTabBar: function ({commit}) {
       return new Promise((resolve, reject) => {
         let $heshop = this._vm.$heshop;
         let $storageKey = this._vm.$storageKey;
@@ -256,7 +262,7 @@ const setting = {
         }
       });
     },
-    getAddress: function ({ commit }) {
+    getAddress: function ({commit}) {
       let $heshop = this._vm.$heshop;
       let $storageKey = this._vm.$storageKey;
       if (uni.getStorageSync($storageKey.address_json)) {
@@ -265,7 +271,7 @@ const setting = {
         $heshop
           .search(
             'post',
-            { include: 'setting' },
+            {include: 'setting'},
             {
               keyword: 'addressjson',
               content_key: ''
@@ -280,13 +286,13 @@ const setting = {
           });
       }
     },
-    subscribe: function ({ commit }) {
+    subscribe: function ({commit}) {
       let $heshop = this._vm.$heshop;
       $heshop.subscribe('get').then(function (response) {
         commit('subscribe', response);
       });
     },
-    getAuth({ commit }) {
+    getAuth({commit}) {
       let $heshop = this._vm.$heshop;
       $heshop.cloud('get').then(response => {
         commit('setAuth', response);

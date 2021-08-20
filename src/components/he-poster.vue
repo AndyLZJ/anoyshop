@@ -103,11 +103,14 @@ export default {
         uni.hideLoading();
         this.loading = false;
       }
+      console.log(this.postData);
       let data = {
         type: type,
         is_task: this.is_task,
         ...this.postData
       };
+      console.log('data:');
+      console.log(data);
       this.$heshop
         .poster('get', data)
         .then(function (response) {

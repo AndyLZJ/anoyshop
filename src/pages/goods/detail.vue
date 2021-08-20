@@ -111,6 +111,7 @@
       <taskbrowse :display="is_browse" :goods_id="goods_id" ref="taskbrowse"></taskbrowse>
     </template>
     <HeLoginModel />
+    <he-float-window v-if="showFloatWindow" :bottom="95" pages-url="goods-detail"></he-float-window>
   </view>
 </template>
 
@@ -132,6 +133,7 @@ import { mapGetters } from 'vuex';
 import taskpopups from '@/plugins/task/components/popups.vue';
 import taskbrowse from '@/plugins/task/components/browse.vue';
 import HeLoginModel from '../../components/he-login-layout.vue';
+import heFloatWindow from '../../components/layout/he-float-window.vue';
 
 export default {
   name: 'detail',
@@ -151,13 +153,15 @@ export default {
     heNavbar,
     taskpopups,
     taskbrowse,
-    HeLoginModel
+    HeLoginModel,
+    heFloatWindow
   },
   computed: {
     ...mapGetters('setting', {
       goodsSetting: 'goodsSetting',
       navbarHeight: 'getNavBarHeight',
-      statusBarHeight: 'statusBarHeight'
+      statusBarHeight: 'statusBarHeight',
+      floatWindow: 'getFloatWindow'
     }),
     isProductsFeatured: function () {
       return this.goodsSetting.recommend_showpage.goodsinfo.value;
@@ -197,6 +201,9 @@ export default {
     if (this.$store.state.apply.is_login) {
       this.handleTaskBrowseLog();
     }
+    if (this.floatWindow.decline === 0) {
+      this.showFloatWindow = true;
+    }
   },
   data() {
     return {
@@ -231,7 +238,8 @@ export default {
       is_browse: 0,
       popupsList: [],
       taskShare: false,
-      copy_task_browse: 0
+      copy_task_browse: 0,
+      showFloatWindow: false
     };
   },
   onHide() {
@@ -418,6 +426,14 @@ export default {
     });
   },
   onPageScroll(e) {
+    let scrollTop = parseInt(e.scrollTop);
+    if (this.floatWindow.decline) {
+      if (scrollTop > 100) {
+        this.showFloatWindow = true;
+      } else {
+        this.showFloatWindow = false;
+      }
+    }
     if (this.emptyStatus) return;
     let _this = this;
     _this.isBar = e.scrollTop > 150;

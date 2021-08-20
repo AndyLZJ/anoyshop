@@ -182,7 +182,8 @@ export default {
       isPublishEntry: false,
       // 动态删除
       showDelete: false,
-      deleteItem: null
+      deleteItem: null,
+      UID: null
     };
   },
   computed: {
@@ -266,7 +267,13 @@ export default {
       getPromoterPage: 'getPromoterPage'
     })
   },
-  mounted() {
+  onLoad(option) {
+    this.UID = option.UID;
+    if (option.scene) {
+      // 查看他人的动态空间
+      const scene = decodeURIComponent(option.scene);
+      this.UID = this.$h.getSceneVariable(scene, 'UID');
+    }
     // 初次获取动态列表
     this.getZoneList()
       .then(response => {
@@ -300,7 +307,7 @@ export default {
     },
     // 动态列表
     async getZoneList() {
-      const response = await promoterzone(this.page.current);
+      const response = await promoterzone(this.page.current, this.UID);
       const {data, pagination} = response;
       this.page = pagination;
       data.forEach(item => {

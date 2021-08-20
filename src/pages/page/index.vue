@@ -101,6 +101,7 @@
       ></component>
     </view>
     <HeLoginModel />
+    <he-float-window v-if="showFloatWindow" pages-url="page"></he-float-window>
   </scroll-view>
 </template>
 
@@ -121,7 +122,8 @@ import notice from '../fitment/notice/notice.vue';
 import coupon from '../fitment/coupon/coupon.vue';
 import task from '../fitment/task/task.vue';
 import HeLoginModel from '../../components/he-login-layout.vue';
-
+import heFloatWindow from '../../components/layout/he-float-window.vue';
+import { mapGetters } from 'vuex';
 export default {
   components: {
     videos,
@@ -138,12 +140,19 @@ export default {
     notice,
     coupon,
     task,
-    HeLoginModel
+    HeLoginModel,
+    heFloatWindow
   },
   data() {
     return {
-      page: []
+      page: [],
+      showFloatWindow: false
     };
+  },
+  computed: {
+    ...mapGetters({
+      floatWindow: 'setting/getFloatWindow'
+    })
   },
   /**
    * 页面显示时
@@ -157,6 +166,9 @@ export default {
     if (this.options && this.options.id) {
       let id = this.options.id;
       this.handlePageLoading(id);
+    }
+    if (this.floatWindow.decline === 0) {
+      this.showFloatWindow = true;
     }
   },
   methods: {
@@ -223,6 +235,17 @@ export default {
      * @return {[type]} [description]
      */
     handlePageUpdate() {}
+  },
+  onPageScroll(event) {
+    console.log(event);
+    let scrollTop = parseInt(event.scrollTop);
+    if (this.floatWindow.decline) {
+      if (scrollTop > 100) {
+        this.showFloatWindow = true;
+      } else {
+        this.showFloatWindow = false;
+      }
+    }
   }
 };
 </script>

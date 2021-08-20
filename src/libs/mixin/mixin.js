@@ -1,4 +1,5 @@
-import { mapGetters } from 'vuex';
+import {mapGetters} from 'vuex';
+import getSceneVariable from "../function/getSceneVariable";
 
 module.exports = {
   data() {
@@ -54,12 +55,23 @@ module.exports = {
     // getRect挂载到$h上，因为这方法需要使用in(this)，所以无法把它独立成一个单独的文件导出
     this.$h.getRect = this.$hGetRect;
     console.log('获取加载页面的参数', options);
+    // 分销商绑定上下级关系
+    if (options.scene) {
+      const scene = decodeURIComponent(options.scene);
+      let promoterUid = this.$h.getSceneVariable(scene, 'share_promoter_uid');
+      if (this.isLogin && this.$store.state.apply.userInfo.id != promoterUid) {
+        this.$store.dispatch('plugins/bindPromoterSuperior', {parent_id: promoterUid});
+      } else {
+        console.log('不能绑定自己');
+      }
+      console.log(promoterUid);
+    }
     //判断是否有用户要求记录
     if (options && options.task_uid) {
       console.log('执行需要邀请好友统计处理');
       if (this.isLogin && this.$store.state.apply.userInfo.id != options.task_uid) {
         this.$store
-          .dispatch('plugins/onInvite', { UID: options.task_uid })
+          .dispatch('plugins/onInvite', {UID: options.task_uid})
           .then(res => {
             console.log('统计邀请好友积分', res);
           })
@@ -95,7 +107,7 @@ module.exports = {
     },
     // 报错跳转页面
     $toError: function (err) {
-      let { data, status } = err;
+      let {data, status} = err;
       if (status === 422) {
         this.$h.toast(data[0].message);
       } else if (status === 403) {
@@ -115,7 +127,7 @@ module.exports = {
       }
       return args;
     },
-    uniCopy: function ({ content, success, error }) {
+    uniCopy: function ({content, success, error}) {
       if (!content) return error('the content can not be blank');
       content = typeof content === 'string' ? content : content.toString();
       // #ifndef H5
@@ -173,7 +185,8 @@ module.exports = {
         console.error(e);
       }
     },
-    previewImage: function () {},
+    previewImage: function () {
+    },
     toTaskonShare() {
       //用于延时测试数据
       setTimeout(res => {
@@ -185,7 +198,8 @@ module.exports = {
             .then(res => {
               console.log('执行了分享转发公共合计', res);
             })
-            .catch(() => {});
+            .catch(() => {
+            });
         }
       }, 1000);
     }

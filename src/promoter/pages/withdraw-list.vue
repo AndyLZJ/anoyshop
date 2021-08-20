@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import {financeList} from "../api";
+
 export default {
   name: 'withdraw-list',
   data() {
@@ -57,18 +59,21 @@ export default {
       tabWidth: 0,
       parentLeft: 0,
       barFirstTimeMove: true,
-      isShowTime: false
+      isShowTime: false,
+      page: {
+        current: 1
+      }
     };
   },
   computed: {
-    tabBarStyle({ tabWidth, barFirstTimeMove, scrollBarLeft }) {
+    tabBarStyle({tabWidth, barFirstTimeMove, scrollBarLeft}) {
       return {
         width: `${tabWidth}px`,
         transform: `translate(${scrollBarLeft}px, -100%)`,
         'transition-duration': `${barFirstTimeMove ? 0 : '0.5s'}`
       };
     },
-    tabItemStyle({ themeColor, currentIndex }) {
+    tabItemStyle({themeColor, currentIndex}) {
       return index => {
         let style = {
           'transition-duration': '0.5s'
@@ -79,7 +84,7 @@ export default {
         return style;
       };
     },
-    arrowStyle({ isShowTime }) {
+    arrowStyle({isShowTime}) {
       let style = {};
       if (isShowTime) {
         style.transform = 'rotate(180deg)';
@@ -92,6 +97,7 @@ export default {
       let tabRect = await this.$hGetRect('#he-tab');
       this.parentLeft = tabRect.left;
       this.getTabRect();
+      await this.getList();
     },
     clickTab(index) {
       this.currentIndex = index;
@@ -124,6 +130,10 @@ export default {
           this.barFirstTimeMove = false;
         }, 100);
       }
+    },
+    async getList() {
+      const response = await financeList(this.page.current, {});
+      console.log(response);
     }
   },
   onLoad() {
@@ -138,6 +148,7 @@ export default {
 .he-page-content {
   padding: 0 20px;
 }
+
 .he-search {
   background-color: #f5f5f5;
   width: 750px;
@@ -145,6 +156,7 @@ export default {
   position: sticky;
   top: 0;
 }
+
 .he-search--tabs {
   width: 710px;
   height: 96px;
@@ -152,12 +164,14 @@ export default {
   border-radius: 16px;
   position: relative;
 }
+
 .he-tab--bar {
   position: absolute;
   bottom: 0;
   height: 4px;
   @include background_color('background_color');
 }
+
 .he-time {
   margin: 24px 0;
   width: 710px;
@@ -166,18 +180,21 @@ export default {
   @extend .font-family-sc;
   font-weight: 500;
   color: #999999;
+
   .iconarrow-down {
     font-size: 20px;
     margin-left: 8px;
     transition-duration: 0.2s;
   }
 }
+
 .le-order--item {
   padding: 24px;
   border-radius: 8px;
   background: #ffffff;
   margin-bottom: 16px;
 }
+
 .le-item--body {
   .le-title {
     font-size: 32px;
@@ -186,16 +203,19 @@ export default {
     color: #222222;
     line-height: 56px;
   }
+
   .le-assist {
     font-size: 24px;
     @extend .font-family-sc;
     font-weight: 500;
     color: #999999;
+
     > view {
       line-height: 32px;
     }
   }
 }
+
 .le-item--right {
   .le-sign {
     width: 94px;
@@ -208,6 +228,7 @@ export default {
     line-height: 32px;
     padding: 0 10px;
   }
+
   .le-price {
     font-size: 36px;
     @extend .font-family-sc;
@@ -215,6 +236,7 @@ export default {
     color: #222222;
     line-height: 48px;
   }
+
   .le-handling-free {
     font-size: 24px;
     @extend .font-family-sc;
@@ -223,6 +245,7 @@ export default {
     line-height: 32px;
   }
 }
+
 .le-item--footer {
   border-top: 1px solid #e5e5e5;
   font-size: 24px;

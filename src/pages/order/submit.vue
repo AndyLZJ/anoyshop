@@ -39,6 +39,7 @@
         ></view>
       </view>
     </view>
+    <he-float-window v-if="showFloatWindow" pages-url="submit" :bottom="96"></he-float-window>
   </view>
 </template>
 <script>
@@ -48,6 +49,8 @@ import submitPrice from './components/submit-price.vue';
 import submitButton from './components/submit-button.vue';
 import submitComments from './components/submit-comments.vue';
 import heLoading from '../../components/he-loading.vue';
+import heFloatWindow from '../../components/layout/he-float-window.vue';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'submit',
@@ -57,7 +60,8 @@ export default {
     submitPrice,
     submitButton,
     submitComments,
-    heLoading
+    heLoading,
+    heFloatWindow
   },
   data() {
     return {
@@ -79,7 +83,8 @@ export default {
       userCouponId: null,
       note: '',
       loading: true,
-      disSubmit: false
+      disSubmit: false,
+      showFloatWindow: true
     };
   },
   computed: {
@@ -89,7 +94,10 @@ export default {
         return item.failure_reason;
       });
       return bool > -1 ? true : false;
-    }
+    },
+    ...mapGetters('setting', {
+      floatWindow: 'getFloatWindow'
+    })
   },
   methods: {
     toUrl(url) {
@@ -294,6 +302,19 @@ export default {
     if (comments_submit) {
       this.note = comments_submit;
       uni.removeStorageSync(this.$storageKey.comments_submit);
+    }
+    if (this.floatWindow.decline === 0) {
+      this.showFloatWindow = true;
+    }
+  },
+  onPageScroll(event) {
+    let scrollTop = parseInt(event.scrollTop);
+    if (this.floatWindow.decline) {
+      if (scrollTop > 100) {
+        this.showFloatWindow = true;
+      } else {
+        this.showFloatWindow = false;
+      }
     }
   }
 };

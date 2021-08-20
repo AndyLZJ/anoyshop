@@ -160,10 +160,12 @@ export function applyAudit() {
 }
 
 // 空间动态列表
-export function promoterzone(page = 1) {
+export function promoterzone(page = 1, UID) {
   return new Promise((resolve, reject) => {
     service
-      .promoterzone('get')
+      .promoterzone('get', {
+        UID: UID
+      })
       .page(page, 10)
       .then(response => {
         transformPageHeaders(response);
@@ -327,6 +329,43 @@ export function rankList({
     service.rank('get', {
       ranking_dimension,
       ranking_time
-    }).then(resolve).catch(reject);
+    }).then((response) => {
+      console.log(response);
+      resolve(response);
+    }).catch(reject);
+  })
+}
+
+// 申请提现
+export function finance({
+  price = '',
+  type = null,
+  extra = {}
+}) {
+  return new Promise((resolve, reject) => {
+    service.finance('post', {
+      price,
+      type,
+      extra
+    }).then(response => {
+      console.log(response);
+    }).catch(reject);
+  })
+}
+
+// 提现列表
+export function financeList(page, {model = 'promoter', status = null}) {
+  return new Promise((resolve, reject) => {
+    service.finance('get', {
+      model: model,
+      status: status
+    }).page(page, 10).then(response => {
+      transformPageHeaders(response);
+      const {data, pagination} = response;
+      resolve({
+        data: data,
+        pagination
+      });
+    }).catch(reject);
   })
 }

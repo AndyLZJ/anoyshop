@@ -257,18 +257,21 @@
         ></after-sales-detail-application>
       </template>
     </template>
+    <he-float-window v-if="showFloatWindow" pages-url="after-detail"></he-float-window>
   </view>
 </template>
 <script>
 import afterSalesDetailApplication from './components/afterSalesDetail-application.vue';
 import heLoading from '../../components/he-loading.vue';
 import { mapGetters } from 'vuex';
+import heFloatWindow from '../../components/layout/he-float-window.vue';
 
 export default {
   name: 'after-sale-details',
   components: {
     afterSalesDetailApplication,
-    heLoading
+    heLoading,
+    heFloatWindow
   },
   data() {
     return {
@@ -280,7 +283,8 @@ export default {
       },
       exchangeFlow: {
         status: 0
-      }
+      },
+      showFloatWindow: false
     };
   },
   computed: {
@@ -289,7 +293,8 @@ export default {
       return status === 100 || status === 101 || status === 102 || status === 121 || status === 131;
     },
     ...mapGetters({
-      getShip: 'order/getShip'
+      getShip: 'order/getShip',
+      floatWindow: 'setting/getFloatWindow'
     })
   },
   onLoad(options) {
@@ -300,6 +305,9 @@ export default {
         }
       : {};
     this.getDetail(this.orderId, this.behavior);
+    if (this.floatWindow.decline === 0) {
+      this.showFloatWindow = true;
+    }
   },
   methods: {
     cancelAfter: function (id) {
@@ -516,6 +524,16 @@ export default {
             id: null
           });
         }
+      }
+    }
+  },
+  onPageScroll(event) {
+    let scrollTop = parseInt(event.scrollTop);
+    if (this.floatWindow.decline) {
+      if (scrollTop > 100) {
+        this.showFloatWindow = true;
+      } else {
+        this.showFloatWindow = false;
       }
     }
   }

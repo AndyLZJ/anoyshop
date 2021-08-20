@@ -47,6 +47,7 @@ function MPageNavigate(item) {
       uni.navigateTo({
         url: item.path,
         fail: function () {
+          console.log(12123);
           uni.switchTab({
             url: item.path
           });

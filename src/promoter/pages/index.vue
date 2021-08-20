@@ -69,7 +69,7 @@
           <view class="flex justify-between align-center he-data-bottom">
             <view class="basis-df he-data--item">
               <view class="he-data--title">
-                <text class="he-dots he-blue"></text>
+                <text class="he-dots he-orange"></text>
                 <text>待提现佣金</text>
               </view>
               <view class="he-data--number">¥{{ detail.commission }}</view>
@@ -163,6 +163,7 @@
         v-model="isShare"
         :is-promoter="isPromoter"
         @confirmPromoter="setPromoterMaterial"
+        :post-data="postData"
       />
       <promotion-material :info="good" v-model="showPromotionMaterial"></promotion-material>
     </template>
@@ -189,51 +190,6 @@ export default {
   },
   data() {
     return {
-      chartData: {
-        series: [
-          {
-            data: [
-              {
-                name: '已提现佣金',
-                value: 50
-              },
-              {
-                name: '待结算佣金',
-                value: 30
-              },
-              {
-                name: '待提现佣金',
-                value: 20
-              }
-            ]
-          }
-        ],
-        categories: []
-      },
-      opts: {
-        dataLabel: false,
-        title: {
-          name: '累计佣金',
-          fontSize: 11,
-          offsetY: -10
-        },
-        subtitle: {
-          name: '4,826.00',
-          fontSize: 26,
-          color: '#222222'
-        },
-        legend: {
-          show: false
-        },
-        color: ['#623CEB', '#2379FC', '#FE9D51'],
-        padding: [30, 0, 0, 0],
-        extra: {
-          ring: {
-            ringWidth: 13,
-            border: false
-          }
-        }
-      },
       good: {},
       loading: true,
       // 分销个人中心详情
@@ -247,9 +203,8 @@ export default {
       shareType: 0, // 0 推广店铺 1 推广空间 2 邀请函
       isPromoter: false,
       showPromotionMaterial: false,
-      systemInfo: systemInfo,
+      postData: null,
       canvasWidth: systemInfo.windowWidth / 414,
-      canvasHeight: systemInfo.windowWidth / 375
     };
   },
   computed: {
@@ -350,12 +305,12 @@ export default {
         this.$nextTick(() => {
           this.progressStyle = style;
         });
+        this.initCanvas();
       });
-      this.initCanvas();
     },
     routerDynamic() {
       uni.navigateTo({
-        url: '/promoter/pages/dynamic'
+        url: `/promoter/pages/dynamic?UID=${this.$store.state.apply.userInfo.id}`
       });
     },
     routerLeaderboard() {
@@ -385,7 +340,7 @@ export default {
     },
     routerWithDraw() {
       uni.navigateTo({
-        url: '/promoter/pages/withdraw'
+        url: `/promoter/pages/withdraw?commission=${this.detail.commission}`
       });
     },
     routerMaterial() {
@@ -399,10 +354,15 @@ export default {
       });
     },
     initCanvas() {
-      console.log(this.canvasWidth);
-      console.log(this.systemInfo);
       const rem = this.canvasWidth;
-      let context = uni.createCanvasContext('he-view');
+      const {all_commission_amount, is_withdrawal, wait_account, commission} = this.detail;
+      const commissionPercentage = commission/all_commission_amount;
+      const isWithdrawalPercentage = is_withdrawal/all_commission_amount;
+      const waitAccountPercentage = wait_account/all_commission_amount;
+      console.log(commissionPercentage);
+      console.log(isWithdrawalPercentage);
+      console.log(waitAccountPercentage);
+      const context = uni.createCanvasContext('he-view');
       context.beginPath();
       context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), 0, 2 * Math.PI);
       context.setFillStyle('#FFFFFF');
@@ -412,19 +372,19 @@ export default {
       context.shadowColor = 'rgba(0,0,0,0.1)';
       context.fill();
       context.beginPath();
-      context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), 0, Math.PI * 2 * 0.59, false);
+      context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), 0, Math.PI * 2 * commissionPercentage, false);
       context.lineWidth = 8;
       context.lineCap = 'round';
       context.strokeStyle = '#FE9D51';
       context.stroke();
       context.beginPath();
-      context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), Math.PI * 2 * 0.59, Math.PI * 2 * 0.8, false);
+      context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), Math.PI * 2 * commissionPercentage, Math.PI * 2 * isWithdrawalPercentage, false);
       context.lineWidth = 8;
       context.lineCap = 'round';
       context.strokeStyle = '#623CEB';
       context.stroke();
       context.beginPath();
-      context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), Math.PI * 2 * 0.8, Math.PI * 2, false);
+      context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), Math.PI * 2 * isWithdrawalPercentage, Math.PI * 2, false);
       context.lineWidth = 8;
       context.lineCap = 'round';
       context.strokeStyle = '#2379FC';
@@ -436,7 +396,7 @@ export default {
       context.setFontSize(uni.upx2px(52));
       context.setFillStyle('#222222');
       context.font = 'normal bold DIN';
-      context.fillText('4,826.00', 177.5 * rem, 120 * rem);
+      context.fillText(all_commission_amount, 177.5 * rem, 120 * rem);
       context.draw();
     },
     // 推广空间
@@ -446,6 +406,9 @@ export default {
       this.$wechat.updateShareData(this.shareData);
       // #endif
       this.isShare = true;
+      this.postData = {
+        zoom: 1
+      }
     },
     // 推广店铺
     promotionShop() {
@@ -455,6 +418,9 @@ export default {
       // #endif
       this.isPromoter = false;
       this.isShare = true;
+      this.postData = {
+        store: 1
+      }
     },
     // 邀请分销商
     inviteDistributors() {
@@ -464,6 +430,9 @@ export default {
       // #endif
       this.isPromoter = false;
       this.isShare = true;
+      this.postData = {
+        invitation: 1
+      }
     },
     // 商品分享
     shareGood() {
@@ -686,6 +655,10 @@ export default {
 
     &.he-blue {
       background: #2379fc;
+    }
+
+    &.he-orange {
+      background: #FE9D51;
     }
   }
 }

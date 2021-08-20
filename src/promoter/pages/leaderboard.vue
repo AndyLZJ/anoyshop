@@ -14,7 +14,7 @@
         </view
         >
       </view>
-      <view class="when flex justify-around">
+      <view class="when flex justify-around" v-if="latitude.value !== 'all_children'">
         <view
           class="when-item flex-sub"
           @click="switchWhen(1)"
@@ -40,7 +40,7 @@
           汇总
         </view>
       </view>
-      <view class="rank-yourself flex">
+      <view v-if="myRank" class="rank-yourself flex">
         <view class="title"
         >我的
           <br/>
@@ -53,12 +53,17 @@
           :image-style="{
             borderRadius: '50%'
           }"
+          :src="myRank.user.avatar"
         ></he-image>
         <view class="content">
-          <view class="name">法外狂徒张三</view>
+          <view class="name">{{ myRank.user.nickname }}</view>
           <view class="info">
-            <text>累计佣金:￥56.29</text>
-            <text>排名: 4</text>
+            <text>
+              {{ latitude.name }}:{{ latitude.value !== 'all_children' ? '￥' : '' }}{{
+                myRank[latitude.value]
+              }}
+            </text>
+            <text>排名: {{ list.findIndex(item => item.id === myRank.id) + 1 }}</text>
           </view>
         </view>
       </view>
@@ -89,9 +94,9 @@
                   :src="item.user.avatar"
                 />
               </view>
-              <view class="name">侯靖靖</view>
+              <view class="name">{{ item.user.nickname }}</view>
             </view>
-            <view class="col number">￥1482.62</view>
+            <view class="col number">{{ latitude.value !== 'all_children' ? '￥' : '' }}{{ item[latitude.value] }}</view>
           </view>
         </view>
       </view>
@@ -110,7 +115,8 @@ export default {
       hCurrent: 1,
       rankingTime: 1,
       latitude: '',
-      list: []
+      list: [],
+      myRank: null
     };
   },
   computed: {
@@ -174,20 +180,30 @@ export default {
   methods: {
     switchWhen(rankingTime) {
       this.rankingTime = rankingTime;
+      this.list = [];
+      this.myRank = null;
+      this.getList();
     },
     switchLatitude(item) {
       this.latitude = item;
+      this.rankingTime = 1;
+      this.list = [];
+      this.myRank = null;
+      this.getList();
     },
     async getList() {
       const response = await rankList({
         ranking_time: this.rankingTime,
         ranking_dimension: this.latitude.value
       });
-      this.list = this.list.concat(response);
-      console.log(response);
+
+      this.list = this.list.concat(response.rank_list);
+      this.myRank = response.my_rank || response.my_rank === 0 ? this.list[response.my_rank] : null;
+      console.log(this.myRank);
     }
   },
   filters: {
+    // 排行前三名图标
     rankIconFilter: function (rank, ipAddress) {
       let str = '';
       if (rank === 0) {
@@ -197,7 +213,7 @@ export default {
       } else if (rank === 2) {
         str = 'third';
       }
-      return ipAddress + '/' + str + '-place.png';
+      return `${ipAddress}/${str}-place.png`;
     }
   }
 };
@@ -258,7 +274,7 @@ export default {
   }
 
   .when {
-    margin: 32px 32px 40px 32px;
+    margin: 32px 32px 0 32px;
     width: 686px;
     height: 72px;
     border: 1px solid #e5e5e5;
@@ -289,7 +305,7 @@ export default {
     background: #ffffff;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.06);
     border-radius: 16px;
-    margin: 0 32px 48px 32px;
+    margin: 40px 32px 0 32px;
     padding: 32px 30px;
 
     .title {
@@ -327,6 +343,7 @@ export default {
 
   .table {
     padding: 0 32px;
+    margin-top: 48px;
   }
 
   .table-head {

@@ -162,6 +162,18 @@ const plugins = {
             reject(err);
           });
       });
+    },
+    // 分销商绑定上级
+    bindPromoterSuperior({}, {parent_id}) {
+      let $heshop = this._vm.$heshop;
+      return new Promise((resolve, reject) => {
+        $heshop.promoter('get', {
+          behavior: 'bind',
+          parent_id: parent_id
+        }).then(response => {
+          console.log(response);
+        }).catch(reject);
+      });
     }
   }
 };

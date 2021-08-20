@@ -18,7 +18,7 @@
           <view class="flex-sub"></view>
           <view class="he-item__footer flex justify-between align-center">
             <text class="he-item__price">¥{{ item.price }}</text>
-            <button class="cu-btn he-commission" @click="shareItem(item)">
+            <button class="cu-btn he-commission" @click.stop="shareItem(item)">
               <text class="iconfont iconproductdetails_share"></text>
               <text>预计赚¥{{ item.commission }}</text>
             </button>

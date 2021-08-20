@@ -61,6 +61,7 @@
         :type="detail.type"
       >
       </detail-bottom-operating>
+      <he-float-window v-if="showFloatWindow" pages-url="order-detail"></he-float-window>
     </template>
   </view>
 </template>
@@ -75,6 +76,7 @@ import detailLogistics from './components/detail-logistics.vue';
 import heProductsFeatured from '../../components/he-products-featured.vue';
 import heLoading from '../../components/he-loading.vue';
 import { mapGetters } from 'vuex';
+import heFloatWindow from '../../components/layout/he-float-window.vue';
 
 export default {
   name: 'detail',
@@ -87,7 +89,8 @@ export default {
     detailOrderInfo,
     detailLogistics,
     heProductsFeatured,
-    heLoading
+    heLoading,
+    heFloatWindow
   },
   data() {
     return {
@@ -96,7 +99,8 @@ export default {
         buyer: {},
         id: null
       },
-      loading: true
+      loading: true,
+      showFloatWindow: false
     };
   },
   computed: {
@@ -110,7 +114,8 @@ export default {
       );
     },
     ...mapGetters('setting', {
-      goodsSetting: 'goodsSetting'
+      goodsSetting: 'goodsSetting',
+      floatWindow: 'getFloatWindow'
     })
   },
   methods: {
@@ -162,6 +167,19 @@ export default {
     if (storage) {
       this.detail.is_evaluate = 1;
       uni.removeStorageSync(storageKey);
+    }
+    if (this.floatWindow.decline === 0) {
+      this.showFloatWindow = true;
+    }
+  },
+  onPageScroll(event) {
+    let scrollTop = parseInt(event.scrollTop);
+    if (this.floatWindow.decline) {
+      if (scrollTop > 100) {
+        this.showFloatWindow = true;
+      } else {
+        this.showFloatWindow = false;
+      }
     }
   }
 };
