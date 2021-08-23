@@ -109,6 +109,7 @@
       <taskbrowse :display="is_browse" :goods_id="goods_id" ref="taskbrowse"></taskbrowse>
     </template>
     <HeLoginModel />
+    <he-float-window  :bottom="95" pages-url="goods-detail"></he-float-window>
   </view>
 </template>
 <script>
@@ -129,6 +130,7 @@ import { mapGetters } from 'vuex';
 import taskpopups from '@/plugins/task/components/popups.vue';
 import taskbrowse from '@/plugins/task/components/browse.vue';
 import HeLoginModel from '../../components/he-login-layout.vue';
+import heFloatWindow from '../../components/layout/he-float-window.vue';
 
 export default {
   name: 'detail',
@@ -148,13 +150,14 @@ export default {
     heNavbar,
     taskpopups,
     taskbrowse,
-    HeLoginModel
+    HeLoginModel,
+    heFloatWindow
   },
   computed: {
     ...mapGetters('setting', {
       goodsSetting: 'goodsSetting',
       navbarHeight: 'getNavBarHeight',
-      statusBarHeight: 'statusBarHeight'
+      statusBarHeight: 'statusBarHeight',
     }),
     isProductsFeatured: function () {
       return this.goodsSetting.recommend_showpage.goodsinfo.value;
@@ -191,6 +194,7 @@ export default {
     }
   },
   onShow() {
+    console.log(this.$store.state.apply.is_login)
     if (this.$store.state.apply.is_login) {
       this.handleTaskBrowseLog();
     }
@@ -227,7 +231,7 @@ export default {
       is_browse: 0,
       popupsList: [],
       taskShare: false,
-      copy_task_browse: 0
+      copy_task_browse: 0,
     };
   },
   onHide() {

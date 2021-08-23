@@ -24,6 +24,7 @@ const initRouter = (routerMap = {}, isCustom = false) => {
       const $heshop = router.app.$heshop;
       // 执行Token处理
       $store.commit('apply/getToken');
+      // return;
       // 自定义模式不加载默认
       if (whiteList.length === 0) {
         if (isCustom) {
@@ -71,6 +72,7 @@ const initRouter = (routerMap = {}, isCustom = false) => {
           }
         }
       } else {
+        console.log('执行次数')
         next();
       }
     } catch (error) {

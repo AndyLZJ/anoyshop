@@ -72,18 +72,8 @@ export default {
           if (!this.$h.test.isEmpty(this.userInfo?.register.coupon_list)) {
             this.isNewuser = true;
           } else {
-            // uni.navigateBack({
-            //   delta: 1,
-            //   fail(e) {
-            //     uni.switchTab({
-            //       url: '/pages/index/index'
-            //     });
-            //     console.log(e);
-            //   }
-            // });
           }
           console.log(getCurrentPages());
-          // uni.navigateBack({ delta: 1 });
           setTimeout(() => {
             let index = this.$store.getters['setting/getCartIndex'];
             this.$store.dispatch('cart/getCartNumber').then(response => {
@@ -110,15 +100,6 @@ export default {
           if (!this.$h.test.isEmpty(this.userInfo.register.coupon_list)) {
             this.isNewuser = true;
           } else {
-            // uni.navigateBack({
-            //   delta: 1,
-            //   fail(e) {
-            //     uni.switchTab({
-            //       url: '/pages/index/index'
-            //     });
-            //     console.log(e);
-            //   }
-            // });
           }
           setTimeout(() => {
             let index = this.$store.getters['setting/getCartIndex'];

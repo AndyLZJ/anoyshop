@@ -116,6 +116,7 @@
       @confirm="deleteConfirm"
     ></he-empty-popup>
     <he-load-more v-if="list.length > 0" :status="loadStatus"></he-load-more>
+    <he-float-window  pages-url="after-order"></he-float-window>
     <view class="safe-area-inset-bottom"></view>
   </view>
 </template>
@@ -124,13 +125,16 @@
 import heNoContentYet from '@/components/he-no-content-yet.vue';
 import heEmptyPopup from '@/components/he-empty-popup.vue';
 import heLoadMore from '@/components/he-load-more.vue';
+import heFloatWindow from '../../components/layout/he-float-window.vue';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'after-sales-records',
   components: {
     heNoContentYet,
     heEmptyPopup,
-    heLoadMore
+    heLoadMore,
+    heFloatWindow
   },
   data() {
     return {
@@ -143,7 +147,7 @@ export default {
       isNothing: false,
       setItem: null,
       isDel: false,
-      loadStatus: 'loadmore'
+      loadStatus: 'loadmore',
     };
   },
   filters: {

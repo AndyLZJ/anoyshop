@@ -20,6 +20,7 @@
       <view>暂无相关订单</view>
     </view>
     <he-load-more v-if="list.length > 0" :status="loadStatus"></he-load-more>
+    <he-float-window pages-url="order-list"></he-float-window>
     <view class="safe-area-inset-bottom"></view>
   </view>
 </template>
@@ -28,6 +29,7 @@ import indexNav from './components/index-nav.vue';
 import indexList from './components/index-list.vue';
 import heLoadMore from '@/components/he-load-more.vue';
 import heTabs from '@/components/he-tabs.vue';
+import heFloatWindow from '../../components/layout/he-float-window.vue';
 
 export default {
   name: 'index',
@@ -60,7 +62,8 @@ export default {
     indexNav,
     indexList,
     heLoadMore,
-    heTabs
+    heTabs,
+    heFloatWindow
   },
   methods: {
     setTab: function (callBack) {

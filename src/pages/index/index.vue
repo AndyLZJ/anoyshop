@@ -126,8 +126,15 @@
     <!-- 测试使用 -->
     <!--     <cartoon :score="100" title="测试" v-model="is_cartoon"></cartoon> -->
     <HeLoginModel />
+    <!-- #ifdef H5 -->
+    <he-float-window :bottom="100" pages-url="index"></he-float-window>
+    <!--#endif-->
+    <!-- #ifndef H5 -->
+    <he-float-window pages-url="index"></he-float-window>
+    <!--#endif-->
   </view>
 </template>
+
 <script type="text/javascript">
 let menuButtonInfo = {};
 // #ifdef MP-WEIXIN || MP-BAIDU || MP-TOUTIAO || MP-QQ
@@ -163,6 +170,7 @@ import openidad from './ad.vue';
 import cartoon from '@/plugins/task/components/cartoon.vue';
 import taskpopups from '@/plugins/task/components/popups.vue';
 import HeLoginModel from '../../components/he-login-layout.vue';
+import heFloatWindow from '../../components/layout/he-float-window.vue';
 
 export default {
   components: {
@@ -192,7 +200,8 @@ export default {
     openidad,
     taskpopups,
     cartoon,
-    HeLoginModel
+    HeLoginModel,
+    heFloatWindow
   },
   data() {
     return {
@@ -221,7 +230,7 @@ export default {
       wechatUrl: '/',
       // #endif
       taskShare: false,
-      isShareCount: null
+      isShareCount: null,
     };
   },
   // #ifdef H5
@@ -269,7 +278,7 @@ export default {
       fixed: 'components/getSearchFixed',
       searchHeight: 'components/getSearchHeight',
       navbarHeight: 'setting/getNavBarHeight',
-      statusBarHeight: 'setting/statusBarHeight'
+      statusBarHeight: 'setting/statusBarHeight',
     }),
     is_ad() {
       return uni.getStorageSync('openingad') || false;
@@ -458,17 +467,10 @@ export default {
       }, 1000);
     }
   },
-  watch: {},
-  onLoad(options) {
-    console.log(options);
+  onLoad() {
     // #ifdef H5
     this.$wechat.updateShareData(this.$shareAppMessage());
     // #endif
-    let that = this;
-    // this.isShareCount = setInterval(() => {
-    //   console.log("定时执行判断页面分享获取")
-    //   that.handleTaskShare();
-    // }, 10000);
   },
   // #ifdef H5
   beforeDestroy() {
@@ -478,19 +480,6 @@ export default {
     });
     this.$wechat.updateShareData(this.$shareAppMessage());
   },
-  // #endif
-  // #ifndef H5
-  // onShareAppMessage() {
-  //   console.count('index:onShareAppMessage');
-  //   console.log(this.taskShare);
-  //   if (this.taskShare) return;
-  //   console.log('index::::' , this.$shareAppMessage(this.shareData));
-  //   return this.$shareAppMessage(this.shareData);
-  // },
-  // onShareTimeline() {
-  //   if (this.taskShare) return;
-  //   return this.$shareAppMessage(this.shareData);
-  // },
   // #endif
   onPageScroll(e) {
     let that = this;

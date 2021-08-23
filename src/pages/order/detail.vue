@@ -60,6 +60,7 @@
         :type="detail.type"
       >
       </detail-bottom-operating>
+      <he-float-window :bottom="isBottom ? 96 : 0" pages-url="order-detail"></he-float-window>
     </template>
   </view>
 </template>
@@ -74,6 +75,7 @@ import detailLogistics from './components/detail-logistics.vue';
 import heProductsFeatured from '../../components/he-products-featured.vue';
 import heLoading from '../../components/he-loading.vue';
 import { mapGetters } from 'vuex';
+import heFloatWindow from '../../components/layout/he-float-window.vue';
 
 export default {
   name: 'detail',
@@ -86,7 +88,8 @@ export default {
     detailOrderInfo,
     detailLogistics,
     heProductsFeatured,
-    heLoading
+    heLoading,
+    heFloatWindow
   },
   data() {
     return {
@@ -109,7 +112,7 @@ export default {
       );
     },
     ...mapGetters('setting', {
-      goodsSetting: 'goodsSetting'
+      goodsSetting: 'goodsSetting',
     })
   },
   methods: {
@@ -151,7 +154,6 @@ export default {
     }
   },
   onLoad(options) {
-    console.log('订阅消息');
     this.detail.id = parseInt(options.id);
   },
   onShow() {

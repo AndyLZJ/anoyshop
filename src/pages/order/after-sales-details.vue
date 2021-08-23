@@ -257,18 +257,21 @@
         ></after-sales-detail-application>
       </template>
     </template>
+    <he-float-window :bottom="isBottom ? 96 : 0"  pages-url="after-detail"></he-float-window>
   </view>
 </template>
 <script>
 import afterSalesDetailApplication from './components/afterSalesDetail-application.vue';
 import heLoading from '../../components/he-loading.vue';
 import { mapGetters } from 'vuex';
+import heFloatWindow from '../../components/layout/he-float-window.vue';
 
 export default {
   name: 'after-sale-details',
   components: {
     afterSalesDetailApplication,
-    heLoading
+    heLoading,
+    heFloatWindow
   },
   data() {
     return {
@@ -280,7 +283,7 @@ export default {
       },
       exchangeFlow: {
         status: 0
-      }
+      },
     };
   },
   computed: {
@@ -289,7 +292,8 @@ export default {
       return status === 100 || status === 101 || status === 102 || status === 121 || status === 131;
     },
     ...mapGetters({
-      getShip: 'order/getShip'
+      getShip: 'order/getShip',
+      floatWindow: 'setting/getFloatWindow'
     })
   },
   onLoad(options) {

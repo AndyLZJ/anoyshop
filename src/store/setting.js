@@ -125,6 +125,9 @@ const setting = {
     },
     getMapSdk(state) {
       return state.setting.kb_express_setting.map_sdk;
+    },
+    getFloatWindow(state) {
+      return state.setting.float_window;
     }
   },
   actions: {
