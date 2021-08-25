@@ -257,7 +257,7 @@
         ></after-sales-detail-application>
       </template>
     </template>
-    <he-float-window v-if="showFloatWindow" pages-url="after-detail"></he-float-window>
+    <he-float-window :bottom="isBottom ? 96 : 0" pages-url="after-detail"></he-float-window>
   </view>
 </template>
 <script>
@@ -283,8 +283,7 @@ export default {
       },
       exchangeFlow: {
         status: 0
-      },
-      showFloatWindow: false
+      }
     };
   },
   computed: {
@@ -305,9 +304,6 @@ export default {
         }
       : {};
     this.getDetail(this.orderId, this.behavior);
-    if (this.floatWindow.decline === 0) {
-      this.showFloatWindow = true;
-    }
   },
   methods: {
     cancelAfter: function (id) {
@@ -524,16 +520,6 @@ export default {
             id: null
           });
         }
-      }
-    }
-  },
-  onPageScroll(event) {
-    let scrollTop = parseInt(event.scrollTop);
-    if (this.floatWindow.decline) {
-      if (scrollTop > 100) {
-        this.showFloatWindow = true;
-      } else {
-        this.showFloatWindow = false;
       }
     }
   }

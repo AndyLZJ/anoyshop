@@ -134,9 +134,21 @@ export default {
     async getList() {
       const response = await financeList(this.page.current, {});
       console.log(response);
+      const {data} = response;
+      console.log(data);
     }
   },
   onLoad() {
+    var now = new Date(); //当前日期
+    var nowMonth = now.getMonth(); //当前月
+    var nowYear = now.getFullYear(); //当前年
+    //本月的开始时间
+    var monthStartDate = new Date(nowYear, nowMonth, 1);
+    //本月的结束时间
+    var monthEndDate = new Date(nowYear, nowMonth+1, 0);
+    var timeStar=Date.parse(monthStartDate)/1000;//s
+    console.log(timeStar);
+    var timeEnd=Date.parse(monthEndDate)/1000;//s
     this.init();
   }
 };

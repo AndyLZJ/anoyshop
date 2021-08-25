@@ -6,7 +6,6 @@
         placeholder="请输入动态内容"
         class="he-textarea"
         :maxlength="200"
-        :focus="true"
         :disable-default-padding="true"
         :hold-keyboard="true"
         @input="setTextarea"
@@ -31,7 +30,7 @@
     </view>
     <view class="he-card goods flex justify-between align-center" @click="routerDynamicGoods">
       <view class="flex flex-sub">
-        <template v-if="$h.test.isEmpty(link)">
+        <template v-if="$h.test.isEmpty(link.param)">
           <text class="iconfont iconpersonalcenter_add"></text>
           <text class="add-goods">添加商品</text>
         </template>
@@ -67,8 +66,10 @@ export default {
     return {
       content: '',
       pic_list: [],
-      link: null,
-      id: null
+      link: {
+        param: null
+      },
+      id: null,
     };
   },
   computed: {
@@ -83,6 +84,8 @@ export default {
     // 删除图片
     removeImage: function (index) {
       this.pic_list.slice(index, 1);
+      this.$delete(this.pic_list, index);
+      // console.log(this.pic_list);
     },
     // 添加图片回调赋值
     uploaded: function (list) {
@@ -103,13 +106,16 @@ export default {
             delta: 1
           });
         }
-        uni.removeStorageSync(this.$storageKey.dynamic_goods)
       } catch (e) {
         //  Don't do
       }
     },
     setTextarea(event) {
-      this.content = event.detail.value;
+      let str = event.detail.value;
+      if (str.length > 200) {
+        str = str.substring(0, 200);
+      }
+      this.content = str;
     },
     routerDynamicGoods() {
       uni.navigateTo({
@@ -119,6 +125,7 @@ export default {
   },
   onShow() {
     this.link = uni.getStorageSync(this.$storageKey.dynamic_goods);
+    uni.removeStorageSync(this.$storageKey.dynamic_goods);
   },
   async onLoad(option) {
     if (option.id) {
@@ -136,6 +143,17 @@ export default {
         console.log(this.link)
       } catch (e) {
 
+      }
+    } else if (option.data) {
+      console.log(JSON.parse(option.data));
+      const {pic_list, content, type, video_cover, video_list} = JSON.parse(option.data);
+      this.content = content;
+      if (type === 1) {
+        this.$refs.uploadImage.lists = pic_list.map(item => {
+          return {
+            url: item
+          }
+        });
       }
     }
   }

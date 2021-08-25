@@ -41,11 +41,9 @@ export default {
   computed: {
     showModal: {
       get({ $store }) {
-        console.log($store.state.apply.showLoginModel);
         return $store.state.apply.showLoginModel;
       },
       set(value) {
-        console.log(arguments);
         this.$store.commit('apply/setLoginModel', value);
       }
     },
@@ -72,18 +70,7 @@ export default {
           if (!this.$h.test.isEmpty(this.userInfo?.register.coupon_list)) {
             this.isNewuser = true;
           } else {
-            // uni.navigateBack({
-            //   delta: 1,
-            //   fail(e) {
-            //     uni.switchTab({
-            //       url: '/pages/index/index'
-            //     });
-            //     console.log(e);
-            //   }
-            // });
           }
-          console.log(getCurrentPages());
-          // uni.navigateBack({ delta: 1 });
           setTimeout(() => {
             let index = this.$store.getters['setting/getCartIndex'];
             this.$store.dispatch('cart/getCartNumber').then(response => {
@@ -100,25 +87,16 @@ export default {
             });
           }, 1000);
           this.$store.commit('apply/setLoginModel', false);
-          // console.log()
           if (this.$parent.__route__ === 'pages/user/index' || this.$parent.__route__ === 'pages/cart/index') {
             this.$parent.getShowData();
           }
+          // this.$meit
         });
       } else {
         this.decryptUserInfo().then(() => {
           if (!this.$h.test.isEmpty(this.userInfo.register.coupon_list)) {
             this.isNewuser = true;
           } else {
-            // uni.navigateBack({
-            //   delta: 1,
-            //   fail(e) {
-            //     uni.switchTab({
-            //       url: '/pages/index/index'
-            //     });
-            //     console.log(e);
-            //   }
-            // });
           }
           setTimeout(() => {
             let index = this.$store.getters['setting/getCartIndex'];
@@ -142,9 +120,6 @@ export default {
         });
       }
     }
-  },
-  mounted() {
-    console.log(this.$parent);
   }
 };
 </script>

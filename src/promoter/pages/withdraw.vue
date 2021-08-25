@@ -90,7 +90,17 @@
         提现手续费{{ commissionSetting.poundage }}%
       </view>
     </view>
+    <!-- #ifndef H5 -->
     <button class="cu-btn he-withdraw--submit" @click="finance">提现</button>
+    <!-- #endif -->
+    <!-- #ifdef H5 -->
+    <he-open-subscribe
+      @open-subscribe-success="finance"
+      :template-id="subTemplateId"
+    >
+      <button class="cu-btn he-withdraw--submit">提现</button>
+    </he-open-subscribe>
+    <!-- #endif -->
     <view
       class="safe-area-inset-bottom"
       :style="[{
@@ -107,6 +117,9 @@
 <script>
 import numberKeyboard from '../../components/keyboard/number-keyboard.vue';
 import withdrawalPicker from './components/withdrawal-picker.vue';
+// #ifdef H5
+import heOpenSubscribe from '../../components/he-open-subscribe.vue';
+// #endif
 import {mapGetters} from "vuex";
 import {finance} from "../api";
 // 支付方式
@@ -120,7 +133,10 @@ export default {
   name: 'withdraw',
   components: {
     numberKeyboard,
-    withdrawalPicker
+    withdrawalPicker,
+    // #ifdef H5
+    heOpenSubscribe
+    // #endif
   },
   data() {
     return {
@@ -138,7 +154,7 @@ export default {
         }
       },
       isKeyboard: false,
-      showWithdrawalPicker: true,
+      showWithdrawalPicker: false,
       withdrawalRange: 0
     };
   },
@@ -157,6 +173,12 @@ export default {
         this.form.type = item;
         return item;
       }
+    },
+    subTemplateId({$store}) {
+      let arr = []
+      $store.getters['setting/subscribe'].promoter_withdrawal_success ? arr.push($store.getters['setting/subscribe'].promoter_withdrawal_success) : null;
+      $store.getters['setting/subscribe'].promoter_withdrawal_success ? arr.push($store.getters['setting/subscribe'].promoter_withdrawal_error) : null;
+      return arr;
     }
   },
   methods: {
@@ -175,8 +197,9 @@ export default {
         this.withdrawalRange = 0;
       }
     },
-    async finance() {
+    finance() {
       const form = JSON.parse(JSON.stringify(this.form));
+      const self = this;
       let type = null;
       switch (form.type.value) {
         case 'wechatDib':
@@ -194,7 +217,22 @@ export default {
       }
       form.type = type;
       try {
-        const response = await finance(form);
+        // #ifndef H5
+        wx.requestSubscribeMessage({
+          tmplIds: self.subTemplateId,
+          success: function () {
+          },
+          fail: function () {
+          },
+          complete: function () {
+            // 提现接口
+            finance(form);
+          }
+        });
+        // #endif
+        // #ifdef H5
+        finance(form);
+        // #endif
       } catch (e) {
         console.log(e);
       }

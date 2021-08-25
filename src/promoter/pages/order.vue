@@ -55,7 +55,7 @@
           </view>
           <view class="he-item--price">
             <text class="he-label">商品佣金:</text>
-            <text class="he-value">￥{{ item.promoterOrder.orderGoods.promoter_reduced }}</text>
+            <text class="he-value">￥{{ item.commission }}</text>
           </view>
         </view>
       </view>
@@ -138,7 +138,12 @@ export default {
     // 获取订单列表
     async getList() {
       try {
-        const response = await promoterorderList(this.page.current, this.keyword);
+        const keyword = JSON.parse(JSON.stringify(this.keyword));
+        if (keyword.time_start && keyword.time_end) {
+          keyword.time_start = (new Date(keyword.time_start)).getTime() / 1000;
+          keyword.time_end = (new Date(keyword.time_end)).getTime() / 1000;
+        }
+        const response = await promoterorderList(this.page.current, keyword);
         const {data, pagination} = response;
         this.list = this.list.concat(data);
         this.page = pagination;
@@ -148,7 +153,12 @@ export default {
     },
     // 获取统计
     getCount() {
-      promoterOrderCount(this.keyword).then(response => {
+      const keyword = JSON.parse(JSON.stringify(this.keyword));
+      if (keyword.time_start && keyword.time_end) {
+        keyword.time_start = (new Date(keyword.time_start)).getTime() / 1000;
+        keyword.time_end = (new Date(keyword.time_end)).getTime() / 1000;
+      }
+      promoterOrderCount(keyword).then(response => {
         this.count = response;
       });
     }

@@ -8,7 +8,7 @@
           @click="openInput"
           class="cu-btn he-button flex align-center justify-start">
           <text class="iconfont iconsearchbar_search"/>
-          <text>输入商品名称搜索</text>
+          <text>输入商品名称/素材文案搜索</text>
         </button>
       </view>
       <view class="he-switch flex">
@@ -58,6 +58,7 @@
             v-for="(image, key) in item.pic_list"
             :key="key"
             :src="image"
+            :list="item.pic_list"
           />
         </view>
         <!-- 视频 -->
@@ -71,12 +72,12 @@
         </view>
         <view class="flex he-footer align-center justify-between">
           <view>
-            <button class="cu-btn he-jump">查看商品</button>
+            <button class="cu-btn he-jump" v-if="item.goods_id" @click="routerGoods(item.goods_id)">查看商品</button>
             <text class="he-share--count">分享{{ item.share_count }}</text>
           </view>
           <view>
             <button class="cu-btn he-btn" @click="hairpin(item)">一键发圈</button>
-            <button class="cu-btn he-btn" @click="routerCreateDynamic">发动态</button>
+            <button class="cu-btn he-btn" @click="routerCreateDynamic(item)">发动态</button>
           </view>
         </view>
       </view>
@@ -216,9 +217,10 @@ export default {
       }
     },
     // 去新建动态
-    routerCreateDynamic() {
+    routerCreateDynamic(item) {
+      // console.log(item);
       uni.navigateTo({
-        url: '/promoter/pages/create-dynamic'
+        url: '/promoter/pages/create-dynamic?data=' + JSON.stringify(item)
       });
     },
     // 一键发圈
@@ -261,6 +263,12 @@ export default {
             }
           });
         }
+      });
+    },
+    // 查看商品
+    routerGoods(goodsId) {
+      uni.navigateTo({
+        url: `/pages/goods/detail?id=${goodsId}`,
       });
     }
   },
@@ -423,6 +431,7 @@ export default {
       font-weight: 500;
       color: #3273ea;
       background-color: transparent;
+      margin-right: 24px;
     }
 
     .he-share--count {
@@ -430,7 +439,6 @@ export default {
       @extend .font-family-sc;
       font-weight: 500;
       color: #cccccc;
-      margin-left: 24px;
     }
 
     .he-btn {

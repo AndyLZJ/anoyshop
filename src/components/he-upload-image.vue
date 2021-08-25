@@ -117,7 +117,7 @@ export default {
       default: function () {
         return 2097152;
       }
-    }
+    },
   },
   data() {
     return {
@@ -184,7 +184,8 @@ export default {
             this.uploadFile(listOldLength);
           }
         })
-        .catch(err => {});
+        .catch(err => {
+        });
     },
     async uploadFile(index = 0) {
       let _this = this;
@@ -247,6 +248,8 @@ export default {
     },
     deleteItem: function (index) {
       this.lists.splice(index, 1);
+      console.log(this.lists);
+      console.log(index);
       this.$emit('on-remove', index, this.lists, this.index);
       this.$h.toast('移除成功');
     },
@@ -256,6 +259,8 @@ export default {
       const images = this.lists.map(item => item.url || item.path);
       this.$utils.doPreviewImage(url, images);
     }
+  },
+  mounted() {
   }
 };
 </script>
@@ -269,6 +274,7 @@ export default {
   position: relative;
   border-radius: 8px;
 }
+
 .he-add-text {
   font-size: 22px;
   font-family: PingFang SC;
@@ -276,6 +282,7 @@ export default {
   color: #666666;
   margin-top: 5px;
 }
+
 .iconevaluate_uploadpictures {
   color: RGBA(102, 102, 102, 1);
   width: 48px;
@@ -283,6 +290,7 @@ export default {
   font-size: 48px;
   margin-bottom: 5px;
 }
+
 .he-delete-icon {
   position: absolute;
   top: 0;
@@ -295,12 +303,14 @@ export default {
   font-size: 28px;
   color: rgba(245, 33, 45, 1);
 }
+
 .he-preview-image {
   width: 100%;
   height: 100%;
   border-radius: 8px;
   display: block;
 }
+
 .he-loading {
   width: 100%;
   height: 100%;
@@ -310,6 +320,7 @@ export default {
   color: #ffffff;
   text-align: center;
 }
+
 .he-loading__image {
   width: 96px;
   height: 96px;

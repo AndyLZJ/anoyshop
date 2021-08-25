@@ -2,11 +2,14 @@
   <he-popup mode="center" v-model="showModel" background-color="transparent">
     <view class="he-down-grade" :data-theme="theme">
       <image
-        :src="isUpDown ? ipAddress + '/promoter-rise-grade.png' : ipAddress + '/promoter-demote-grade.png'"
+        :src="isUpDown > 0 ? ipAddress + '/promoter-rise-grade.png' : ipAddress + '/promoter-demote-grade.png'"
         class="he-image"
       />
       <view class="he-box flex flex-direction align-center">
-        <text class="he-instruction" v-if="isUpDown < 0"> 由于您当前的分销业绩不足 分销等级已降级至 </text>
+        <template v-if="isUpDown < 0">
+          <text class="he-instruction" > 由于您当前的分销业绩不足  </text>
+          <text class="he-instruction">分销等级已降级至</text>
+        </template>
         <text v-else-if="isUpDown > 0" class="he-instruction"> 恭喜！您的分销等级已升级至 </text>
         <text class="he-level">{{ levelName }}</text>
         <button class="cu-btn he-btn" @click="showModel = false">我知道了</button>

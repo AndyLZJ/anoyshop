@@ -101,7 +101,7 @@
       ></component>
     </view>
     <HeLoginModel />
-    <he-float-window v-if="showFloatWindow" pages-url="page"></he-float-window>
+    <he-float-window pages-url="page"></he-float-window>
   </scroll-view>
 </template>
 
@@ -145,20 +145,14 @@ export default {
   },
   data() {
     return {
-      page: [],
-      showFloatWindow: false
+      page: []
     };
-  },
-  computed: {
-    ...mapGetters({
-      floatWindow: 'setting/getFloatWindow'
-    })
   },
   /**
    * 页面显示时
    * @return {[type]} [description]
    */
-  onShow(options) {
+  onShow() {
     if (this.$scope && this.$scope.options.id) {
       let id = this.$scope.options.id;
       this.handlePageLoading(id);
@@ -166,9 +160,6 @@ export default {
     if (this.options && this.options.id) {
       let id = this.options.id;
       this.handlePageLoading(id);
-    }
-    if (this.floatWindow.decline === 0) {
-      this.showFloatWindow = true;
     }
   },
   methods: {
@@ -189,10 +180,8 @@ export default {
           document.title = value.name;
           //#endif
           this.page = JSON.parse(value.content);
-          console.log(this.page);
           this.handleLoadData(value, id, key);
         } else {
-          console.log('打野');
           this.handleLoadData(null, id, key);
         }
       } catch (error) {
@@ -204,7 +193,6 @@ export default {
      * @return {[type]} [description]
      */
     handleLoadData(value, id, key) {
-      console.log('dii');
       this.$heshop
         .pages('GET', parseInt(id))
         .then(data => {
@@ -215,16 +203,12 @@ export default {
           //#ifdef H5
           document.title = data.name;
           //#endif
-          console.log(data);
-          console.log('bshh');
           if (value && this.$heshop.MD5(value) == this.$heshop.MD5(data)) {
             return;
           } else {
-            console.log('tamd ');
             this.page = JSON.parse(data.content);
             uni.setStorageSync(key, data);
           }
-          console.log(this.page);
         })
         .catch(error => {
           console.log(error);
@@ -235,17 +219,6 @@ export default {
      * @return {[type]} [description]
      */
     handlePageUpdate() {}
-  },
-  onPageScroll(event) {
-    console.log(event);
-    let scrollTop = parseInt(event.scrollTop);
-    if (this.floatWindow.decline) {
-      if (scrollTop > 100) {
-        this.showFloatWindow = true;
-      } else {
-        this.showFloatWindow = false;
-      }
-    }
   }
 };
 </script>

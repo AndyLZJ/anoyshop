@@ -55,14 +55,14 @@
         <view class="task-user-tips"> {{ perfect.remark || '' }}</view>
         <view class="iconfont iconbtn_arrow"></view>
       </view>
-      <view v-if="promoterShow" class="he-item flex justify-between" @click="navigateTo('/promoter/pages/index')">
+      <view v-if="promoterShow" class="he-item flex justify-between" @click="routePromoter">
         <view class="flex">
           <view class="iconfont icona-personalcenter_distribution"></view>
           <text class="he-text">分销商中心</text>
         </view>
         <view class="iconfont iconbtn_arrow"></view>
       </view>
-      <view v-if="recruitingShow" class="he-item flex justify-between" @click="navigateTo('/promoter/pages/recruit')">
+      <view v-if="recruitingShow" class="he-item flex justify-between" @click="routerRecruit">
         <view class="flex">
           <view class="iconfont icona-personalcenter_distribution"></view>
           <text class="he-text">分销商招募令</text>
@@ -98,7 +98,7 @@
         <view class="he-content-text">
           <view class="he-text">在线客服</view>
           <view class="he-time" v-if="isEmpty(storeSetting.contact.online)"
-            >{{ storeSetting.contact.online.time }}
+          >{{ storeSetting.contact.online.time }}
           </view>
         </view>
       </view>
@@ -111,7 +111,7 @@
         <view class="he-content-text">
           <view class="he-text">加好友联系</view>
           <view class="he-time" v-if="isEmpty(storeSetting.contact.friend)"
-            >{{ storeSetting.contact.friend.time }}
+          >{{ storeSetting.contact.friend.time }}
           </view>
         </view>
       </view>
@@ -124,7 +124,7 @@
     <!--绑定手机-->
     <user-bind-phone v-model="isBind"></user-bind-phone>
     <template v-for="(item, index) in popupsList">
-      <taskPopups :key="index" v-model="item.display" :title="item.remark" :index="index" />
+      <taskPopups :key="index" v-model="item.display" :title="item.remark" :index="index"/>
     </template>
   </view>
 </template>
@@ -134,6 +134,7 @@ import heClearStorage from '@/components/he-clear-storage.vue';
 import userBindPhone from './user-bind-phone.vue';
 import heTell from '@/components/he-tell.vue';
 import taskPopups from './../../../plugins/task/components/popups.vue';
+import {mapGetters} from "vuex";
 
 export default {
   name: 'user-features',
@@ -155,19 +156,23 @@ export default {
       }
       return data
         ? data
-            .match(/(\d{3})(\d{4})(\d{4})/)
-            .slice(1)
-            .reduce(function (value, item, index) {
-              return index === 1 ? value + '****' : value + item;
-            })
+          .match(/(\d{3})(\d{4})(\d{4})/)
+          .slice(1)
+          .reduce(function (value, item, index) {
+            return index === 1 ? value + '****' : value + item;
+          })
         : null;
     },
-    recruitingShow({ $store }) {
+    recruitingShow({$store}) {
       return $store.state.apply.userInfo.recruiting_show === 1;
     },
-    promoterShow({ $store }) {
+    promoterShow({$store}) {
       return $store.state.apply.userInfo.promoter_show === 1;
-    }
+    },
+    ...mapGetters('setting', {
+      // 获取分销设置
+      promoterSetting: 'getPromoter'
+    })
   },
   /**
    * 数据监听
@@ -200,7 +205,7 @@ export default {
     statusTaskBinding() {
       //判断当前任务是否打开
       this.$heshop
-        .plugin('get', { include: 'task', model: 'task', keyword: 'binding' })
+        .plugin('get', {include: 'task', model: 'task', keyword: 'binding'})
         .then(res => {
           console.log('查看绑定手机号任务是否开启', res);
           if (res.status) {
@@ -222,7 +227,7 @@ export default {
         return true;
       }
       this.$heshop
-        .plugin('get', { include: 'task', model: 'score', type: 'single', keyword: 'binding', today: 0 })
+        .plugin('get', {include: 'task', model: 'score', type: 'single', keyword: 'binding', today: 0})
         .then(res => {
           console.log('判断是否完成过该任务');
           //判断如果存在的状态下
@@ -257,7 +262,7 @@ export default {
         this.$heshop
           .plugin(
             'post',
-            { include: 'task', model: 'task' },
+            {include: 'task', model: 'task'},
             {
               number: this.mobile,
               keyword: 'binding'
@@ -287,7 +292,7 @@ export default {
       let that = this;
       //判断当前任务是否打开
       that.$heshop
-        .plugin('get', { include: 'task', model: 'task', keyword: 'perfect' })
+        .plugin('get', {include: 'task', model: 'task', keyword: 'perfect'})
         .then(res => {
           if (res.status) {
             // const value = uni.getStorageSync('statusTaskPerfect');
@@ -313,7 +318,7 @@ export default {
         return true;
       }
       this.$heshop
-        .plugin('get', { include: 'task', model: 'score', type: 'single', keyword: 'perfect', today: 0 })
+        .plugin('get', {include: 'task', model: 'score', type: 'single', keyword: 'perfect', today: 0})
         .then(res => {
           console.log('查看用户绑定信息', res);
           //判断如果存在的状态下
@@ -346,7 +351,7 @@ export default {
       this.$heshop
         .plugin(
           'post',
-          { include: 'task', model: 'task' },
+          {include: 'task', model: 'task'},
           {
             number: 1,
             keyword: 'perfect'
@@ -371,7 +376,7 @@ export default {
     },
     // 跳转
     navigateTo: function (url) {
-      uni.navigateTo({ url: url });
+      uni.navigateTo({url: url});
     },
     //  清理缓存
     clearStorage: function () {
@@ -430,6 +435,32 @@ export default {
     // #endif
     isEmpty: function (data) {
       return !this.$h.test.isEmpty(data.time);
+    },
+    // 跳转分销中心
+    routePromoter() {
+      // 全部开放分销中心入口 还不是分销商
+      if (this.$store.state.apply.userInfo.promoter_show === 2) {
+        uni.navigateTo({
+          url: '/promoter/pages/recruit'
+        });
+      } else {
+        uni.navigateTo({
+          url: '/promoter/pages/index'
+        });
+      }
+    },
+    routerRecruit() {
+      const {promoter_status} = this.$store.state.apply.userInfo;
+      // 1 已经申请在审核中 3 已拒绝
+      if ((promoter_status === 1 || promoter_status === 3) && this.promoterSetting.status !== 0) {
+        uni.navigateTo({
+          url: '/promoter/pages/apply'
+        });
+      } else {
+        uni.navigateTo({
+          url: '/promoter/pages/recruit'
+        });
+      }
     }
   }
 };

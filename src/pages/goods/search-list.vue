@@ -15,6 +15,12 @@
     <he-load-more v-if="list.length > 0" :status="loadStatus"></he-load-more>
     <view class="safe-area-inset-bottom"></view>
     <he-no-content-yet v-if="isNothing" text="暂未找到相关商品"></he-no-content-yet>
+    <!-- #ifdef H5 -->
+    <he-float-window :bottom="100" pages-url="goods-list"></he-float-window>
+    <!--#endif-->
+    <!-- #ifndef H5 -->
+    <he-float-window pages-url="goods-list"></he-float-window>
+    <!--#endif-->
     <HeLoginModel />
   </view>
 </template>
@@ -28,6 +34,7 @@ import listD from '@/components/goods-list/list-D.vue';
 import heNoContentYet from '@/components/he-no-content-yet.vue';
 import heLoadMore from '@/components/he-load-more.vue';
 import HeLoginModel from '../../components/he-login-layout.vue';
+import heFloatWindow from '../../components/layout/he-float-window.vue';
 
 export default {
   name: 'search-list',
@@ -65,7 +72,8 @@ export default {
     listD,
     heNoContentYet,
     heLoadMore,
-    HeLoginModel
+    HeLoginModel,
+    heFloatWindow
   },
   methods: {
     navigateTo: function () {

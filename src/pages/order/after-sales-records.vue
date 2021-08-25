@@ -116,7 +116,7 @@
       @confirm="deleteConfirm"
     ></he-empty-popup>
     <he-load-more v-if="list.length > 0" :status="loadStatus"></he-load-more>
-    <he-float-window v-if="showFloatWindow" pages-url="after-order"></he-float-window>
+    <he-float-window pages-url="after-order"></he-float-window>
     <view class="safe-area-inset-bottom"></view>
   </view>
 </template>
@@ -147,14 +147,8 @@ export default {
       isNothing: false,
       setItem: null,
       isDel: false,
-      loadStatus: 'loadmore',
-      showFloatWindow: false
+      loadStatus: 'loadmore'
     };
-  },
-  computed: {
-    ...mapGetters('setting', {
-      floatWindow: 'getFloatWindow'
-    })
   },
   filters: {
     getStatus: function (status) {
@@ -253,9 +247,6 @@ export default {
       _this.isNothing = _this.list.length === 0;
       _this.loadStatus = _this.list.length < _this.page.size ? 'nomore' : 'loadmore';
     });
-    if (this.floatWindow.decline === 0) {
-      this.showFloatWindow = true;
-    }
   },
   onReachBottom() {
     let _this = this;
@@ -299,16 +290,6 @@ export default {
     setTimeout(function () {
       uni.stopPullDownRefresh();
     }, 1000);
-  },
-  onPageScroll(event) {
-    let scrollTop = parseInt(event.scrollTop);
-    if (this.floatWindow.decline) {
-      if (scrollTop > 100) {
-        this.showFloatWindow = true;
-      } else {
-        this.showFloatWindow = false;
-      }
-    }
   }
 };
 </script>

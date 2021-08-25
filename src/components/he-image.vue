@@ -9,6 +9,7 @@
       @load="onImageLoad"
       @error="onImageError"
       class="he-image__img"
+      @click="previewImage"
     ></image>
     <!--#endif-->
     <!--#ifdef H5-->
@@ -62,6 +63,12 @@ export default {
       default: function () {
         return 'aspectFill';
       }
+    },
+    list: {
+      type: Array,
+      default() {
+        return []
+      }
     }
   },
   computed: {
@@ -98,6 +105,14 @@ export default {
     onClick: function (event) {
       if (this.error && this.showError) return;
       this.$emit('click', event.detail);
+    },
+    previewImage() {
+      if (this.list.length > 1) {
+        wx.previewImage({
+          current: this.src,
+          urls: this.list
+        });
+      }
     }
   }
 };

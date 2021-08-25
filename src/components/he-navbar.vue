@@ -7,7 +7,7 @@
     >
       <view class="u-status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
       <view class="u-navbar-inner" :style="[navbarInnerStyle]">
-        <view class="u-back-wrap" v-if="isBack" @tap="goBack">
+        <view class="u-back-wrap" v-if="isBack" @click="goBack">
           <view class="u-icon-wrap flex justify-center align-center">
             <text class="iconfont iconbtn_back"></text>
           </view>
@@ -228,7 +228,6 @@ export default {
   created() {},
   methods: {
     goBack() {
-      console.log(1212);
       // 如果自定义了点击返回按钮的函数，则执行，否则执行返回逻辑
       if (typeof this.customBack === 'function') {
         // 在微信，支付宝等环境(H5正常)，会导致父组件定义的customBack()函数体中的this变成子组件的this

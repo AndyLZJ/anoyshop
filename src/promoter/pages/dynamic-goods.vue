@@ -106,6 +106,10 @@ export default {
       });
       this.list = this.list.concat(data);
       this.page = pagination;
+      const {pageCount, current} = this.page;
+      if (current === pageCount) {
+        this.loadStatus = 'nomore';
+      }
     },
     selectItem(item) {
       this.list.forEach(item => {

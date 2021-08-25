@@ -78,13 +78,13 @@
               }
             ]"
           >
-            欢迎加入【店铺名称】，请填写申请信息
+            欢迎加入【{{ storeSetting.name }}】，请填写申请信息
             <view class="__br"></view>
             {{ isBeInvited ? '邀请人：行走的CD' : '' }}
           </view>
           <view class="he-item flex align-center" v-for="(item, index) in apply_content" :key="index">
             <view class="he-hit">{{ item.name }}</view>
-            <input type="text" v-model="item.value" :placeholder="`请输入${item.name}`" />
+            <input type="text" v-model="item.value" :placeholder="`请输入${item.name}`"/>
           </view>
           <view class="he-protocol flex align-center" v-if="isAgreement">
             <he-radio class="he-radio" v-model="isAgree"></he-radio>
@@ -107,7 +107,7 @@
       >
         <image class="he-image" :src="ipAddress + '/promoter/refuse-apply.png'"></image>
         <text class="he-text">不好意思，商家拒绝了您的申请</text>
-        <text class="he-information--text">拒绝理由：{{ note }}</text>
+        <text class="he-information--text" v-if="note">拒绝理由：{{ note }}</text>
         <view>
           <button class="cu-btn he-left-btn" @click="applyAgain">再次申请</button>
           <button class="cu-btn he-go-btn" @click="routerIndex">去逛逛</button>
@@ -120,8 +120,8 @@
 <script>
 import heRadio from './../../components/he-radio.vue';
 import heLoading from '../../components/he-loading.vue';
-import { applyAudit, applyMonitoring, applyPromoter, useAgreement } from '../api';
-import { mapGetters } from 'vuex';
+import {applyAudit, applyMonitoring, applyPromoter, useAgreement} from '../api';
+import {mapGetters} from 'vuex';
 
 export default {
   name: 'apply',
@@ -153,26 +153,39 @@ export default {
     };
   },
   computed: {
-    adsPictures({ ipAddress }) {
+    adsPictures({ipAddress}) {
       return ipAddress + '/promoter/join-us.png';
     },
-    promoterStatus({ $store }) {
-      return $store.state.apply.userInfo.promoter_status; // -2 清退后接到招募令 -1 接到招募令 0 普通用户 1 申请待审核 2 审核通过 3 已拒绝 4 已清退
+    promoterStatus: {
+      get({$store}) {
+        return $store.state.apply.userInfo.promoter_status; // -2 清退后接到招募令 -1 接到招募令 0 普通用户 1 申请待审核 2 审核通过 3 已拒绝 4 已清退
+      },
+      set(value) {
+        this.$store.state.apply.userInfo.promoter_status = value;
+      }
     },
     ...mapGetters('setting', {
       // 获取分销设置
       promoterSetting: 'getPromoter'
-    })
+    }),
+    subTemplateId({$store}) {
+      return [$store.getters['setting/subscribe'].promoter_verify]
+    }
   },
   mounted() {
     // 是否启用分销协议
     useAgreement().then(response => {
       this.isAgreement = response;
     });
-    console.log(this.promoterSetting);
     // 接到招募令 检测申请条件是否满足
     if (this.promoterStatus < 0) {
       this.getMonitoring().then(response => {
+        this.apply_content = this.promoterSetting.apply_content.map(item => {
+          return {
+            name: item.name,
+            value: ''
+          }
+        });
         this.loading = false;
         // 异步保证元素存在
         this.$nextTick(() => {
@@ -182,11 +195,12 @@ export default {
     } else if (this.promoterStatus === 3) {
       // 申请被拒绝 获取拒绝理由
       applyAudit().then(response => {
-        console.log(response);
         this.note = response.note;
         this.loading = false;
       });
     } else {
+      console.log('你们那')
+
       this.loading = false;
     }
   },
@@ -215,8 +229,8 @@ export default {
     // 检测申请条件是否满足
     async getMonitoring() {
       const response = await applyMonitoring();
-      const { denominator, numerator, status, type } = response;
-      this.type = type;
+      const {denominator, numerator, status, type} = response;
+      this.type = type;// type 条件 1 无条件
       if (this.type === 1) {
         this.isApply = true;
       }
@@ -235,56 +249,75 @@ export default {
     },
     // 再次申请
     applyAgain() {
-      this.isApplyAgain = true;
-      this.loading = true;
-      // 需要再次监测是否满足条件
-      this.getMonitoring().then(response => {
-        this.loading = false;
-        // 异步保证元素存在
-        this.$nextTick(() => {
-          this.progressAnimation(response.percentage);
+      const {conditions, need_apply} = this.promoterSetting;
+      // 无需填写 没有条件 但是需要审核
+      if (conditions.type === 1 && !need_apply) {
+        uni.redirectTo({
+          url: '/promoter/pages/recruit'
         });
-      });
+      } else {
+        this.isApplyAgain = true;
+        this.loading = true;
+        // 需要再次监测是否满足条件
+        this.getMonitoring().then(response => {
+          this.apply_content = this.promoterSetting.apply_content.map(item => {
+            return {
+              name: item.name,
+              value: ''
+            }
+          });
+          this.loading = false;
+          // 异步保证元素存在
+          this.$nextTick(() => {
+            this.progressAnimation(response.percentage);
+          });
+        });
+      }
     },
     // 提交申请
     submitApply() {
+      const self = this;
       // 需要填写申请信息
+      function apply() {
+        // 判断表单信息不能为空
+        const item = self.apply_content.find(item => {
+          return !item.value;
+        });
+        if (item) {
+          uni.showToast({
+            title: `填写完整${item.name}`,
+            icon: 'none'
+          });
+        } else {
+          // 条件通过 可调用接口申请
+          // #ifdef MP-WEIXIN
+          wx.requestSubscribeMessage({
+            tmplIds: self.subTemplateId,
+            success: function () {
+            },
+            fail: function () {
+            },
+            complete: function () {
+              self.applyRequest();
+            }
+          });
+          // #endif
+          //  #ifdef H5
+          self.applyRequest();
+          //  #endif
+        }
+      }
       if (this.isAgreement) {
         if (this.isAgree) {
-          // 判断表单信息不能为空
-          const item = this.apply_content.find(item => {
-            return !item.value;
-          });
-          if (item) {
-            uni.showToast({
-              title: `填写完整${item.name}`,
-              icon: 'none'
-            });
-          } else {
-            // 条件通过 可调用接口申请
-            applyPromoter(this.apply_content).then(response => {
-              let userInfo = uni.getStorageSync('userInfo');
-              console.log(response);
-              console.log(userInfo);
-              const { status } = response;
-              // status 1 待审核 2 审核通过
-              userInfo.promoter_status = status;
-              // promoter_show 原本就是1的话 是清退用户 入口一直存在 不需要修改
-              if (userInfo.promoter_show === 0 && status === 2) {
-                // 开启分销中心入口
-                userInfo.promoter_show = 1;
-              }
-              console.log(userInfo);
-              uni.setStorageSync('userInfo', userInfo);
-              console.log('申请成功！');
-            });
-          }
+          apply();
         } else {
           uni.showToast({
             title: '请勾选分销协议',
             icon: 'none'
           });
         }
+      } else {
+        apply();
       }
     },
     // 立即申请
@@ -299,25 +332,31 @@ export default {
             value: ''
           };
         });
-        console.log(this.apply_content);
       } else {
         // 不需要填写申请信息 直接申请
-        applyPromoter().then(response => {
-          let userInfo = uni.getStorageSync('userInfo');
-          console.log(userInfo);
-          const { status } = response;
-          // status 1 待审核 2 审核通过
-          userInfo.promoter_status = status;
+        this.applyRequest();
+      }
+    },
+    applyRequest() {
+      applyPromoter(this.apply_content).then(response => {
+        let userInfo = uni.getStorageSync('userInfo');
+        const {status} = response;
+        // status 1 待审核 2 审核通过
+        userInfo.promoter_status = status;
+        // 审核通过
+        if (status === 2) {
+          uni.redirectTo({
+            url: '/promoter/pages/index'
+          });
           // promoter_show 原本就是1的话 是清退用户 入口一直存在 不需要修改
-          if (userInfo.promoter_show === 0 && status === 2) {
+          if (userInfo.promoter_show === 0) {
             // 开启分销中心入口
             userInfo.promoter_show = 1;
           }
-          console.log(userInfo);
-          uni.setStorageSync('userInfo', userInfo);
-          console.log('申请成功！');
-        });
-      }
+        }
+        this.promoterStatus = status;
+        uni.setStorageSync('userInfo', userInfo);
+      });
     }
   }
 };
@@ -549,6 +588,7 @@ export default {
     line-height: 34px;
     margin-top: 8px;
     max-width: 480px;
+    word-break: break-all;
   }
 
   .cu-btn {

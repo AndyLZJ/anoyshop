@@ -28,8 +28,8 @@ export default {
   },
   computed: {
     showModal: {
-      get() {
-        return this.value;
+      get({ value }) {
+        return value;
       },
       set(val) {
         this.$emit('input', val);

@@ -1,5 +1,5 @@
-import {mapGetters} from 'vuex';
-import getSceneVariable from "../function/getSceneVariable";
+import { mapGetters } from 'vuex';
+import getSceneVariable from '../function/getSceneVariable';
 
 module.exports = {
   data() {
@@ -41,37 +41,44 @@ module.exports = {
       }
       return false;
     },
-    $shareData({shareSetting, storeSetting}) {
+    $shareData({ shareSetting, storeSetting }) {
       return {
-        title: shareSetting?.describe
-          ? shareSetting?.describe
-          : `欢迎光临${storeSetting?.name} 挑选好物`,
+        title: shareSetting?.describe ? shareSetting?.describe : `欢迎光临${storeSetting?.name} 挑选好物`,
         path: '/pages/index/index',
         imageUrl: shareSetting.cover_img ? shareSetting?.cover_img : storeSetting?.logo
-      }
+      };
     }
   },
   onLoad(options) {
     // getRect挂载到$h上，因为这方法需要使用in(this)，所以无法把它独立成一个单独的文件导出
     this.$h.getRect = this.$hGetRect;
+    const {id} = this.$store.state.apply.userInfo;
     console.log('获取加载页面的参数', options);
+    console.log(options.spu)
     // 分销商绑定上下级关系
-    if (options.scene) {
-      const scene = decodeURIComponent(options.scene);
-      let promoterUid = this.$h.getSceneVariable(scene, 'share_promoter_uid');
-      if (this.isLogin && this.$store.state.apply.userInfo.id != promoterUid) {
-        this.$store.dispatch('plugins/bindPromoterSuperior', {parent_id: promoterUid});
-      } else {
-        console.log('不能绑定自己');
+    if (this.isLogin) {
+      if (options.scene || options.spu) {
+        let promoterUid
+        if (options.spu) {
+          promoterUid = options.spu;
+        } else if (options.scene) {
+          const scene = decodeURIComponent(options.scene);
+          promoterUid = this.$h.getSceneVariable(scene, 'spu');
+        }
+        if (id != promoterUid) {
+          this.$store.dispatch('plugins/bindPromoterSuperior', { parent_id: promoterUid });
+        } else {
+          console.log('不能绑定自己为自己的上级分享商');
+        }
       }
-      console.log(promoterUid);
     }
+
     //判断是否有用户要求记录
     if (options && options.task_uid) {
       console.log('执行需要邀请好友统计处理');
-      if (this.isLogin && this.$store.state.apply.userInfo.id != options.task_uid) {
+      if (this.isLogin && id != options.task_uid) {
         this.$store
-          .dispatch('plugins/onInvite', {UID: options.task_uid})
+          .dispatch('plugins/onInvite', { UID: options.task_uid })
           .then(res => {
             console.log('统计邀请好友积分', res);
           })
@@ -82,7 +89,6 @@ module.exports = {
         console.log('不能邀请自己');
       }
     }
-    console.log(this.shareSetting);
   },
   methods: {
     // 查询节点信息
@@ -107,7 +113,7 @@ module.exports = {
     },
     // 报错跳转页面
     $toError: function (err) {
-      let {data, status} = err;
+      let { data, status } = err;
       if (status === 422) {
         this.$h.toast(data[0].message);
       } else if (status === 403) {
@@ -117,17 +123,23 @@ module.exports = {
     $shareAppMessage: function (args) {
       args = args || this.$shareData;
       if (this.isLogin && args && args.path) {
+        const {id, promoter_status} = this.$store.state.apply.userInfo;
         this.toTaskonShare();
         //处理统一传参问题
         if (args.path.indexOf('?') === -1) {
-          args.path = args.path + '?task_uid=' + this.$store.state.apply.userInfo.id;
+          args.path = args.path + '?task_uid=' + id;
         } else {
-          args.path = args.path + '&task_uid=' + this.$store.state.apply.userInfo.id;
+          args.path = args.path + '&task_uid=' + id;
+        }
+        // 是分销商
+        if (promoter_status === 2) {
+          args.path = args.path + '&spu=' + id
         }
       }
+      console.log(args);
       return args;
     },
-    uniCopy: function ({content, success, error}) {
+    uniCopy: function ({ content, success, error }) {
       if (!content) return error('the content can not be blank');
       content = typeof content === 'string' ? content : content.toString();
       // #ifndef H5
@@ -185,8 +197,7 @@ module.exports = {
         console.error(e);
       }
     },
-    previewImage: function () {
-    },
+    previewImage: function () {},
     toTaskonShare() {
       //用于延时测试数据
       setTimeout(res => {
@@ -198,8 +209,7 @@ module.exports = {
             .then(res => {
               console.log('执行了分享转发公共合计', res);
             })
-            .catch(() => {
-            });
+            .catch(() => {});
         }
       }, 1000);
     }

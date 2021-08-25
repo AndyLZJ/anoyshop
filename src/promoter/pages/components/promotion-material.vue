@@ -136,6 +136,11 @@ export default {
   padding: 0 32px;
 }
 
+.iconpopup_close {
+  font-size: 20px;
+  color: #999999;
+}
+
 .header__title {
   font-size: 28px;
   @extend .font-family-sc;
@@ -159,7 +164,7 @@ export default {
 
   .image-list {
     margin-top: 25px;
-    height: 520px;
+    max-height: 520px;
 
     .image {
       margin: 0 16px 16px 0;

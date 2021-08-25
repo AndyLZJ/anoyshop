@@ -111,7 +111,7 @@
       <taskbrowse :display="is_browse" :goods_id="goods_id" ref="taskbrowse"></taskbrowse>
     </template>
     <HeLoginModel />
-    <he-float-window v-if="showFloatWindow" :bottom="95" pages-url="goods-detail"></he-float-window>
+    <he-float-window :bottom="95" pages-url="goods-detail"></he-float-window>
   </view>
 </template>
 
@@ -160,8 +160,7 @@ export default {
     ...mapGetters('setting', {
       goodsSetting: 'goodsSetting',
       navbarHeight: 'getNavBarHeight',
-      statusBarHeight: 'statusBarHeight',
-      floatWindow: 'getFloatWindow'
+      statusBarHeight: 'statusBarHeight'
     }),
     isProductsFeatured: function () {
       return this.goodsSetting.recommend_showpage.goodsinfo.value;
@@ -198,11 +197,9 @@ export default {
     }
   },
   onShow() {
+    console.log(this.$store.state.apply.is_login);
     if (this.$store.state.apply.is_login) {
       this.handleTaskBrowseLog();
-    }
-    if (this.floatWindow.decline === 0) {
-      this.showFloatWindow = true;
     }
   },
   data() {
@@ -238,8 +235,7 @@ export default {
       is_browse: 0,
       popupsList: [],
       taskShare: false,
-      copy_task_browse: 0,
-      showFloatWindow: false
+      copy_task_browse: 0
     };
   },
   onHide() {
@@ -426,14 +422,6 @@ export default {
     });
   },
   onPageScroll(e) {
-    let scrollTop = parseInt(e.scrollTop);
-    if (this.floatWindow.decline) {
-      if (scrollTop > 100) {
-        this.showFloatWindow = true;
-      } else {
-        this.showFloatWindow = false;
-      }
-    }
     if (this.emptyStatus) return;
     let _this = this;
     _this.isBar = e.scrollTop > 150;

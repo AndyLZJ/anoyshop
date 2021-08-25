@@ -252,7 +252,7 @@ export default {
         //处理积分领取
         this.popupsList = [];
         this.handleTaskSign();
-
+        this.$store.dispatch('user/getUserInfo');
         //延时执行数据
         setTimeout(() => {
           this.$refs['features'].handleLoad();

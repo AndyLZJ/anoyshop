@@ -42,6 +42,11 @@ const apply = {
     },
     setLoginModel(state, data) {
       state.showLoginModel = data;
+    },
+    setInfo(state, data) {
+      state.userInfo = data;
+      console.log('123123123123123123');
+      uni.setStorageSync('userInfo', data);
     }
   },
   actions: {

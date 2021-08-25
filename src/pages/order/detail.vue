@@ -61,7 +61,7 @@
         :type="detail.type"
       >
       </detail-bottom-operating>
-      <he-float-window v-if="showFloatWindow" pages-url="order-detail"></he-float-window>
+      <he-float-window :bottom="isBottom ? 96 : 0" pages-url="order-detail"></he-float-window>
     </template>
   </view>
 </template>
@@ -99,8 +99,7 @@ export default {
         buyer: {},
         id: null
       },
-      loading: true,
-      showFloatWindow: false
+      loading: true
     };
   },
   computed: {
@@ -114,8 +113,7 @@ export default {
       );
     },
     ...mapGetters('setting', {
-      goodsSetting: 'goodsSetting',
-      floatWindow: 'getFloatWindow'
+      goodsSetting: 'goodsSetting'
     })
   },
   methods: {
@@ -157,7 +155,6 @@ export default {
     }
   },
   onLoad(options) {
-    console.log('订阅消息');
     this.detail.id = parseInt(options.id);
   },
   onShow() {
@@ -167,19 +164,6 @@ export default {
     if (storage) {
       this.detail.is_evaluate = 1;
       uni.removeStorageSync(storageKey);
-    }
-    if (this.floatWindow.decline === 0) {
-      this.showFloatWindow = true;
-    }
-  },
-  onPageScroll(event) {
-    let scrollTop = parseInt(event.scrollTop);
-    if (this.floatWindow.decline) {
-      if (scrollTop > 100) {
-        this.showFloatWindow = true;
-      } else {
-        this.showFloatWindow = false;
-      }
     }
   }
 };

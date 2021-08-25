@@ -105,11 +105,12 @@ export function agreement() {
 }
 
 // 接令牌
-export function receiveRecruitToken() {
+export function receiveRecruitToken(invite_id) {
   return new Promise((resolve, reject) => {
     service
       .promoter('get', {
-        behavior: 'recruiting'
+        behavior: 'recruiting',
+        invite_id
       })
       .then(resolve)
       .catch(reject);
@@ -360,6 +361,7 @@ export function financeList(page, {model = 'promoter', status = null}) {
       model: model,
       status: status
     }).page(page, 10).then(response => {
+      console.log(response);
       transformPageHeaders(response);
       const {data, pagination} = response;
       resolve({
@@ -368,4 +370,14 @@ export function financeList(page, {model = 'promoter', status = null}) {
       });
     }).catch(reject);
   })
+}
+
+// 其他用户简单详情
+export function userDetail(UID) {
+  return new Promise((resolve, reject) => {
+    service.users('get', {
+      behavior: 'simple_info',
+      UID
+    }).then(resolve).catch(reject);
+  });
 }

@@ -43,16 +43,16 @@
           </view>
           <view class="he-item--footer flex">
             <view class="he-footer--item flex-sub">
-              <view class="le-value">￥{{ item.sales_amount }}</view>
-              <view class="le-label">商品金额</view>
+              <view class="he-value he-price">{{ item.sales_amount }}</view>
+              <view class="he-label">商品金额</view>
             </view>
             <view class="he-footer--item flex-sub">
-              <view class="le-value">{{ item.promoter_order_number }}</view>
-              <view class="le-label">订单数</view>
+              <view class="he-value">{{ item.promoter_order_number }}</view>
+              <view class="he-label">订单数</view>
             </view>
             <view class="he-footer--item flex-sub">
-              <view class="le-value">￥{{ item.commission }}</view>
-              <view class="le-label">贡献佣金金额</view>
+              <view class="he-value he-price">{{ item.commission }}</view>
+              <view class="he-label">贡献佣金金额</view>
             </view>
           </view>
         </view>
@@ -311,15 +311,18 @@ export default {
     border-right: 1px solid #e5e5e5;
   }
 
-  .le-value {
+  .he-value {
     @extend .font-family-sc;
     line-height: 40px;
     font-size: 28px;
     font-weight: bold;
     color: #222222;
+    &.he-price:before {
+      content: '￥';
+    }
   }
 
-  .le-label {
+  .he-label {
     font-size: 24px;
     @extend .font-family-sc;
     font-weight: 500;

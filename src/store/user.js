@@ -237,7 +237,26 @@ const user = {
           console.error(err);
         });
     },
-    bindPhone: function ({}) {}
+    bindPhone: function () {},
+    getUserInfo({rootState , commit, getter}) {
+      let $heshop = this._vm.$heshop;
+      return new Promise((resolve, reject) => {
+        $heshop.users('get', {
+          behavior: 'info'
+        }).then(response => {
+          let userInfo = JSON.parse(JSON.stringify(rootState.apply.userInfo));
+          userInfo = Object.assign(userInfo, response);
+          console.log(userInfo);
+          commit('apply/setInfo', userInfo, {
+            root: true
+          });
+          resolve();
+        }).catch(error => {
+          console.log(error);
+          reject();
+        });
+      })
+    }
   }
 };
 

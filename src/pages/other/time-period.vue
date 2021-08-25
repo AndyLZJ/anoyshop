@@ -1,5 +1,5 @@
 <template>
-  <view class="select_date" :class="{ move: isShow && option.isModal, init: !option.isModal }">
+  <view class="select_date" :data-theme="theme" :class="{ move: isShow && option.isModal, init: !option.isModal }">
     <view class="week">
       <view v-for="(item, index) in weekData" :key="index">{{ item }}</view>
     </view>
@@ -401,168 +401,155 @@ export default {
   background-color: #fff;
   z-index: 10001;
   transition: all 0.2s;
+}
 
-  &.move {
-    top: 10vh;
+.move {
+  top: 10vh;
+}
+
+.init {
+  top: 0;
+  height: 100vh;
+}
+
+.footer {
+  height: 120px;
+  width: 686px;
+  margin: 0 auto;
+  background-color: #fff;
+  overflow: hidden;
+
+  > button {
+    height: 80px;
+    line-height: 80px;
+    margin: 20px 0 20px 0;
+    text-align: center;
+    @include background_color('background_color');
+    border-radius: 40px;
+    font-size: 30px;
+    font-family: PingFang SC;
+    font-weight: 500;
+    color: #ffffff;
+
+    &.disabled {
+      background-color: #ccc;
+    }
   }
+}
+
+.head {
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+  position: relative;
+
+  > text {
+    &:nth-child(1) {
+    }
+
+    &:nth-child(2) {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 20px;
+      color: #f63;
+    }
+  }
+}
+
+.main {
+  height: calc(90vh - 240px);
 
   &.init {
-    top: 0;
-    height: 100vh;
+    height: calc(100vh - 80px);
   }
 
-  > .footer {
-    height: 120px;
-    width: 686px;
-    margin: 0 auto;
-    background-color: #fff;
-    overflow: hidden;
-
-    > button {
-      color: #fff;
-      font-size: 26 rpx;
-      height: 80px;
-      line-height: 80px;
-      margin: 20px 0 20px 0;
-      text-align: center;
-      background: #e60b30;
-      border-radius: 40px;
-      font-size: 30px;
-      font-family: PingFang SC;
-      font-weight: 500;
-      color: #ffffff;
-
-      &.hover {
-        background-color: #f61;
-      }
-
-      &.disabled {
-        background-color: #ccc;
-      }
-    }
+  &.show_submit {
+    height: calc(100vh - 200px);
   }
 
-  > .head {
-    height: 60 rpx;
-    line-height: 60 rpx;
-    text-align: center;
-    position: relative;
+  .list {
+    > .date {
+      padding: 0 25px;
+      display: flex;
+      flex-wrap: wrap;
 
-    > text {
-      &:nth-child(1) {
-      }
-
-      &:nth-child(2) {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        right: 20 rpx;
-        color: #f63;
-      }
-    }
-  }
-
-  > .main {
-    height: calc(90vh - 240rpx);
-
-    &.init {
-      height: calc(100vh - 80rpx);
-    }
-
-    &.show_submit {
-      height: calc(100vh - 200rpx);
-    }
-
-    .list {
-      > .date {
-        padding: 0 25 rpx;
-        display: flex;
-        flex-wrap: wrap;
+      > view {
+        width: 99px;
+        height: 112px;
+        text-align: center;
+        margin-bottom: 8px;
+        position: relative;
 
         > view {
-          width: 99px;
-          height: 112px;
-          text-align: center;
-          margin-bottom: 8px;
-          position: relative;
+          &:nth-child(1) {
+            font-size: 28px;
+            font-family: PingFang SC;
+            font-weight: bold;
+            color: #222222;
+            line-height: 112px;
+          }
+        }
+
+        &.disabled {
+          /* background-color: #eee; */
+          > view {
+            color: #cccccc;
+          }
+        }
+
+        &.weekend {
+          > view {
+            color: #f63;
+          }
+        }
+
+        &.choosed {
+          background: #bbbfc8;
+          border-radius: 16px;
+        }
+
+        &.range_space {
+          background-color: #f5f5f5;
 
           > view {
-            &:nth-child(1) {
-              font-size: 28px;
-              font-family: PingFang SC;
-              font-weight: bold;
-              color: #222222;
-              line-height: 112px;
-            }
-          }
-
-          &.disabled {
-            /* background-color: #eee; */
-            > view {
-              color: #cccccc;
-            }
-          }
-
-          &.weekend {
-            > view {
-              color: #f63;
-            }
-          }
-
-          &.choosed {
-            background: #bbbfc8;
-            border-radius: 16px;
-
-            > view {
-              /* color: #fff; */
-              /* font-size: 22rpx;
-							height: 50rpx;
-							line-height: 50rpx; */
-            }
-          }
-
-          &.range_space {
-            background-color: #f5f5f5;
-
-            > view {
-              color: #333;
-            }
+            color: #333;
           }
         }
       }
-
-      > .title {
-        font-size: 24px;
-        font-family: PingFang SC;
-        font-weight: 400;
-        color: #222222;
-        height: 80 rpx;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .title:nth-child(1) {
-        border-top: 1px solid #e5e5e5;
-      }
     }
-  }
 
-  > .week {
-    height: 80 rpx;
-    padding: 0 29 rpx;
-    display: flex;
-    align-items: center;
-    border-bottom: 1 rpx solid #e5e5e5;
-
-    > view {
-      width: 99px;
+    > .title {
       font-size: 24px;
       font-family: PingFang SC;
       font-weight: 400;
       color: #222222;
-      text-align: center;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
+    .title:nth-child(1) {
+      border-top: 1px solid #e5e5e5;
+    }
+  }
+}
+
+.week {
+  height: 80px;
+  padding: 0 29px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e5e5e5;
+
+  > view {
+    width: 99px;
+    font-size: 24px;
+    font-family: PingFang SC;
+    font-weight: 400;
+    color: #222222;
+    text-align: center;
   }
 }
 </style>

@@ -21,7 +21,7 @@
                 <text class="iconfont iconnav_personalcenter_normal"/>
                 <text>个人中心</text>
               </view>
-              <view class="navigation-item flex align-center">
+              <view class="navigation-item flex align-center" @click="shareDynamic">
                 <text class="iconfont iconproductdetails_share"/>
                 <text>推广空间</text>
               </view>
@@ -77,6 +77,7 @@
                   class="image"
                   :src="img"
                   :key="imgKey"
+                  :list="item.pic_list"
                   v-for="(img, imgKey) in item.pic_list"
                   :image-style="{
                     borderRadius: '8rpx'
@@ -129,18 +130,25 @@
         @confirm="deleteConfirm"
         v-model="showDelete"
       />
+      <he-share
+        v-model="isShare"
+        :post-data="postData"
+      />
+      <HeLoginModel/>
     </template>
   </view>
 </template>
 
 <script>
-import {promoterzone, dynamicLike, dynamicDel} from '../api';
+import {promoterzone, dynamicLike, dynamicDel, userDetail} from '../api';
 import {mapGetters} from 'vuex';
 import heNoContentYet from './../../components/he-no-content-yet.vue';
 import heLoadMore from './../../components/he-load-more.vue';
 import heLoading from '../../components/he-loading.vue';
 import listVideo from './components/video.vue';
 import heEmptyPopup from './../../components/he-empty-popup.vue';
+import heShare from './../../components/he-share.vue';
+import HeLoginModel from '../../components/he-login-layout.vue';
 
 let systemInfo = uni.getSystemInfoSync();
 let menuButtonInfo = {};
@@ -163,7 +171,9 @@ export default {
     heNoContentYet,
     heLoading,
     listVideo,
-    heEmptyPopup
+    heEmptyPopup,
+    heShare,
+    HeLoginModel
   },
   data() {
     return {
@@ -183,7 +193,13 @@ export default {
       // 动态删除
       showDelete: false,
       deleteItem: null,
-      UID: null
+      UID: null,
+      isShare: false,
+      isPromoter: false,
+      postData: null,
+      user: {
+        nickname: ''
+      }
     };
   },
   computed: {
@@ -263,6 +279,24 @@ export default {
       }
       return style;
     },
+    // 分享数据
+    shareData({ipAddress, user}) {
+      let imageUrl = '';
+      // #ifndef H5
+      imageUrl = `${ipAddress}/share-dynamic-space.png`
+      // #endif
+      // #ifdef H5
+      imageUrl = `${ipAddress}/share-dynamic-space-icon.png`
+      // #endif
+      return {
+        title: `${user.nickname}的空间`,
+        path: `/promoter/pages/dynamic?UID=${user.id}`,
+        imageUrl: imageUrl,
+        // #ifdef H5
+        desc: '尖端好物，尽在我的空间，欢迎常来逛逛'
+        // #endif
+      };
+    },
     ...mapGetters('setting', {
       getPromoterPage: 'getPromoterPage'
     })
@@ -274,6 +308,10 @@ export default {
       const scene = decodeURIComponent(option.scene);
       this.UID = this.$h.getSceneVariable(scene, 'UID');
     }
+    // 获取当前动态详情的主人信息
+    userDetail(this.UID).then(response => {
+      this.user = response;
+    });
     // 初次获取动态列表
     this.getZoneList()
       .then(response => {
@@ -320,15 +358,24 @@ export default {
       return data;
     },
     // 动态点赞
-    dynamicLike(item) {
-      dynamicLike(item.id).then(() => {
-        let is_vote = item.is_vote;
+    dynamicLike(data) {
+      const userInfo = this.$store.state.apply.userInfo;
+
+      dynamicLike(data.id).then(() => {
+        let is_vote = data.is_vote;
         if (is_vote) {
-          item.is_vote = 0;
-          item.upvote_count--;
+          data.is_vote = 0;
+          data.upvote_count--;
+          data.upvote = data.upvote.filter(key => {
+            return userInfo.id != key.UID
+          });
         } else {
-          item.is_vote = 1;
-          item.upvote_count++;
+          data.is_vote = 1;
+          data.upvote_count++;
+          data.upvote.push({
+            user: userInfo,
+            UID: userInfo.id
+          });
         }
       });
     },
@@ -383,6 +430,24 @@ export default {
       } else {
         this.loadStatus = 'nomore';
       }
+    },
+    //  分享动态
+    shareDynamic() {
+      if (!this.isLogin) {
+        this.$store.commit('apply/setLoginModel', true);
+      } else {
+        // #ifdef H5
+        this.$wechat.updateShareData(this.shareData);
+        // #endif
+        this.isShare = true;
+        this.postData = {
+          zoom: 1,
+        }
+        // 进入的是别人的动态空间 就分享别人的海报
+        if (this.UID !== this.$store.state.apply.userInfo.id) {
+          this.postData.UID = this.UID;
+        }
+      }
     }
   },
   filters: {
@@ -395,7 +460,28 @@ export default {
       str = str.slice(0, str.length - 1);
       return str;
     }
+  },
+  // #ifdef H5
+  beforeDestroy() {
+    this.$wechat.updateShareData(this.$shareAppMessage());
+  },
+  // #endif
+  // #ifndef H5
+  onShareAppMessage(event) {
+    if (event.from === 'button') {
+      return this.$shareAppMessage(this.shareData);
+    } else {
+      return this.$shareAppMessage(this.$shareData);
+    }
+  },
+  onShareTimeline(event) {
+    if (event.from === 'button') {
+      return this.$shareAppMessage(this.shareData);
+    } else {
+      return this.$shareAppMessage(this.$shareData);
+    }
   }
+  // #endif
 };
 </script>
 

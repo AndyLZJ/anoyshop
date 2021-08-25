@@ -43,18 +43,18 @@ function MPageNavigate(item) {
     }
   } else {
     if (!item || item.length === 0) return;
-    if ([3, 4, 5, 1].indexOf(item.index) == -1) {
+    if ([3, 4, 5, 1, 0].indexOf(item.index) === -1) {
       uni.navigateTo({
         url: item.path,
         fail: function () {
           console.log(12123);
-          uni.switchTab({
+          uni.reLaunch({
             url: item.path
           });
         }
       });
     } else {
-      uni.switchTab({
+      uni.reLaunch({
         url: item.path,
         fail: function () {
           uni.navigateTo({

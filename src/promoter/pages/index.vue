@@ -17,7 +17,7 @@
               <view class="he-shop">{{ storeSetting.name }}</view>
             </view>
           </view>
-          <view class="he-head--right flex">
+          <view v-if="detail.status === 2" class="he-head--right flex">
             <view class="he-router" @click="routerDynamic">
               <view class="iconfont icondistribution_dynamic"></view>
               <view>动态</view>
@@ -30,25 +30,44 @@
         </view>
       </view>
       <view class="he-body">
-        <view class="he-card he-level flex justify-between">
+        <view v-if="detail.status === 2" class="he-card he-level flex justify-between">
           <view class="he-level--left">
             <view class="he-title">分销等级：{{ detail.level_name }}</view>
-            <view class="he-progress">
-              <view :style="[progressStyle]" class="he-progress--rate"></view>
-            </view>
-            <view class="he-prompt">
-              升级至{{ detail.next_level.name }}，还需{{
-                detail.next_level.lack.condition
-              }}{{ detail.next_level.lack.lack_num }}
-            </view>
+            <view v-if="!detail.next_level" class="he-level-text">恭喜！已升至最高等级！</view>
+            <template v-if="detail.next_level">
+              <view class="he-progress">
+                <view :style="[progressStyle]" class="he-progress--rate"></view>
+              </view>
+              <view class="he-prompt">
+                升级至{{ detail.next_level.name }}，
+                <template v-if="detail.next_level.lack">
+                  还需{{
+                    detail.next_level.lack.condition
+                  }}{{ detail.next_level.lack.lack_num }}
+                </template>
+                <template v-else>以满足升级条件</template>
+              </view>
+            </template>
           </view>
-          <view class="he-level--right flex align-center justify-center">
+          <view v-if="detail.next_level" class="he-level--right flex align-center justify-center">
+            <!-- #ifndef H5 -->
             <button class="cu-btn" @click="routerGrade">升级</button>
+            <!-- #endif -->
+            <!-- #ifdef H5 -->
+            <he-open-subscribe
+              @open-subscribe-success="routerGrade"
+              :template-id="subTemplateId"
+            >
+              <button class="cu-btn">升级</button>
+            </he-open-subscribe>
+            <!-- #endif -->
           </view>
+          <image v-else class="he-level--bg" :src="ipAddress +'/promoter-level-bg.png'"></image>
         </view>
         <view class="he-card he-view">
           <view class="charts-box">
-            <canvas style="width: 100%; height: 384rpx" canvas-id="he-view" id="he-view"></canvas>
+            <canvas v-if="!renderImage" style="width: 100%; height: 384rpx" canvas-id="he-view" id="he-view"></canvas>
+            <image v-else style="width: 100%; height: 384rpx" :src="renderImage"></image>
           </view>
           <view class="flex he-data-top">
             <view class="basis-df he-data--item">
@@ -79,13 +98,20 @@
         </view>
         <view class="he-card flex he-grand">
           <view class="flex-sub he-grand--item">
-            <button class="flex cu-btn align-center justify-start" @click="routerOrder">
+            <button
+              class="flex cu-btn align-center"
+              :class="detail.status === 2 ? 'justify-start' : 'justify-between clear-out'"
+              @click="routerOrder">
               <text>累计分销订单</text>
-              <view class="iconfont iconbtn_arrow"></view>
+              <view v-if="detail.status === 2" class="iconfont iconbtn_arrow"></view>
+              <view v-else class="flex align-center">
+                <text class="he-grand--number">{{ detail.promoter_order_number }}</text>
+                <view class="iconfont iconbtn_arrow"></view>
+              </view>
             </button>
-            <view class="he-grand--number"> {{ detail.promoter_order_number }}</view>
+            <view v-if="detail.status === 2" class="he-grand--number"> {{ detail.promoter_order_number }}</view>
           </view>
-          <view class="flex-sub he-grand--item">
+          <view v-if="detail.status === 2" class="flex-sub he-grand--item">
             <button class="flex cu-btn align-center justify-start" @click="routerOffline">
               <text>累计下线人数</text>
               <view class="iconfont iconbtn_arrow"></view>
@@ -93,70 +119,72 @@
             <view class="he-grand--number"> {{ detail.all_children }}</view>
           </view>
         </view>
-        <!-- 分销商品 -->
-        <view class="he-card he-goods">
-          <view class="he-card--head flex justify-between">
-            <text class="he-title">分销商品</text>
-            <button class="he-more cu-btn flex align-center" @click="routerGoods">
-              <text>更多商品</text>
-              <text class="iconfont iconbtn_arrow"></text>
-            </button>
-          </view>
-          <view class="he-good flex" @click="routerGoodsDetail">
-            <he-image
-              :image-style="{ borderRadius: '16px 0px 0px 16px' }"
-              width="240"
-              height="240"
-              :src="good.slideshow[0]"
-            ></he-image>
-            <view class="he-good--content flex-sub flex flex-direction justify-between">
-              <view class="he-good--name he-line-2">2020新款可盐可甜格子衬衫连衣裙港风套装女复古chic两件套裙子夏</view>
-              <view class="">
-                <view class="he-good--price">￥{{ good.price }}</view>
-                <view class="he-good--share" @click.stop="shareGood">
-                  <text class="iconfont iconproductdetails_share"/>
-                  <text class="he-good--commission">预计赚¥{{ good.commission }}</text>
+        <template v-if="detail.status === 2">
+          <!-- 分销商品 -->
+          <view class="he-card he-goods">
+            <view class="he-card--head flex justify-between">
+              <text class="he-title">分销商品</text>
+              <button class="he-more cu-btn flex align-center" @click="routerGoods">
+                <text>更多商品</text>
+                <text class="iconfont iconbtn_arrow"></text>
+              </button>
+            </view>
+            <view class="he-good flex" @click="routerGoodsDetail">
+              <he-image
+                :image-style="{ borderRadius: '16px 0px 0px 16px' }"
+                width="240"
+                height="240"
+                :src="good.slideshow[0]"
+              ></he-image>
+              <view class="he-good--content flex-sub flex flex-direction justify-between">
+                <view class="he-good--name he-line-2">{{ good.name }}</view>
+                <view class="">
+                  <view class="he-good--price">￥{{ good.price }}</view>
+                  <view class="he-good--share" @click.stop="shareGood">
+                    <text class="iconfont iconproductdetails_share"/>
+                    <text class="he-good--commission">预计赚¥{{ good.commission }}</text>
+                  </view>
                 </view>
               </view>
             </view>
           </view>
-        </view>
-        <!-- 推广赚钱 -->
-        <view class="he-card he-promote">
-          <view class="he-card--head">
-            <text class="he-title">推广赚钱</text>
+          <!-- 推广赚钱 -->
+          <view class="he-card he-promote">
+            <view class="he-card--head">
+              <text class="he-title">推广赚钱</text>
+            </view>
+            <view class="he-card--body flex flex-wrap">
+              <button class="cu-btn basis-df flex justify-between" @click="promotionSpace">
+                <view>
+                  <view class="he-title">推广空间</view>
+                  <view class="he-desc">专属动态空间</view>
+                </view>
+                <image class="he-image" :src="ipAddress + '/promoter-promotion-space.png'"/>
+              </button>
+              <button class="cu-btn basis-df flex justify-between" @click="routerMaterial">
+                <view>
+                  <view class="he-title">推广素材</view>
+                  <view class="he-desc">便捷复制素材</view>
+                </view>
+                <image class="he-image" :src="ipAddress + '/promoter-promotion-material.png'"/>
+              </button>
+              <button class="cu-btn basis-df flex justify-between" @click="promotionShop">
+                <view>
+                  <view class="he-title">推广店铺</view>
+                  <view class="he-desc">邀请逛店铺</view>
+                </view>
+                <image class="he-image" :src="ipAddress + '/promoter-promotion-shop.png'"></image>
+              </button>
+              <button class="cu-btn basis-df flex justify-between" @click="inviteDistributors">
+                <view>
+                  <view class="he-title">邀请分销商</view>
+                  <view class="he-desc">邀请好友加入</view>
+                </view>
+                <image class="he-image" :src="ipAddress + '/promoter-invite-distributors.png'"></image>
+              </button>
+            </view>
           </view>
-          <view class="he-card--body flex flex-wrap">
-            <button class="cu-btn basis-df flex justify-between" @click="promotionSpace">
-              <view>
-                <view class="he-title">推广空间</view>
-                <view class="he-desc">专属动态空间</view>
-              </view>
-              <image class="he-image" :src="ipAddress + '/promoter-promotion-space.png'"/>
-            </button>
-            <button class="cu-btn basis-df flex justify-between" @click="routerMaterial">
-              <view>
-                <view class="he-title">推广素材</view>
-                <view class="he-desc">便捷复制素材</view>
-              </view>
-              <image class="he-image" :src="ipAddress + '/promoter-promotion-material.png'"/>
-            </button>
-            <button class="cu-btn basis-df flex justify-between" @click="promotionShop">
-              <view>
-                <view class="he-title">推广店铺</view>
-                <view class="he-desc">邀请逛店铺</view>
-              </view>
-              <image class="he-image" :src="ipAddress + '/promoter-promotion-shop.png'"></image>
-            </button>
-            <button class="cu-btn basis-df flex justify-between" @click="inviteDistributors">
-              <view>
-                <view class="he-title">邀请分销商</view>
-                <view class="he-desc">邀请好友加入</view>
-              </view>
-              <image class="he-image" :src="ipAddress + '/promoter-invite-distributors.png'"></image>
-            </button>
-          </view>
-        </view>
+        </template>
       </view>
       <down-grade v-model="isDowngrade" :level-name="detail.level_name" :is-up-down="detail.down_level_status"/>
       <he-share
@@ -171,11 +199,14 @@
 </template>
 
 <script>
-import {goods, personalCenter, receiveRecruitToken} from '../api';
+import {goods, personalCenter} from '../api';
 import DownGrade from './components/downgrade.vue';
 import heLoading from '../../components/he-loading.vue';
 import heShare from './../../components/he-share.vue';
 import promotionMaterial from './components/promotion-material.vue';
+// #ifdef H5
+import heOpenSubscribe from '../../components/he-open-subscribe.vue';
+// #endif
 import {mapGetters} from 'vuex';
 
 let systemInfo = uni.getSystemInfoSync();
@@ -186,7 +217,10 @@ export default {
     DownGrade,
     heLoading,
     heShare,
-    promotionMaterial
+    promotionMaterial,
+    // #ifdef H5
+    heOpenSubscribe
+    // #endif
   },
   data() {
     return {
@@ -205,21 +239,20 @@ export default {
       showPromotionMaterial: false,
       postData: null,
       canvasWidth: systemInfo.windowWidth / 414,
+      renderImage: null,
+      isDowngrade: false    // 升降级
     };
   },
   computed: {
-    rate() {
-      return {
-        width: '50%'
-      };
-    },
     // 用户信息
     userInfo: function () {
       return this.$store.state.apply.userInfo;
     },
     ...mapGetters({
-      rank: 'setting/getPromoterRank'
+      rank: 'setting/getPromoterRank',
+      promoterPage: 'setting/getPromoterPage'
     }),
+    // 分享数据
     shareData({shareType, ipAddress, $store, good}) {
       if (shareType === 1) {
         let imageUrl = '';
@@ -247,7 +280,7 @@ export default {
         // #endif
         return {
           title: `推广商品，赚佣金！`,
-          path: `/promoter/pages/recruit`,
+          path: `/promoter/pages/recruit?invite_id=${$store.state.apply.userInfo.id}`,
           imageUrl: imageUrl,
           // #ifdef H5
           desc: '欢迎加入我们的分销团队，一起赚佣金'
@@ -261,36 +294,34 @@ export default {
         }
       }
     },
-    // 升降级
-    isDowngrade: {
-      get({detail}) {
-        return detail.down_level_status === -1 || detail.down_level_status === 1;
-      },
-      set(val) {
-        if (!val) {
-          this.detail.down_level_status = 0;
-        }
-      }
+    // 小程序订阅消息
+    subTemplateId({$store}) {
+      let arr = []
+      $store.getters['setting/subscribe'].level_change ? arr.push($store.getters['setting/subscribe'].level_change) : null;
+      return arr;
     }
   },
   mounted() {
     this.init();
   },
   methods: {
-    init() {
-      receiveRecruitToken();
-      goods(
-        1,
-        {
-          sort_value: 'DESC'
-        },
-        1
-      ).then(response => {
-        this.good = response.data[0];
+    async init() {
+      // 动态设置标题
+      uni.setNavigationBarTitle({
+        title: this.promoterPage.distributor_center.title
       });
       // 分销商个人中心详情
-      personalCenter().then(response => {
-        this.detail = response;
+      const response = await personalCenter()
+      this.detail = response;
+      if (this.detail.status === 2) {
+        const data = await goods(
+          1,
+          {
+            sort_value: 'DESC'
+          },
+          1
+        );
+        this.good = data.data[0];
         this.loading = false;
         let style = {
           width: '0'
@@ -305,7 +336,12 @@ export default {
         this.$nextTick(() => {
           this.progressStyle = style;
         });
-        this.initCanvas();
+      } else {
+        this.loading = false;
+      }
+      this.initCanvas().then(() => {
+        console.log('干翻天');
+        this.isDowngrade = this.detail.down_level_status === -1 || this.detail.down_level_status === 1;
       });
     },
     routerDynamic() {
@@ -319,9 +355,26 @@ export default {
       });
     },
     routerGrade() {
+      // #ifndef H5
+      const self = this;
+      wx.requestSubscribeMessage({
+        tmplIds: self.subTemplateId,
+        success: function () {
+        },
+        fail: function () {
+        },
+        complete: function () {
+          uni.navigateTo({
+            url: '/promoter/pages/grade'
+          });
+        }
+      });
+      // #endif
+      // #ifdef H5
       uni.navigateTo({
         url: '/promoter/pages/grade'
       });
+      // #endif
     },
     routerOrder() {
       uni.navigateTo({
@@ -353,15 +406,8 @@ export default {
         url: `/pages/goods/detail?id=${this.good.id}`
       });
     },
-    initCanvas() {
+    async initCanvas() {
       const rem = this.canvasWidth;
-      const {all_commission_amount, is_withdrawal, wait_account, commission} = this.detail;
-      const commissionPercentage = commission/all_commission_amount;
-      const isWithdrawalPercentage = is_withdrawal/all_commission_amount;
-      const waitAccountPercentage = wait_account/all_commission_amount;
-      console.log(commissionPercentage);
-      console.log(isWithdrawalPercentage);
-      console.log(waitAccountPercentage);
       const context = uni.createCanvasContext('he-view');
       context.beginPath();
       context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), 0, 2 * Math.PI);
@@ -371,24 +417,38 @@ export default {
       context.shadowBlur = 15;
       context.shadowColor = 'rgba(0,0,0,0.1)';
       context.fill();
-      context.beginPath();
-      context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), 0, Math.PI * 2 * commissionPercentage, false);
-      context.lineWidth = 8;
-      context.lineCap = 'round';
-      context.strokeStyle = '#FE9D51';
-      context.stroke();
-      context.beginPath();
-      context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), Math.PI * 2 * commissionPercentage, Math.PI * 2 * isWithdrawalPercentage, false);
-      context.lineWidth = 8;
-      context.lineCap = 'round';
-      context.strokeStyle = '#623CEB';
-      context.stroke();
-      context.beginPath();
-      context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), Math.PI * 2 * isWithdrawalPercentage, Math.PI * 2, false);
-      context.lineWidth = 8;
-      context.lineCap = 'round';
-      context.strokeStyle = '#2379FC';
-      context.stroke();
+      let {all_commission_amount, is_withdrawal, wait_account, commission} = this.detail;
+      if (all_commission_amount) {
+        const commissionPercentage = commission / all_commission_amount;
+        const isWithdrawalPercentage = is_withdrawal / all_commission_amount;
+        const waitAccountPercentage = wait_account / all_commission_amount;
+        context.beginPath();
+        context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), 0, Math.PI * 2 * commissionPercentage, false);
+        context.lineWidth = 8;
+        context.lineCap = 'round';
+        context.strokeStyle = '#FE9D51';
+        context.stroke();
+        context.beginPath();
+        context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), Math.PI * 2 * commissionPercentage, Math.PI * 2 * isWithdrawalPercentage, false);
+        context.lineWidth = 8;
+        context.lineCap = 'round';
+        context.strokeStyle = '#623CEB';
+        context.stroke();
+        context.beginPath();
+        context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), Math.PI * 2 * isWithdrawalPercentage, Math.PI * 2, false);
+        context.lineWidth = 8;
+        context.lineCap = 'round';
+        context.strokeStyle = '#2379FC';
+        context.stroke();
+      } else {
+        context.beginPath();
+        context.arc(177.5 * rem, 100 * rem, uni.upx2px(160), 0, Math.PI * 2, false);
+        context.lineWidth = 8;
+        context.lineCap = 'round';
+        context.strokeStyle = '#EEEEEE';
+        context.stroke();
+        all_commission_amount = '0.00'
+      }
       context.setFontSize(uni.upx2px(22));
       context.textAlign = 'center';
       context.setFillStyle('#666666');
@@ -398,6 +458,26 @@ export default {
       context.font = 'normal bold DIN';
       context.fillText(all_commission_amount, 177.5 * rem, 120 * rem);
       context.draw();
+      const _this = this;
+      setTimeout(() => {
+        uni.canvasToTempFilePath({
+          x: 0,
+          y: 0,
+          width: uni.upx2px(648),
+          height: uni.upx2px(384),
+          canvasId: 'he-view',
+          success: function (res) {
+            console.log(res);
+            _this.renderImage = res.tempFilePath;
+          },
+          fail(e) {
+            console.log(e);
+          },
+          complete() {
+            return true;
+          }
+        });
+      }, 800);
     },
     // 推广空间
     promotionSpace() {
@@ -405,6 +485,7 @@ export default {
       // #ifdef H5
       this.$wechat.updateShareData(this.shareData);
       // #endif
+      this.isPromoter = false;
       this.isShare = true;
       this.postData = {
         zoom: 1
@@ -467,8 +548,16 @@ export default {
     } else {
       return this.$shareAppMessage(this.$shareData);
     }
-  }
+  },
   // #endif
+  watch: {
+    // 关闭升降级弹框
+    isDowngrade: {
+      handler(value) {
+        if (!value) this.detail.down_level_status = 0;
+      }
+    }
+  }
 };
 </script>
 
@@ -548,12 +637,25 @@ export default {
       line-height: 40px;
     }
 
+    .he-level-text:extend(.font-family-sc) {
+      font-size: 22px;
+      font-weight: 400;
+      color: #A06640;
+      line-height: 32px;
+      margin-top: 8px;
+    }
+
     .he-prompt:extend(.font-family-sc) {
       font-size: 22px;
       font-weight: 400;
       color: #a06640;
       line-height: 32px;
     }
+  }
+
+  .he-level--bg {
+    height: 152px;
+    width: 278px;
   }
 
   .he-level--right {
@@ -633,9 +735,8 @@ export default {
     line-height: 48px;
   }
 
-  .he-data--number {
+  .he-data--number:extend(.font-family-din) {
     font-size: 36px;
-    font-family: DIN;
     font-weight: 500;
     color: #222222;
     line-height: 32px;
@@ -665,11 +766,27 @@ export default {
 
 .charts-box {
   height: 384px;
+
+  canvas {
+    z-index: 0;
+    position: relative;
+    //transform:translate(-100%,-100%);
+  }
 }
 
 .he-grand {
   .he-grand--item {
     padding-bottom: 8px;
+
+    .clear-out {
+      font-size: 26px !important;
+
+      .he-grand--number:extend(.font-family-din) {
+        font-size: 32px;
+        font-weight: 500;
+        color: #222222;
+      }
+    }
 
     .cu-btn:extend(.font-family-sc) {
       line-height: 48px;
@@ -685,11 +802,11 @@ export default {
     }
 
     &:first-child {
-      border-right: 1px solid #e5e5e5;
     }
 
-    &:last-child {
+    &:nth-child(2) {
       padding-left: 36px;
+      border-left: 1px solid #e5e5e5;
     }
 
     .he-grand--number:extend(.font-family-din) {

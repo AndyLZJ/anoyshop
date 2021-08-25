@@ -39,7 +39,7 @@
         ></view>
       </view>
     </view>
-    <he-float-window v-if="showFloatWindow" pages-url="submit" :bottom="96"></he-float-window>
+    <he-float-window pages-url="submit" :bottom="96"></he-float-window>
   </view>
 </template>
 <script>
@@ -83,8 +83,7 @@ export default {
       userCouponId: null,
       note: '',
       loading: true,
-      disSubmit: false,
-      showFloatWindow: true
+      disSubmit: false
     };
   },
   computed: {
@@ -302,19 +301,6 @@ export default {
     if (comments_submit) {
       this.note = comments_submit;
       uni.removeStorageSync(this.$storageKey.comments_submit);
-    }
-    if (this.floatWindow.decline === 0) {
-      this.showFloatWindow = true;
-    }
-  },
-  onPageScroll(event) {
-    let scrollTop = parseInt(event.scrollTop);
-    if (this.floatWindow.decline) {
-      if (scrollTop > 100) {
-        this.showFloatWindow = true;
-      } else {
-        this.showFloatWindow = false;
-      }
     }
   }
 };

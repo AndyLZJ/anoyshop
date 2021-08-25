@@ -126,9 +126,15 @@
     <!-- 测试使用 -->
     <!--     <cartoon :score="100" title="测试" v-model="is_cartoon"></cartoon> -->
     <HeLoginModel />
-    <he-float-window v-if="showFloatWindow" pages-url="index"></he-float-window>
+    <!-- #ifdef H5 -->
+    <he-float-window :bottom="100" pages-url="index"></he-float-window>
+    <!--#endif-->
+    <!-- #ifndef H5 -->
+    <he-float-window pages-url="index"></he-float-window>
+    <!--#endif-->
   </view>
 </template>
+
 <script type="text/javascript">
 let menuButtonInfo = {};
 // #ifdef MP-WEIXIN || MP-BAIDU || MP-TOUTIAO || MP-QQ
@@ -224,8 +230,7 @@ export default {
       wechatUrl: '/',
       // #endif
       taskShare: false,
-      isShareCount: null,
-      showFloatWindow: false
+      isShareCount: null
     };
   },
   // #ifdef H5
@@ -273,8 +278,7 @@ export default {
       fixed: 'components/getSearchFixed',
       searchHeight: 'components/getSearchHeight',
       navbarHeight: 'setting/getNavBarHeight',
-      statusBarHeight: 'setting/statusBarHeight',
-      floatWindow: 'setting/getFloatWindow'
+      statusBarHeight: 'setting/statusBarHeight'
     }),
     is_ad() {
       return uni.getStorageSync('openingad') || false;
@@ -325,9 +329,6 @@ export default {
     // #endif
     if (this.isLogin) {
       this.setCartNumber();
-    }
-    if (this.floatWindow.decline === 0) {
-      this.showFloatWindow = true;
     }
   },
   methods: {
@@ -481,18 +482,9 @@ export default {
   },
   // #endif
   onPageScroll(e) {
-    console.log(e);
-    console.log(this.floatWindow.decline);
     let that = this;
     let scrollTop = parseInt(e.scrollTop);
     let isSatisfy = scrollTop >= that.searchTop + this.navbarHeight ? true : false;
-    if (this.floatWindow.decline) {
-      if (scrollTop > 100) {
-        this.showFloatWindow = true;
-      } else {
-        this.showFloatWindow = false;
-      }
-    }
     if (that.searchFixed === isSatisfy) {
       return false;
     }

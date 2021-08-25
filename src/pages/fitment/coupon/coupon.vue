@@ -154,7 +154,7 @@ export default {
                   item.can_obtain = false;
                 })
                 .catch(function (error) {
-                  item.can_obtain = false;
+                  // item.can_obtain = false;
                   _this.$toError(error);
                 });
             }
@@ -169,7 +169,7 @@ export default {
               item.can_obtain = false;
             })
             .catch(function (error) {
-              item.can_obtain = false;
+              // item.can_obtain = false;
               _this.$toError(error);
             });
           // #endif

@@ -29,288 +29,302 @@
 }
 
 @font-face {
-  font-family: 'iconfont'; /* Project id 2111115 */
-  src: url('//at.alicdn.com/t/font_2111115_m114knhnos.woff2?t=1628656164424') format('woff2'),
-    url('//at.alicdn.com/t/font_2111115_m114knhnos.woff?t=1628656164424') format('woff'),
-    url('//at.alicdn.com/t/font_2111115_m114knhnos.ttf?t=1628656164424') format('truetype');
+  font-family: "iconfont"; /* Project id 2111115 */
+  src: url('//at.alicdn.com/t/font_2111115_y0rmjpfgdfd.woff2?t=1629858369430') format('woff2'),
+  url('//at.alicdn.com/t/font_2111115_y0rmjpfgdfd.woff?t=1629858369430') format('woff'),
+  url('//at.alicdn.com/t/font_2111115_y0rmjpfgdfd.ttf?t=1629858369430') format('truetype');
 }
 
 .iconfont {
-  font-family: 'iconfont' !important;
+  font-family: "iconfont" !important;
   font-size: 16px;
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+.iconxiaochengxu:before {
+  content: "\e6e0";
+}
+
+.iconweixin:before {
+  content: "\e6e1";
+}
+
+.iconcha:before {
+  content: "\e6dd";
+}
+
 .iconbaoguo:before {
-  content: '\e6db';
+  content: "\e6db";
 }
 
 .icondynamic_release:before {
-  content: '\e6da';
+  content: "\e6da";
 }
 
 .iconfold1:before {
-  content: '\e6d9';
+  content: "\e6d9";
 }
 
 .iconfenxiaozhuangshi:before {
-  content: '\e6d6';
+  content: "\e6d6";
 }
 
 .iconshuzishanchu:before {
-  content: '\e6d1';
+  content: "\e6d1";
 }
 
 .iconpopup_close2:before {
-  content: '\e6d0';
+  content: "\e6d0";
 }
 
 .iconsuccess:before {
-  content: '\e6ce';
+  content: "\e6ce";
 }
 
 .iconwarning:before {
-  content: '\e6cf';
+  content: "\e6cf";
 }
 
 .iconfold:before {
-  content: '\e6cd';
+  content: "\e6cd";
 }
 
 .iconlike1:before {
-  content: '\e6cb';
+  content: "\e6cb";
 }
 
 .iconlike2:before {
-  content: '\e6cc';
+  content: "\e6cc";
 }
 
 .icondistribution_dynamic:before {
-  content: '\e6c9';
+  content: "\e6c9";
 }
 
 .icondistribution_list:before {
-  content: '\e6ca';
+  content: "\e6ca";
 }
 
 .icona-personalcenter_distribution:before {
-  content: '\e6c8';
+  content: "\e6c8";
 }
 
 .iconpersonalcenter_information:before {
-  content: '\e6c7';
+  content: "\e6c7";
 }
 
 .iconbofang:before {
-  content: '\e600';
+  content: "\e600";
 }
 
 .iconpersonalcenter_phone2:before {
-  content: '\e6c5';
+  content: "\e6c5";
 }
 
 .iconpersonalcenter_add:before {
-  content: '\e6c6';
+  content: "\e6c6";
 }
 
 .icontuijian:before {
-  content: '\e6b2';
+  content: "\e6b2";
 }
 
 .iconjifen:before {
-  content: '\e6ab';
+  content: "\e6ab";
 }
 
 .icongonggao:before {
-  content: '\e6a8';
+  content: "\e6a8";
 }
 
 .iconbtn_back:before {
-  content: '\e691';
+  content: "\e691";
 }
 
 .iconimago_loadingfail:before {
-  content: '\e690';
+  content: "\e690";
 }
 
 .iconpersonalcenter_phone:before {
-  content: '\e67a';
+  content: "\e67a";
 }
 
 .iconarrow-down:before {
-  content: '\e601';
+  content: "\e601";
 }
 
 .icontrash:before {
-  content: '\e61a';
+  content: "\e61a";
 }
 
 .iconarrow-top:before {
-  content: '\e62b';
+  content: "\e62b";
 }
 
 .iconcopy:before {
-  content: '\e63a';
+  content: "\e63a";
 }
 
 .iconproductlist_rank_second:before {
-  content: '\e69e';
+  content: "\e69e";
 }
 
 .iconproductlist_rank_first:before {
-  content: '\e69f';
+  content: "\e69f";
 }
 
 .iconnav_classification_normal:before {
-  content: '\e671';
+  content: "\e671";
 }
 
 .iconproductdetails_tab_customerservice:before {
-  content: '\e673';
+  content: "\e673";
 }
 
 .iconnav_personalcenter_normal:before {
-  content: '\e674';
+  content: "\e674";
 }
 
 .iconsearch_empty:before {
-  content: '\e675';
+  content: "\e675";
 }
 
 .iconproductdetails_goodsservices:before {
-  content: '\e676';
+  content: "\e676";
 }
 
 .iconproductdetails_tab_customerservice_online:before {
-  content: '\e677';
+  content: "\e677";
 }
 
 .iconproductdetails_popup_enlargethepicture:before {
-  content: '\e678';
+  content: "\e678";
 }
 
 .iconproductdetails_share:before {
-  content: '\e67c';
+  content: "\e67c";
 }
 
 .iconproductdetails_tab_customerservice_telephone:before {
-  content: '\e67d';
+  content: "\e67d";
 }
 
 .iconbtn_addtocart:before {
-  content: '\e67e';
+  content: "\e67e";
 }
 
 .iconimago_defaultproduct:before {
-  content: '\e67f';
+  content: "\e67f";
 }
 
 .iconsearchbar_search:before {
-  content: '\e680';
+  content: "\e680";
 }
 
 .iconaddress_wechataddress:before {
-  content: '\e685';
+  content: "\e685";
 }
 
 .iconpersonalcenter_address:before {
-  content: '\e686';
+  content: "\e686";
 }
 
 .iconpersonalcenter_contactus:before {
-  content: '\e688';
+  content: "\e688";
 }
 
 .iconorderdetails_logistics:before {
-  content: '\e689';
+  content: "\e689";
 }
 
 .iconshoppingcart_shopname:before {
-  content: '\e68a';
+  content: "\e68a";
 }
 
 .iconproductrecommendation_line:before {
-  content: '\e68b';
+  content: "\e68b";
 }
 
 .iconevaluate_uploadpictures_deleto:before {
-  content: '\e68c';
+  content: "\e68c";
 }
 
 .iconevaluate_uploadpictures:before {
-  content: '\e68d';
+  content: "\e68d";
 }
 
 .iconclassification_line:before {
-  content: '\e68e';
+  content: "\e68e";
 }
 
 .iconpersonalcenter_clearcache:before {
-  content: '\e68f';
+  content: "\e68f";
 }
 
 .iconaftersalesdetails-refund:before {
-  content: '\e692';
+  content: "\e692";
 }
 
 .iconaftersalesdetails-exchangegoods:before {
-  content: '\e694';
+  content: "\e694";
 }
 
 .iconaftersalesdetails-returngoods:before {
-  content: '\e696';
+  content: "\e696";
 }
 
 .iconbtn_subtract:before {
-  content: '\e697';
+  content: "\e697";
 }
 
 .iconbtn_add:before {
-  content: '\e698';
+  content: "\e698";
 }
 
 .iconpopup_close:before {
-  content: '\e699';
+  content: "\e699";
 }
 
 .iconevaluate_star:before {
-  content: '\e69a';
+  content: "\e69a";
 }
 
 .iconbtn_arrow:before {
-  content: '\e69b';
+  content: "\e69b";
 }
 
 .iconaddress_edit:before {
-  content: '\e69c';
+  content: "\e69c";
 }
 
 .iconbtn_select:before {
-  content: '\e69d';
+  content: "\e69d";
 }
 
 .iconnav_home_selected:before {
-  content: '\e66a';
+  content: "\e66a";
 }
 
 .iconnav_personalcenter_selected:before {
-  content: '\e66c';
+  content: "\e66c";
 }
 
 .iconnav_shoppingcart_normal:before {
-  content: '\e66d';
+  content: "\e66d";
 }
 
 .iconnav_home_normal:before {
-  content: '\e66e';
+  content: "\e66e";
 }
 
 .iconnav_classification_selected:before {
-  content: '\e66f';
+  content: "\e66f";
 }
 
 .iconnav_shoppingcart_selected:before {
-  content: '\e670';
+  content: "\e670";
 }
+
+

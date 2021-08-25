@@ -47,23 +47,26 @@
           排名
         </view
         >
-        <he-image
-          :width="80"
-          :height="80"
-          :image-style="{
+        <view class="avatar">
+          <he-image
+            :width="80"
+            :height="80"
+            :image-style="{
             borderRadius: '50%'
           }"
-          :src="myRank.user.avatar"
-        ></he-image>
+            :src="myRank.avatar"
+          ></he-image>
+          <image class="type" :src="`${ipAddress}/${myRank.type}.png`"/>
+        </view>
         <view class="content">
-          <view class="name">{{ myRank.user.nickname }}</view>
+          <view class="name">{{ myRank.nickname }}</view>
           <view class="info">
             <text>
               {{ latitude.name }}:{{ latitude.value !== 'all_children' ? '￥' : '' }}{{
-                myRank[latitude.value]
+                myRank.value
               }}
             </text>
-            <text>排名: {{ list.findIndex(item => item.id === myRank.id) + 1 }}</text>
+            <text>排名: {{ myRank.rank }}</text>
           </view>
         </view>
       </view>
@@ -93,36 +96,45 @@
                   :height="80"
                   :src="item.user.avatar"
                 />
+                <image class="type" :src="`${ipAddress}/${item.user.oauth.type}.png`">
+                </image>
               </view>
               <view class="name">{{ item.user.nickname }}</view>
             </view>
             <view class="col number">{{ latitude.value !== 'all_children' ? '￥' : '' }}{{ item[latitude.value] }}</view>
           </view>
+          <he-load-more v-if="list.length > 0" :status="loadStatus"></he-load-more>
         </view>
       </view>
     </view>
   </view>
 </template>
 
-<script>
+<script lang="js">
+import heLoadMore from './../../components/he-load-more.vue';
 import {mapGetters} from 'vuex';
 import {rankList} from "../api";
 
 export default {
   name: 'leaderboard',
+  components: {
+    heLoadMore
+  },
   data() {
     return {
       hCurrent: 1,
       rankingTime: 1,
       latitude: '',
       list: [],
-      myRank: null
+      myRank: null,
+      loadStatus: 'nomore',
     };
   },
   computed: {
     ...mapGetters({
       rank: 'setting/getPromoterRank'
     }),
+    // 列表头像样式
     avatarStyle() {
       let style = {};
       return index => {
@@ -198,8 +210,7 @@ export default {
       });
 
       this.list = this.list.concat(response.rank_list);
-      this.myRank = response.my_rank || response.my_rank === 0 ? this.list[response.my_rank] : null;
-      console.log(this.myRank);
+      this.myRank = response.my_rank ? response.my_rank : null;
     }
   },
   filters: {
@@ -378,6 +389,23 @@ export default {
     }
   }
 
+  .avatar {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    position: relative;
+
+    .type {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      bottom: 0;
+      right: 0;
+      background: #ffffff;
+      border-radius: 50%;
+    }
+  }
+
   .table-body {
     .row {
       height: 88px;
@@ -389,11 +417,6 @@ export default {
         height: 56px;
       }
 
-      .avatar {
-        width: 84px;
-        height: 84px;
-        border-radius: 50%;
-      }
 
       .name {
         font-size: 28px;

@@ -1,5 +1,6 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin'); //最新版本copy-webpack-plugin插件暂不兼容，推荐v5.0.0
+const FileManagerPlugin = require('filemanager-webpack-plugin');
 
 let externals =
   process.env.UNI_PLATFORM === 'h5'
@@ -43,9 +44,42 @@ let plugins =
               )
             }
           ]
+        }),
+        new FileManagerPlugin({
+          events: {
+            onEnd: {
+              archive: [{ source: './dist/build/mp-weixin', destination: './../server/applet/app.zip' }]
+            }
+          }
         })
       ]
-    : [];
+    : [
+        new CopyWebpackPlugin({
+          patterns: [
+            {
+              from: path.join(__dirname, 'public/index.php'),
+              to: 'index.php'
+            }
+          ]
+        }),
+        new FileManagerPlugin({
+          events: {
+            onStart: {
+              delete: [
+                {
+                  source: './../server/views/wechat',
+                  options: {
+                    force: true
+                  }
+                }
+              ]
+            },
+            onEnd: {
+              move: [{ source: './dist/build/h5', destination: './../server/views/wechat' }]
+            }
+          }
+        })
+      ];
 
 module.exports = {
   css: {

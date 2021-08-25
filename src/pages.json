@@ -125,7 +125,7 @@
     {
       "path": "pages/other/time-period",
       "style": {
-        "navigationBarTitleText": ""
+        "navigationBarTitleText": "选择日期"
       }
     },
     {
@@ -344,7 +344,10 @@
           }
         },
         {
-          "path": "pages/grade"
+          "path": "pages/grade",
+          "style": {
+            "navigationBarTitleText": "等级中心"
+          }
         },
         {
           "path": "pages/order",
@@ -356,7 +359,7 @@
         {
           "path": "pages/offline",
           "style": {
-            "navigationBarTitleText": "下线人数",
+            "navigationBarTitleText": "分销下线",
             "enablePullDownRefresh": true
           }
         },
