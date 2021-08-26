@@ -323,9 +323,9 @@ export function promoterChildCount() {
 // ranking_dimension total_money:累计销售额 total_bonus:累计佣金 all_children:当前下线
 // ranking_time 1 今日 2 昨日  3 本月  默认汇总  ranking_dimension = all_children时不用传
 export function rankList({
-  ranking_dimension = '',
-  ranking_time = 1
-}) {
+                           ranking_dimension = '',
+                           ranking_time = 1
+                         }) {
   return new Promise((resolve, reject) => {
     service.rank('get', {
       ranking_dimension,
@@ -339,12 +339,12 @@ export function rankList({
 
 // 申请提现
 export function finance({
-  price = '',
-  type = null,
-  extra = {}
-}) {
+                          price = '',
+                          type = null,
+                          extra = {}
+                        }) {
   return new Promise((resolve, reject) => {
-    service.finance('post', {
+    service.finance('post', {model: 'promoter'}, {
       price,
       type,
       extra
@@ -362,12 +362,12 @@ export function financeList(page, {model = 'promoter', status = null}) {
       status: status
     }).page(page, 10).then(response => {
       console.log(response);
-      transformPageHeaders(response);
-      const {data, pagination} = response;
-      resolve({
-        data: data,
-        pagination
-      });
+      // transformPageHeaders(response);
+      // const {data, pagination} = response;
+      // resolve({
+      //   data: data,
+      //   pagination
+      // });
     }).catch(reject);
   })
 }

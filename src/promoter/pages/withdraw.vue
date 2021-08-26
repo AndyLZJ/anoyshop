@@ -201,6 +201,7 @@ export default {
       const form = JSON.parse(JSON.stringify(this.form));
       const self = this;
       let type = null;
+      if (!form.type) return;
       switch (form.type.value) {
         case 'wechatDib':
           type = 1;
@@ -226,12 +227,22 @@ export default {
           },
           complete: function () {
             // 提现接口
-            finance(form);
+            finance(form).catch(error => {
+              uni.showToast({
+                title: error.data.message,
+                icon: 'none'
+              });
+            });
           }
         });
         // #endif
         // #ifdef H5
-        finance(form);
+        finance(form).catch(error => {
+          uni.showToast({
+            title: error.data.message,
+            icon: 'none'
+          });
+        });
         // #endif
       } catch (e) {
         console.log(e);
@@ -246,7 +257,6 @@ export default {
     isKeyboard: {
       handler(value) {
         if (value) {
-          console.log('揍你')
           this.$nextTick(() => {
             uni.pageScrollTo({
               scrollTop: 1000

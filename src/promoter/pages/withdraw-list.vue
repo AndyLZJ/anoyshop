@@ -134,8 +134,7 @@ export default {
     async getList() {
       const response = await financeList(this.page.current, {});
       console.log(response);
-      const {data} = response;
-      console.log(data);
+      // const {} =
     }
   },
   onLoad() {
