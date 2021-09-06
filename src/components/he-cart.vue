@@ -125,6 +125,7 @@
     </view>
   </he-popup>
 </template>
+
 <script>
 import HePopup from '@/components/he-popup.vue';
 import heNumberBox from './he-number-box.vue';
@@ -202,7 +203,6 @@ export default {
      */
     stocks: function () {
       if (!this.$h.test.isEmpty(this.showSelect)) {
-        //console.log("1", this.goods, this.showSelect)
         //判断是否为积分商品
         if (this.is_task && this.goods.task) {
           return this.showSelect.task_stock;
@@ -210,7 +210,6 @@ export default {
           return this.showSelect.stocks;
         }
       } else {
-        //console.log("2", this.goods)
         if (this.is_task && this.goods.task) {
           return this.goods.task.task_stock;
         } else {
@@ -265,7 +264,6 @@ export default {
       return this.goods.slideshow && this.goods.slideshow[0];
     },
     minNumber: function () {
-      console.log(this.goods.min_number);
       return this.goods.min_number;
     },
     limitNumber: function () {
@@ -291,12 +289,6 @@ export default {
       return this.goods.param && this.goods.param.goods_data;
     },
     limitBuyValue: function ({ goods, stocks }) {
-      console.log('limit_buy_status');
-      console.log(goods.limit_buy_status);
-      console.log('limit_buy_value');
-      console.log(goods.limit_buy_value);
-      console.log('stocks');
-      console.log(stocks);
       if (this.goods.limit_buy_status === 1) {
         return this.goods.limit_buy_value;
       } else {
@@ -515,7 +507,7 @@ export default {
       let _this = this;
       this.showSelect.goods_number = this.number;
       uni.navigateTo({
-        url: '/pages/order/submit?data=' + JSON.stringify([this.showSelect]) + '&is_task=' + this.is_task,
+        url: '/pages/order/submit?is_task=' + this.is_task,
         success: function (res) {
           res.eventChannel.emit('acceptDataFromOpenerPage', {
             data: [_this.showSelect]

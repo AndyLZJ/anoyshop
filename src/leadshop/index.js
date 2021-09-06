@@ -11,7 +11,6 @@ export default class heshop {
    */
   static error(data) {
     if (data) {
-      console.log(`ErrorMessage::${data.msg} [${data.code}]`, `ERR - ${data.code}`);
     }
   }
 
@@ -78,7 +77,6 @@ export default class heshop {
       this.config = config;
       return this.instance[config.AppID];
     } catch (error) {
-      console.error('请求报错提示', error);
     }
   }
 

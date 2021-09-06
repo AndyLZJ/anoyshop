@@ -51,7 +51,6 @@ export const hackUniRoute = function (callback) {
       } else {
         // 处理所有钩子
         const newOpts = toPath(key, opts);
-        // console.log("newOpts", opts)
         const actionFunc = function (customOpts) {
           const lastOpts = Object.assign(newOpts, customOpts);
           const param = utils.pushTo(lastOpts);
@@ -61,7 +60,6 @@ export const hackUniRoute = function (callback) {
           param.fail = function (error) {
             opts.fail ? opts.fail(error, opts) : console.log(error);
           };
-          // console.log("执行虚拟操作信息", param)
           cacheFunc[param.method](param);
         };
         callback.call(this, newOpts, actionFunc);

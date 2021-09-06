@@ -1,9 +1,11 @@
 import { mapGetters } from 'vuex';
+import getSceneVariable from '../function/getSceneVariable';
 
 module.exports = {
   data() {
     return {
-      ipAddress: 'https://qmxq.oss-cn-hangzhou.aliyuncs.com'
+      ipAddress: 'https://qmxq.oss-cn-hangzhou.aliyuncs.com',
+      shareOpen: false
     };
   },
   computed: {
@@ -39,29 +41,42 @@ module.exports = {
         }
       }
       return false;
+    },
+    $shareData({ shareSetting, storeSetting }) {
+      return {
+        title: shareSetting?.describe ? shareSetting?.describe : `欢迎光临${storeSetting?.name} 挑选好物`,
+        path: '/pages/index/index',
+        imageUrl: shareSetting.cover_img ? shareSetting?.cover_img : storeSetting?.logo
+      };
     }
   },
   onLoad(options) {
     // getRect挂载到$h上，因为这方法需要使用in(this)，所以无法把它独立成一个单独的文件导出
     this.$h.getRect = this.$hGetRect;
-    console.log('获取加载页面的参数', options);
-    //判断是否有用户要求记录
-    if (options && options.task_uid) {
-      console.log('执行需要邀请好友统计处理');
-      if (this.isLogin && this.$store.state.apply.userInfo.id != options.task_uid) {
-        this.$store
-          .dispatch('plugins/onInvite', { UID: options.task_uid })
-          .then(res => {
-            console.log('统计邀请好友积分', res);
-          })
-          .catch(error => {
-            console.log('统计邀请好友积分错误信息', error);
-          });
-      } else {
-        console.log('不能邀请自己');
+    const { id } = this.$store.state.apply.userInfo;
+    // 分销商绑定上下级关系
+    if (this.isLogin) {
+      if (options.scene || options.spu) {
+        let promoterUid;
+        if (options.spu) {
+          promoterUid = options.spu;
+        } else if (options.scene) {
+          const scene = decodeURIComponent(options.scene);
+          promoterUid = this.$h.getSceneVariable(scene, 'spu');
+        }
+        if (id != promoterUid) {
+          this.$store.dispatch('plugins/bindPromoterSuperior', { parent_id: promoterUid });
+        } else {
+        }
       }
     }
-    console.log(this.shareSetting);
+
+    //判断是否有用户要求记录
+    if (options && options.task_uid) {
+      if (this.isLogin && id != options.task_uid) {
+        this.$store.dispatch('plugins/onInvite', { UID: options.task_uid });
+      }
+    }
   },
   methods: {
     // 查询节点信息
@@ -94,28 +109,23 @@ module.exports = {
       }
     },
     $shareAppMessage: function (args) {
-      console.log(this.shareSetting);
-      args = args || {
-        title: this.shareSetting?.describe
-          ? this.shareSetting?.describe
-          : `欢迎光临${this.storeSetting?.name} 挑选好物`,
-        path: '/pages/index/index',
-        imageUrl: this.shareSetting.cover_img ? this.shareSetting?.cover_img : this.storeSetting?.logo
-      };
-      if (this.isLogin && args && args.path) {
-        console.log('判断成功，需要添加分享链接');
+      let newArgs = args || this.$shareData;
+      newArgs = JSON.parse(JSON.stringify(newArgs));
+      if (this.isLogin && newArgs && newArgs.path) {
+        const { id, promoter_status } = this.$store.state.apply.userInfo;
         this.toTaskonShare();
         //处理统一传参问题
-        if (args.path.indexOf('?') == -1) {
-          console.log('有直接参数');
-          args.path = args.path + '?task_uid=' + this.$store.state.apply.userInfo.id;
+        if (newArgs.path.indexOf('?') === -1) {
+          newArgs.path = newArgs.path + '?task_uid=' + id;
         } else {
-          console.log('没有直接参数');
-          args.path = args.path + '&task_uid=' + this.$store.state.apply.userInfo.id;
+          newArgs.path = newArgs.path + '&task_uid=' + id;
+        }
+        // 是分销商
+        if (promoter_status === 2) {
+          newArgs.path = newArgs.path + '&spu=' + id;
         }
       }
-      console.log('打印分享链接', args.path);
-      return args;
+      return newArgs;
     },
     uniCopy: function ({ content, success, error }) {
       if (!content) return error('the content can not be blank');
@@ -125,10 +135,12 @@ module.exports = {
         data: content,
         success: function () {
           success && success('Copy successfully');
-          uni.showToast({
-            title: '内容已复制',
-            icon: 'none'
-          });
+          if (!success) {
+            uni.showToast({
+              title: '内容已复制',
+              icon: 'none'
+            });
+          }
         },
         fail: function () {
           error && error('Copy failed');
@@ -164,7 +176,7 @@ module.exports = {
       try {
         uni.setStorageSync(key, data);
       } catch (e) {
-        console.error(e);
+        //  Don't do
       }
     },
     // 获取缓存
@@ -172,7 +184,7 @@ module.exports = {
       try {
         return uni.getStorageSync(key);
       } catch (e) {
-        console.error(e);
+        //  Don't do
       }
     },
     previewImage: function () {},
@@ -182,22 +194,21 @@ module.exports = {
         let task_status = this.$manifest('task', 'status');
         let that = this;
         if (task_status) {
-          this.$store
-            .dispatch('plugins/onShare')
-            .then(res => {
-              console.log('执行了分享转发公共合计', res);
-            })
-            .catch(() => {});
+          this.$store.dispatch('plugins/onShare');
         }
       }, 1000);
     }
   },
   // #ifdef MP-WEIXIN
   onShareAppMessage() {
-    return this.$shareAppMessage();
+    if (!this.shareOpen) {
+      return this.$shareAppMessage();
+    }
   },
   onShareTimeline() {
-    return this.$shareAppMessage();
+    if (!this.shareOpen) {
+      return this.$shareAppMessage();
+    }
   },
   onAddToFavorites() {
     return {

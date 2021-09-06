@@ -21,7 +21,6 @@ export default {
       getCopyright: 'getCopyright'
     }),
     auth({ $store }) {
-      console.log($store.state.setting.auth);
       return $store.state.setting.auth;
     },
     isAuth({ $store }) {

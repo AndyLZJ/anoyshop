@@ -17,7 +17,6 @@ const initRouter = (routerMap = {}, isCustom = false) => {
   // 路由全局拦截器 在这里处理登录、授权等相关操作
   router.beforeEach((to, from, next) => {
     try {
-      console.log('to', to);
       // 开启$store
       const $store = store();
       // 开启$Cloud
@@ -39,10 +38,8 @@ const initRouter = (routerMap = {}, isCustom = false) => {
         //判断用户是否登陆
         if ($store.getters.token) {
           if (to.path == loginPage) {
-            console.log('我已登录，执行跳转', 1);
             next('/');
           } else {
-            console.log('我已登录，执行跳转', to);
             next();
           }
         } else {
@@ -52,12 +49,8 @@ const initRouter = (routerMap = {}, isCustom = false) => {
             next();
           } else {
             let toPath = '/';
-            console.log($store);
-            // console.log()
             if (to.path !== loginPage) {
               toPath = to.fullPath;
-              console.log(toPath);
-              console.log($store);
               $store.state.apply.showLoginModel = true;
               // next({
               //   path: loginPage,
@@ -72,22 +65,18 @@ const initRouter = (routerMap = {}, isCustom = false) => {
           }
         }
       } else {
-        console.log('执行次数')
         next();
       }
     } catch (error) {
-      console.log('路由错误信息', error);
     }
   });
 
   // 路由后置拦截器
-  router.afterEach(to => {
-    // console.log("路由后置拦截器拦截", to)
+  router.afterEach(() => {
   });
 
   // 路由跳转出错处理
   router.onError(function (e) {
-    console.log('错误：', e.message || '路由跳转失败');
   });
 };
 

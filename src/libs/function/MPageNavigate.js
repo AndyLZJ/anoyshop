@@ -28,10 +28,8 @@ function MPageNavigate(item) {
         appId: item.param.applet.appId,
         path: item.param.applet.path,
         success(e) {
-          console.log(e);
         },
         fail(e) {
-          console.log(e);
         }
       });
     }
@@ -47,7 +45,6 @@ function MPageNavigate(item) {
       uni.navigateTo({
         url: item.path,
         fail: function () {
-          console.log(12123);
           uni.reLaunch({
             url: item.path
           });

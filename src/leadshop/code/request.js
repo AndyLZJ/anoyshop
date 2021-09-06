@@ -47,9 +47,8 @@ export default function server(options, instance) {
    */
   cloud.interceptors.response.use(
     response => {
-      //console.log("读取AXIOS返回", response)
       if (response.status >= 200 && response.status < 300) {
-        if (response.headers['x-pagination-total-count'] || response.headers['X-Pagination-Total-Count']) {
+        if (response.headers?.hasOwnProperty('x-pagination-total-count') || response.headers?.hasOwnProperty('X-Pagination-Total-Count')) {
           return response;
         }
         return response.data;
@@ -70,7 +69,6 @@ export default function server(options, instance) {
           //重新加载当前页面
           options.redLoadFun();
         } else {
-          console.log('1221212112');
           return Promise.reject(error.response);
         }
       } else if (response.status == 420) {
@@ -97,7 +95,6 @@ export default function server(options, instance) {
               if (data && data.token) {
                 cache.set('token', data.token);
                 //重新加载当前页面
-                // redLoadFun();
                 options.redLoadFun();
               }
             })
@@ -108,7 +105,6 @@ export default function server(options, instance) {
                 cache.remove('token');
                 cache.remove('userInfo');
                 //重新加载当前页面
-                // redLoadFun();
                 options.redLoadFun();
               } else {
                 return Promise.reject(error.response);
@@ -123,8 +119,6 @@ export default function server(options, instance) {
         //复制错误 刷新页面
         if (options.ErrorFun && typeof options.ErrorFun === 'function') {
           options.ErrorFun(error);
-        } else {
-          console.log('读取AXIOS错误', error, error.response);
         }
         return Promise.reject(error.response);
       }

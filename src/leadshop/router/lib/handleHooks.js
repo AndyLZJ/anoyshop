@@ -50,8 +50,6 @@ const handleAbort = function (err) {
     this.errorCbs.forEach(cb => {
       cb(err);
     });
-  } else {
-    console.error(err);
   }
 };
 

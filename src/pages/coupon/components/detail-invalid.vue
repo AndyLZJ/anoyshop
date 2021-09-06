@@ -1,5 +1,13 @@
 <template>
-  <he-popup v-model="showModal" mode="center" :width="590" :height="288" :border-radius="16" negative-top="30vh" :zoom="false">
+  <he-popup
+    v-model="showModal"
+    mode="center"
+    :width="590"
+    :height="288"
+    :border-radius="16"
+    negative-top="30vh"
+    :zoom="false"
+  >
     <view class="flex flex-direction align-center" :data-theme="theme">
       <view class="he-invaild-text">{{ title }}</view>
       <button class="cu-btn he-invaild-btn" @click="redirectTo">去逛逛</button>
@@ -23,23 +31,22 @@ export default {
   },
   computed: {
     showModal: {
-      get: function() {
+      get: function () {
         return this.value;
       },
-      set: function(bool) {
+      set: function (bool) {
         this.$emit('input', bool);
       }
     }
   },
   methods: {
-    redirectTo: function() {
+    redirectTo: function () {
       uni.redirectTo({
         url: '/pages/goods/search-list'
       });
     }
   }
 };
-
 </script>
 <style scoped lang="scss">
 .he-invaild-text {
@@ -61,5 +68,4 @@ export default {
   color: #ffffff;
   @include background_color('background_color');
 }
-
 </style>

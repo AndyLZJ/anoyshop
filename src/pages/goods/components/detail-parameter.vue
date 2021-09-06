@@ -157,7 +157,6 @@ export default {
           behavior: 'default'
         })
         .then(response => {
-          console.log(response);
           if (this.$h.test.isEmpty(response)) {
             this.$store.dispatch('setting/getLocation').then(response => {
               this.selectAddress(response.result.ad_info);
@@ -165,9 +164,6 @@ export default {
           } else {
             this.selectAddress(response);
           }
-        })
-        .catch(error => {
-          console.log(error);
         });
     }
   },
@@ -199,9 +195,6 @@ export default {
               icon: 'none'
             });
           }
-        })
-        .catch(error => {
-          console.log(error);
         });
     }
   }

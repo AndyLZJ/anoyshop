@@ -29,6 +29,8 @@
             :coupon-reduced="detail.coupon_reduced"
             :status="detail.status"
             :store-reduced="detail.store_reduced"
+            :promoter-reduced="detail.promoter_reduced"
+            :is-promoter="detail.is_promoter"
             :detail="detail"
           ></detail-price>
           <detail-order-info
@@ -112,7 +114,7 @@ export default {
       );
     },
     ...mapGetters('setting', {
-      goodsSetting: 'goodsSetting',
+      goodsSetting: 'goodsSetting'
     })
   },
   methods: {

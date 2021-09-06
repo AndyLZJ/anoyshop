@@ -1,9 +1,3 @@
-/*
- * @Author: Sean
- * @Date:   2020-02-20 13:28:36
- * @Last Modified by:   qinuoyun
- * @Last Modified time: 2020-11-18 15:34:34
- */
 import axios from 'axios';
 import utils from 'axios/lib/utils';
 import normalizeHeaderName from 'axios/lib/helpers/normalizeHeaderName';
@@ -59,15 +53,18 @@ axios.defaults.adapter = config => {
     let requestData = config.data;
 
     let request = '';
-
-    if (requestHeaders['Content-Type'] && requestHeaders['Content-Type'] == 'multipart/form-data') {
+    if (requestHeaders['Content-Type'] && requestHeaders['Content-Type'] === 'multipart/form-data') {
       let data = JSON.parse(config.data);
+      let header = JSON.parse(JSON.stringify(requestHeaders));
+      delete header['Content-Type'];
       request = uni.uploadFile({
         url: requestUrl,
-        header: requestHeaders,
-        filePath: data.index[0],
-        formData: data,
-        name: 'file',
+        header: header,
+        filePath: data.content,
+        formData: {
+          type: data.type
+        },
+        name: 'content',
         success: res => {
           settle(resolve, reject, {
             data: res.data,

@@ -209,7 +209,6 @@ export default {
   mounted() {
     this.data2 = this.getMonth();
     this.date = this.getYear(this.data1) + '年' + (this.data2 + 1) + '月';
-    console.log('this.date ', this.date);
     this.handleInitialize();
   },
   /**
@@ -240,7 +239,6 @@ export default {
       //author: meizz
       let t = this.timestampToTime(date);
       date = new Date(t);
-      console.log('date', date);
       var o = {
         'M+': date.getMonth() + 1, //月份
         'd+': date.getDate(), //日

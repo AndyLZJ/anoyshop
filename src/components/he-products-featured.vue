@@ -58,8 +58,7 @@ export default {
         .then(res => {
           this.taskList = res;
         })
-        .catch(err => {
-          console.error(err);
+        .catch(() => {
         });
     } else {
       this.shareGoods();

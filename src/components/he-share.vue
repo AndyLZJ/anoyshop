@@ -1,10 +1,14 @@
 <template>
   <view class="he-share">
-    <he-popup mode="bottom" v-model="showModal" :border-radius="16">
+    <he-popup mode="bottom" :z-index="1000" v-model="showModal" :border-radius="16">
       <view class="he-share__box">
         <view class="he-share__content">
           <view class="he-share__title">分享</view>
           <view class="flex he-share__bottom justify-center align-center">
+            <button class="cu-btn he-share__icon lex flex-direction" @click="confirmPromoter" v-if="isPromoter">
+              <image :src="ipAddress + '/promoter-material.png'" class="he-top__image"></image>
+              <view class="he-bottom">推广素材</view>
+            </button>
             <!--#ifndef H5-->
             <button class="cu-btn he-share__icon he-share__friend flex flex-direction" open-type="share">
               <image :src="ipAddress + '/share-icon-wechat.png'" class="he-top__image"></image>
@@ -53,6 +57,10 @@ export default {
     },
     couponType: {
       type: [Object, String]
+    },
+    isPromoter: {
+      type: [Boolean],
+      default: false
     }
   },
   data() {
@@ -75,6 +83,9 @@ export default {
       set(val) {
         this.$emit('input', val);
       }
+    },
+    isLogin: function () {
+      return this.$store.state.apply.is_login;
     }
   },
   methods: {
@@ -85,12 +96,32 @@ export default {
       setTimeout(function () {
         _this.showModal = false;
       }, 100);
+      this.toTaskonShare();
     },
     // #ifdef H5
     openWechat: function () {
       this.isWeChat = true;
-    }
+    },
     // #endif
+    confirmPromoter() {
+      this.showModal = false;
+      this.$emit('confirmPromoter');
+    },
+    toTaskonShare() {
+      //用于延时测试数据
+      setTimeout(res => {
+        let task_status = this.$manifest('task', 'status');
+        let that = this;
+        if (this.isLogin && task_status) {
+          this.$store
+            .dispatch('plugins/onShare')
+            .then(res => {})
+            .catch(() => {
+              //  Don't do
+            });
+        }
+      }, 1000);
+    }
   }
 };
 </script>
@@ -168,6 +199,7 @@ export default {
   height: 100vh;
   z-index: 12000;
   top: 0;
+  left: 0;
   background-color: rgba(0, 0, 0, 0.2);
 
   .le-one {

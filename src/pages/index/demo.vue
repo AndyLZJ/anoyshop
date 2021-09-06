@@ -17,10 +17,8 @@ export default {
       uni.navigateToMiniProgram({
         appId: appId,
         success(e) {
-          console.log(e)
         },
         fail(e) {
-          console.log(e);
         }
       })
     }

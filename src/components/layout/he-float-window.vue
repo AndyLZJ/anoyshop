@@ -195,7 +195,7 @@ export default {
 <style lang="scss" scoped>
 .he-float {
   position: fixed;
-  z-index: 1000;
+  z-index: 998;
   right: 24px;
 
   .open-close {
@@ -250,5 +250,6 @@ export default {
   width: 100%;
   height: 100%;
 }
+
 </style>
 

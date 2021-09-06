@@ -23,9 +23,6 @@ const goods = {
           })
           .then(function (res) {
             commit('shareGoods', res);
-          })
-          .catch(function (err) {
-            console.error(err);
           });
       }
     },

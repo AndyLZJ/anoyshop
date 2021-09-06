@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import listSort from './components/list-sort.vue';
+import listSort from '../../components/list-sort.vue';
 import listA from '../../components/goods-list/list-A.vue';
 import listB from '../../components/goods-list/list-B.vue';
 import listC from '../../components/goods-list/list-C.vue';

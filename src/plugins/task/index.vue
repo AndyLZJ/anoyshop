@@ -284,7 +284,6 @@ export default {
   computed: {
     tmplIds: function () {
       let tmplIds = [this.$store.getters['setting/subscribe'].task_refund_tpl];
-      console.log('模板消息ID代码', tmplIds);
       return tmplIds;
     },
     topHeight: function () {
@@ -340,11 +339,7 @@ export default {
       this.$heshop
         .plugin('get', { include: 'task', model: 'task', keyword: 'signin' })
         .then(res => {
-          console.log('签到信息', res);
           this.is_sign = res.status;
-        })
-        .catch(err => {
-          console.log('err', err);
         });
     },
     /**
@@ -360,7 +355,6 @@ export default {
             tmplIds: _this.tmplIds,
             success: function () {},
             fail: function (e) {
-              console.log('e', e);
               resolve();
             },
             complete: function (e) {
@@ -405,7 +399,6 @@ export default {
             }
           )
           .then(res => {
-            console.log('签到返回数据', res);
             if (res.code === 0) {
               this.cartoonData.score = res.data;
               this.cartoonData.title = res.msg;
@@ -427,7 +420,6 @@ export default {
       this.$heshop
         .plugin('get', { include: 'task', model: 'sign' })
         .then(res => {
-          console.log('获取的签到记录res', res);
           try {
             let _l = res.length;
             //判断如果长度>1的情况就要做时间比对
@@ -446,14 +438,12 @@ export default {
               //存储相差天数
 
               day = datedifference(start['start_time'], end['start_time']);
-              console.log('day', day);
               if (day < 3) {
                 var time = Date.parse(new Date()).toString();
                 time = time.substr(0, 10);
                 day = datedifference(start['start_time'], time);
               }
             }
-            console.log('_list', _list);
             //循环读取天数
             for (var i = -day; i < 7 - day; i++) {
               let on_day = getDay(i);
@@ -492,10 +482,9 @@ export default {
             }, 100);
             this.handleLoadData();
           } catch (error) {
-            console.log('error', error);
           }
         })
-        .catch(err => {});
+        .catch(() => {});
     },
     /**
      * 签到列表计算
@@ -529,9 +518,6 @@ export default {
           };
           this.noTask = array['buy'].display || array['active'].display || array['base'].display || this.signin.status;
           this.taskList = array;
-        })
-        .catch(err => {
-          console.log('handleTaskList', err);
         });
     },
     /**

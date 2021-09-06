@@ -79,7 +79,6 @@ export default {
     }
   },
   onLoad(options) {
-    console.log(options);
     this.goods = JSON.parse(decodeURIComponent(options.good));
     this.id = options.id;
     this.is_task = options.is_task;

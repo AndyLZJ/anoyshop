@@ -53,7 +53,6 @@ export default {
       if (this.$manifest('task', 'status')) {
         tmplIds.push(this.$store.getters['setting/subscribe'].task_refund_tpl);
       }
-      console.log('tmplIds', tmplIds);
       return tmplIds;
     }
   },

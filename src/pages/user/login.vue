@@ -52,11 +52,10 @@ export default {
           } else {
             uni.navigateBack({
               delta: 1,
-              fail(e) {
+              fail() {
                 uni.switchTab({
                   url: '/pages/index/index'
                 });
-                console.log(e);
               }
             });
           }
@@ -83,11 +82,10 @@ export default {
           } else {
             uni.navigateBack({
               delta: 1,
-              fail(e) {
+              fail() {
                 uni.switchTab({
                   url: '/pages/index/index'
                 });
-                console.log(e);
               }
             });
           }

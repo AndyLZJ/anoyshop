@@ -127,7 +127,6 @@ export const defaulter = {
           //如果参数为数字，则获取单个
           if (Object.prototype.toString.call(argument[1]) == '[object Number]') {
             url += '/' + argument[1];
-            // console.log("查看数据",url);
             if (page) {
               argument[2] = argument[2] || {};
               if (config.AppConfig.pagination == 'header') {
@@ -190,11 +189,9 @@ export const defaulter = {
         }
         break;
     }
-    // console.log("提交的请求头headers", headers);
     //格式化数据，如果为null设置为空
     data = data || '';
     headers = headers || { 'Content-Type': 'application/json' };
-    //console.log("查看数据", { url, method, headers, data });
     resolve({ url, method, headers, data });
     //处理数据
   },
@@ -229,7 +226,6 @@ export const login = {
     });
   },
   afterEach(value, resolve) {
-    // console.log("登录后置操作信息", value)
     cache.set('token', value.token || '');
     cache.set('userInfo', value || '');
     resolve(value);
@@ -290,7 +286,6 @@ export const POST = {
     //格式化数据，如果为null设置为空
     data = data || '';
     headers = headers || { 'Content-Type': 'application/json' };
-    console.log('查看数据', { url, method, headers, data });
     resolve({ url, method, headers, data });
   },
   afterEach(value, resolve) {
@@ -321,7 +316,6 @@ export const GET = {
     page = value['page'] || null;
     //判断是否存在分页
     if (page) {
-      console.log('page', page);
       if (page.page && page.size) {
         page = page;
       } else {
@@ -359,7 +353,6 @@ export const GET = {
     //格式化数据，如果为null设置为空
     data = data || '';
     headers = headers || { 'Content-Type': 'application/json' };
-    // console.log("查看数据", { url, method, headers, data });
     resolve({ url, method, headers, data });
   },
   afterEach(value, resolve) {
@@ -410,7 +403,6 @@ export const PUT = {
     //格式化数据，如果为null设置为空
     data = data || '';
     headers = headers || { 'Content-Type': 'application/json' };
-    // console.log("查看数据", { url, method, headers, data });
     resolve({ url, method, headers, data });
   },
   afterEach(value, resolve) {
@@ -460,7 +452,6 @@ export const DELETE = {
     //格式化数据，如果为null设置为空
     data = data || '';
     headers = headers || { 'Content-Type': 'application/json' };
-    // console.log("查看数据", { url, method, headers, data });
     resolve({ url, method, headers, data });
   },
   afterEach(value, resolve) {
@@ -509,7 +500,6 @@ export const upload = {
     //设置唯一Key
     let keys = Object.keys(value);
     let argument = value[keys[0]];
-    console.log(argument);
     let content = argument[0] || '';
     let type = argument[1] || 1;
     resolve({
@@ -528,6 +518,33 @@ export const upload = {
   }
 };
 
+/**
+ * 文件上传
+ * @type {Object}
+ */
+export const uploadVideo = {
+  beforeEach(value, resolve, config) {
+    //处理URL信息
+    let url = '/app/' + config.AppName + '/upload';
+    //设置唯一Key
+    let keys = Object.keys(value);
+    let argument = value[keys[0]];
+    let content = argument[0] || '';
+    resolve({
+      url: url,
+      method: 'post',
+      headers: { 'Content-Type': 'multipart/form-data' },
+      data: {
+        type: 2,
+        content: content,
+      }
+    });
+  },
+  afterEach(value, resolve) {
+    //throw new Error("后置报错信息.exports输出");
+    resolve(value);
+  }
+};
 /**
  * 支付
  * @type {Object}
@@ -564,7 +581,6 @@ export const pay = {
     //格式化数据，如果为null设置为空
     data = data || '';
     headers = headers || { 'Content-Type': 'application/json' };
-    // console.log("查看数据", { url, method, headers, data });
     resolve({ url, method, headers, data });
   },
   afterEach(value, resolve, reject) {

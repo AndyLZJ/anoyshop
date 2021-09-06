@@ -35,8 +35,14 @@ export default {
 
 <style scoped lang="scss">
 .he-radio {
+  // #ifndef H5
   width: 36px;
   height: 36px;
+  // #endif
+  // #ifdef H5
+  width: auto;
+  height: auto;
+  // #endif
   border-radius: 50%;
 }
 .he-radio-0 {

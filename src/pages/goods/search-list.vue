@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import listSort from './components/list-sort.vue';
+import listSort from '../../components/list-sort.vue';
 import listA from '@/components/goods-list/list-A.vue';
 import listB from '@/components/goods-list/list-B.vue';
 import listC from '@/components/goods-list/list-C.vue';
@@ -53,7 +53,8 @@ export default {
         sort: {
           sort: 'DESC'
         },
-        coupon_id: null
+        coupon_id: null,
+        goods_id: []
       },
       isNothing: false,
       loadStatus: 'loadmore',
@@ -151,6 +152,7 @@ export default {
     this.keyword.group = options.group ? options.group : null;
     this.style = options.goods_show ? options.goods_show : 1;
     this.keyword.coupon_id = options.coupon_id ? parseInt(options.coupon_id) : null;
+    this.keyword.goods_id = options.goods_id ? JSON.parse(options.goods_id) : null;
     uni.setNavigationBarTitle({
       title: options.name ? options.name : '全部商品'
     });

@@ -9,10 +9,11 @@
       @load="onImageLoad"
       @error="onImageError"
       class="he-image__img"
+      @click="previewImage"
     ></image>
     <!--#endif-->
     <!--#ifdef H5-->
-    <img v-lazy="src" v-if="!error" @load="onImageLoad" @error="onImageError" class="he-image__img" />
+    <img v-lazy="src" v-if="!error" @click="previewImage" @load="onImageLoad" @error="onImageError" class="he-image__img" />
     <!--#endif-->
     <view class="loading-class he-image__loading" v-if="loading && showLoading">
       <text class="iconfont iconimago_defaultproduct" :style="[iconFont]"></text>
@@ -62,6 +63,15 @@ export default {
       default: function () {
         return 'aspectFill';
       }
+    },
+    list: {
+      type: Array,
+      default() {
+        return []
+      }
+    },
+    isPreview: {
+      type: Boolean
     }
   },
   computed: {
@@ -98,6 +108,14 @@ export default {
     onClick: function (event) {
       if (this.error && this.showError) return;
       this.$emit('click', event.detail);
+    },
+    previewImage() {
+      if (this.isPreview) {
+        uni.previewImage({
+          current: this.src,
+          urls: this.list
+        });
+      }
     }
   }
 };

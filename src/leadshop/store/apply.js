@@ -13,7 +13,6 @@ const apply = {
   mutations: {
     login(state, provider) {
       if (provider) {
-        console.log('获取用户信息', provider);
         state.is_login = true;
         state.token = provider.token || '';
         state.userInfo = provider;
@@ -29,12 +28,18 @@ const apply = {
       state.userInfo = {};
     },
     getToken(state) {
-      let token = cache.get('token') || '';
-      // console.log("查看Cookie中的Token",token)
-      if (token) {
+      let token = cache.get('token');
+      let userInfo = cache.get('userInfo');
+      if (token && userInfo) {
         state.is_login = true;
         state.token = token;
-        state.userInfo = cache.get('userInfo');
+        state.userInfo = userInfo;
+      } else {
+        state.is_login = false;
+        state.token = '';
+        state.userInfo = {};
+        cache.remove('token')
+        cache.remove('userInfo')
       }
     },
     setMenu(state, provider) {
@@ -42,10 +47,14 @@ const apply = {
     },
     setLoginModel(state, data) {
       state.showLoginModel = data;
+    },
+    setInfo(state, data) {
+      state.userInfo = data;
+      uni.setStorageSync('userInfo', data);
     }
   },
   actions: {
-    layout({ commit }) {
+    layout({commit}) {
       commit('logout');
     }
   }

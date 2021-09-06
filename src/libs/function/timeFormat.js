@@ -45,7 +45,6 @@ function timeFormat(dateTime = null, fmt = 'yyyy-mm-dd') {
       fmt = fmt.replace(ret[1], ret[1].length == 1 ? opt[k] : opt[k].padStart(ret[1].length, '0'));
     }
   }
-  // console.log(fmt)
   return fmt;
 }
 

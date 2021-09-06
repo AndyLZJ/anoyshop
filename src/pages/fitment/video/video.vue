@@ -1,3 +1,10 @@
+<!--
+ * @Description: 
+ * @Author: fjt
+ * @Date: 2021-05-18 13:49:46
+ * @LastEditTime: 2021-06-16 11:33:41
+ * @LastEditors: fjt
+-->
 <template>
   <view class="showcase-video">
     <view class="video-container video-container--visible" style="height: 420rpx">

@@ -179,8 +179,6 @@ export default {
           this.value.return_amount = Math.floor((this.value.return_amount + this.freightAmount) * 100) / 100;
           this.value.return_score = Math.floor((this.value.return_score + this.freightAmount) * 100) / 100;
         }
-        console.log(this.freightAmount);
-        console.log(this.value.return_amount);
         this.$emit('input', this.value);
       },
       deep: true,

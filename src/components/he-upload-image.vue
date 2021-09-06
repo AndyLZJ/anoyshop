@@ -15,7 +15,7 @@
       class="cu-btn he-list-item lex flex-direction ustify-center align-center"
     >
       <view class="iconfont iconevaluate_uploadpictures"></view>
-      <view class="he-add-text">添加图片</view>
+      <view class="he-add-text">{{addText}}</view>
     </button>
     <he-toast v-model="loading">
       <view class="he-loading flex flex-direction align-center">
@@ -84,7 +84,7 @@ export default {
     sizeType: {
       type: Array,
       default() {
-        return ['original', 'compressed'];
+        return ['original'];
       }
     },
     // 上传的文件字段名
@@ -117,6 +117,10 @@ export default {
       default: function () {
         return 2097152;
       }
+    },
+    addText: {
+      type: [String],
+      default: '添加图片'
     }
   },
   data() {
@@ -146,7 +150,7 @@ export default {
         uni.chooseImage({
           count: multiple ? (newMaxCount > 9 ? 9 : newMaxCount) : 1,
           sourceType: sourceType,
-          sizeType,
+          sizeType: ['original'],
           success: resolve,
           fail: reject
         });
@@ -160,7 +164,6 @@ export default {
             if (!this.checkFileExt(val)) return;
             // 如果是非多选，index大于等于1或者超出最大限制数量时，不处理
             if (!multiple && index >= 1) return;
-
             if (val.size > maxSize && maxSize > 0) {
               this.$h.toast('超出允许的文件大小');
             } else {
@@ -184,7 +187,8 @@ export default {
             this.uploadFile(listOldLength);
           }
         })
-        .catch(err => {});
+        .catch(err => {
+        });
     },
     async uploadFile(index = 0) {
       let _this = this;
@@ -256,11 +260,13 @@ export default {
       const images = this.lists.map(item => item.url || item.path);
       this.$utils.doPreviewImage(url, images);
     }
+  },
+  mounted() {
   }
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .he-list-item {
   width: 150px;
   height: 150px;
@@ -269,6 +275,7 @@ export default {
   position: relative;
   border-radius: 8px;
 }
+
 .he-add-text {
   font-size: 22px;
   font-family: PingFang SC;
@@ -276,6 +283,7 @@ export default {
   color: #666666;
   margin-top: 5px;
 }
+
 .iconevaluate_uploadpictures {
   color: RGBA(102, 102, 102, 1);
   width: 48px;
@@ -283,6 +291,7 @@ export default {
   font-size: 48px;
   margin-bottom: 5px;
 }
+
 .he-delete-icon {
   position: absolute;
   top: 0;
@@ -295,12 +304,14 @@ export default {
   font-size: 28px;
   color: rgba(245, 33, 45, 1);
 }
+
 .he-preview-image {
   width: 100%;
   height: 100%;
   border-radius: 8px;
   display: block;
 }
+
 .he-loading {
   width: 100%;
   height: 100%;
@@ -310,6 +321,7 @@ export default {
   color: #ffffff;
   text-align: center;
 }
+
 .he-loading__image {
   width: 96px;
   height: 96px;

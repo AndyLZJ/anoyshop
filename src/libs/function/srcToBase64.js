@@ -30,8 +30,7 @@ export default function srcToBase64(src) {
             let content = image + res.data;
             resolve(content);
           },
-          fail: error => {
-            console.error('上传报错', error);
+          fail: () => {
           }
         });
       }

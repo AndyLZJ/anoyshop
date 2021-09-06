@@ -81,7 +81,6 @@ function formateObjToParamStr(paramObj) {
  * @param {never}
  */
 function print(msg, action = 'log') {
-  console[action]('[route-guards] ' + msg);
 }
 
 /**

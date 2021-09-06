@@ -3,9 +3,9 @@
     <view class="he-empty-popup flex flex-direction" :data-theme="theme">
       <view class="he-top" :style="[style]">{{ title }}</view>
       <view class="he-bottom flex justify-between align-end">
-        <button class="cu-btn" @click="cancel">取消</button>
+        <button class="cu-btn" @click="cancel">{{ cancelText }}</button>
         <view class="he-line"></view>
-        <button class="cu-btn" @click="confirm">确认</button>
+        <button class="cu-btn" @click="confirm">{{ confirmText }}</button>
       </view>
     </view>
   </he-popup>
@@ -20,22 +20,30 @@ export default {
     value: Boolean,
     item: Object,
     title: String,
-    emptyStyle: Object
+    emptyStyle: Object,
+    cancelText: {
+      type: String,
+      default: '取消'
+    },
+    confirmText: {
+      type: String,
+      default: '确认'
+    }
   },
   components: {
     hePopup
   },
   computed: {
     showModal: {
-      get: function () {
-        return this.value;
+      get: function ({value}) {
+        return value;
       },
       set: function (val) {
         this.$emit('input', val);
       }
     },
-    style: function () {
-      return this.emptyStyle;
+    style: function ({emptyStyle}) {
+      return emptyStyle;
     }
   },
   methods: {

@@ -16,7 +16,7 @@
         </view>
         <view class="he-coupon" v-if="!$h.test.isEmpty(coupon)">
           <view class="he-coupon-head">
-            <image class="he-coupon-head-img" :src="ipAddress + '/coupon-star-successful.png'" />
+            <image class="he-coupon-head-img" :src="ipAddress + '/coupon-star-successful.png'"/>
             <text class="he-coupon-head-text">恭喜！获得优惠券</text>
           </view>
           <scroll-view scroll-y class="he-coupon-body">
@@ -27,7 +27,7 @@
                   <template v-if="Number(item.coupon.min_price) > 0">
                     满{{ item.coupon.min_price | setNumber }}可用
                   </template>
-                  <template v-else> 无门槛 </template>
+                  <template v-else> 无门槛</template>
                 </view>
               </view>
               <view class="he-coupon-center">
@@ -39,8 +39,9 @@
                 <view class="he-right-left">
                   <view class="he-item-name">{{ item.coupon.name }}</view>
                   <view class="he-item-prompt">{{
-                    item.coupon.appoint_type === 1 ? '全部商品可用' : '部分商品可用'
-                  }}</view>
+                      item.coupon.appoint_type === 1 ? '全部商品可用' : '部分商品可用'
+                    }}
+                  </view>
                 </view>
                 <view class="he-right-right flex align-center justify-center">
                   <button
@@ -62,12 +63,23 @@
     <template v-for="(item, index) in popupsList">
       <taskpopups v-model="item.display" :title="item.remark" :index="index" :top="300"></taskpopups>
     </template>
+    <!-- 开启分销商 且有条件 且不是分销商 -->
+    <he-empty-popup
+      v-if="showApplyPromoter"
+      :empty-style="{height: '146rpx', lineHeight: '146rpx'}"
+      v-model="applyPromoter"
+      confirm-text="立即申请"
+      cancel-text="暂不申请"
+      title="恭喜您！您已获得成为分销资格"
+      @confirm="routerPromoter"
+    ></he-empty-popup>
   </view>
 </template>
 <script>
 import heProductsFeatured from '@/components/he-products-featured.vue';
 import heLoading from '../../components/he-loading.vue';
-import { mapGetters } from 'vuex';
+import heEmptyPopup from "../../components/he-empty-popup.vue";
+import {mapGetters} from 'vuex';
 import taskpopups from '@/plugins/task/components/popups.vue';
 
 export default {
@@ -75,7 +87,8 @@ export default {
   components: {
     heProductsFeatured,
     heLoading,
-    taskpopups
+    taskpopups,
+    heEmptyPopup
   },
   data() {
     return {
@@ -83,12 +96,14 @@ export default {
       totalAmount: 0,
       orderId: null,
       coupon: [],
-      loading: true
+      loading: true,
+      applyPromoter: false,
     };
   },
   computed: {
     ...mapGetters('setting', {
-      goodsSetting: 'goodsSetting'
+      goodsSetting: 'goodsSetting',
+      promoterSetting: 'getPromoter'
     }),
     lineColor: function () {
       return {
@@ -103,9 +118,14 @@ export default {
         style.borderRadius = '0';
       }
       return style;
+    },
+    userInfo: function ({$store}) {
+      return $store.state.apply.userInfo;
+    },
+    showApplyPromoter({promoterSetting, userInfo}) {
+      return promoterSetting.status && promoterSetting.conditions.type !== 1 && (userInfo.promoter_status === -1 || userInfo.promoter_status === -2 || userInfo.promoter_status === 0)
     }
   },
-  onShow() {},
   onLoad(options) {
     this.orderId = options.order_id;
     this.popupsList = [];
@@ -115,8 +135,17 @@ export default {
         _this.loading = false;
         //执行积分任务信息
         _this.setTaskOrder();
-      })
-      .catch(function () {
+        // 申请监测 分销商
+        if (_this.showApplyPromoter) {
+          _this.$heshop.promoter('get', {
+            behavior: 'apply_check'
+          }).then(response => {
+            if (response.pay_show) {
+              _this.applyPromoter = true;
+            }
+          });
+        }
+      }).catch(function () {
         _this.loading = false;
       });
   },
@@ -128,9 +157,8 @@ export default {
     setTaskOrder() {
       if (this.$manifest('task', 'status')) {
         this.$heshop
-          .plugin('get', { include: 'task', model: 'score', type: 'single', keyword: 'order', status: 0 })
+          .plugin('get', {include: 'task', model: 'score', type: 'single', keyword: 'order', status: 0})
           .then(res => {
-            console.log('抓取下单结果', res);
             if (res && res.task && res.task.status) {
               this.popupsList.push({
                 display: true,
@@ -140,14 +168,10 @@ export default {
                 this.popupsList = [];
               }, 5000);
             }
-          })
-          .catch(err => {
-            console.log('查看错误信息');
           });
         this.$heshop
-          .plugin('get', { include: 'task', model: 'score', type: 'single', keyword: 'goods', status: 0 })
+          .plugin('get', {include: 'task', model: 'score', type: 'single', keyword: 'goods', status: 0})
           .then(res => {
-            console.log('抓取商品结果', res);
             if (res && res.task && res.task.status) {
               this.popupsList.push({
                 display: true,
@@ -157,9 +181,6 @@ export default {
                 this.popupsList = [];
               }, 5000);
             }
-          })
-          .catch(err => {
-            console.log('查看错误信息');
           });
       }
     },
@@ -207,6 +228,12 @@ export default {
             _this.$toError(error);
             reject();
           });
+      });
+    },
+    // 满足申请条件 跳转到分销页面
+    routerPromoter() {
+      uni.redirectTo({
+        url: '/promoter/pages/recruit'
       });
     }
   },

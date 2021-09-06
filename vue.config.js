@@ -10,15 +10,38 @@ let externals =
     : {
         siteInfo: 'commonjs2 ../siteinfo.js'
       };
-
+let patterns = [
+  {
+    from: path.join(__dirname, 'src/workers'),
+    to: path.join(
+      __dirname,
+      'dist',
+      process.env.NODE_ENV === 'production' ? 'build' : 'dev',
+      process.env.UNI_PLATFORM,
+      'workers'
+    )
+  }
+];
+if (process.env.UNI_PLATFORM !== 'h5') {
+  patterns.push({
+    from: path.join(__dirname, 'src/siteinfo.js'),
+    to: 'siteinfo.js'
+  });
+}
 let plugins =
   process.env.UNI_PLATFORM !== 'h5'
     ? [
         new CopyWebpackPlugin({
           patterns: [
             {
-              from: path.join(__dirname, 'src/siteinfo.js'),
-              to: 'siteinfo.js'
+              from: path.join(__dirname, 'src/workers'),
+              to: path.join(
+                __dirname,
+                'dist',
+                process.env.NODE_ENV === 'production' ? 'build' : 'dev',
+                process.env.UNI_PLATFORM,
+                'workers'
+              )
             }
           ]
         }),
@@ -77,7 +100,11 @@ module.exports = {
   },
   configureWebpack: {
     externals: externals,
-    plugins: plugins
+    plugins: [
+      new CopyWebpackPlugin({
+        patterns: patterns
+      })
+    ]
   },
   chainWebpack: config => {
     // config.optimization.minimizer('terser').tap((args) => {

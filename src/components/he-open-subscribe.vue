@@ -60,7 +60,6 @@ export default {
       _this.$emit('open-subscribe-success', _this.digital);
     });
     btn.addEventListener('error', function (error) {
-      console.log('error', error.detail);
       const { errCode } = error.detail;
       _this.isShow = false;
       // _this.$emit('open-subscribe-success', _this.digital);

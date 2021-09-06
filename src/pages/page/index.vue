@@ -100,7 +100,7 @@
         :data-index="index"
       ></component>
     </view>
-    <HeLoginModel />
+    <HeLoginModel/>
     <he-float-window pages-url="page"></he-float-window>
   </scroll-view>
 </template>
@@ -123,7 +123,8 @@ import coupon from '../fitment/coupon/coupon.vue';
 import task from '../fitment/task/task.vue';
 import HeLoginModel from '../../components/he-login-layout.vue';
 import heFloatWindow from '../../components/layout/he-float-window.vue';
-import { mapGetters } from 'vuex';
+import {mapGetters} from 'vuex';
+
 export default {
   components: {
     videos,
@@ -145,7 +146,7 @@ export default {
   },
   data() {
     return {
-      page: [],
+      page: []
     };
   },
   /**
@@ -209,16 +210,23 @@ export default {
             this.page = JSON.parse(data.content);
             uni.setStorageSync(key, data);
           }
-        })
-        .catch(error => {
-          console.log(error);
         });
     },
     /**
      * 执行页面保存操作
      * @return {[type]} [description]
      */
-    handlePageUpdate() {}
+    handlePageUpdate() {
+    }
+  },
+  onLoad(options) {
+    console.log(options);
+    if (options.scene) {
+      console.log();
+      let {id} = JSON.parse(decodeURIComponent(options.scene));
+      console.log(id);
+      this.handlePageLoading(parseInt(id));
+    }
   }
 };
 </script>

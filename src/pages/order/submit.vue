@@ -13,6 +13,7 @@
         @apply="couponPreview"
         :coupon-reduced="detail.coupon_reduced"
         :user-coupon-id="userCouponId"
+        :promoter-reduced="detail.promoter_reduced"
       ></submit-price>
       <submit-comments :note="note"></submit-comments>
       <view class="safe-area-inset-bottom">

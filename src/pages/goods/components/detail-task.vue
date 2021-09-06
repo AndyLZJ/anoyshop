@@ -40,7 +40,6 @@ export default {
      * @return {[type]} [description]
      */
     getShowTextInfo(taskList) {
-      console.log(taskList);
       let a = taskList['goods'].status;
       let b = taskList['order'].status;
       let text = '';
@@ -64,9 +63,6 @@ export default {
         .plugin('get', { include: 'task', model: 'task', goods_info: 1 })
         .then(res => {
           this.taskList = res;
-        })
-        .catch(err => {
-          console.log('handleTaskList', err);
         });
     }
   }

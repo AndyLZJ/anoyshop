@@ -7,7 +7,7 @@
           <view class="he-goods__name he-line-1">
             {{ good.goods_name }}
           </view>
-          <view class="he-goods__attr he-line-1">{{ good.goods_param }}</view>
+          <view class="he-goods__attr he-line-1">{{ good.show_goods_param }}</view>
         </view>
       </view>
       <view class="he-body">
@@ -140,7 +140,7 @@ export default {
               content: '',
               star: 5,
               images: [],
-              order_goods_id: res.goods[0].id
+              order_goods_id: res.goods[i].id
             });
           }
         })

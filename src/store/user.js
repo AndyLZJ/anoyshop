@@ -10,7 +10,8 @@ const user = {
       unsent: 0
     },
     shippingAddress: [],
-    couponTotal: 0
+    couponTotal: 0,
+    showBecomeDistributor: false
   },
   mutations: {
     userInfo(state, data) {
@@ -42,7 +43,7 @@ const user = {
     }
   },
   actions: {
-    decryptUserInfo: function ({ dispatch, commit }) {
+    decryptUserInfo: function ({dispatch, commit}) {
       let $heshop = this._vm.$heshop;
       let $pageURL = this._vm.$pageURL;
       let _this = this._vm;
@@ -100,12 +101,13 @@ const user = {
         // #endif
       });
     },
-    getUserProfile: function ({ dispatch, commit }) {
+    getUserProfile: function ({dispatch, commit}) {
       return new Promise((resolve, reject) => {
         let $heshop = this._vm.$heshop;
         uni.login({
           provider: 'weixin',
-          success: function () {}
+          success: function () {
+          }
         });
         uni.getUserProfile({
           lang: 'zh_CN',
@@ -127,8 +129,7 @@ const user = {
                     });
                     resolve();
                   })
-                  .catch(function (error) {
-                    console.error(error);
+                  .catch(function () {
                     reject();
                   });
               }
@@ -137,18 +138,23 @@ const user = {
         });
       });
     },
-    visit: function () {
+    visit: function ({state}) {
       if (uni.getStorageSync('token')) {
         let $heshop = this._vm.$heshop;
         $heshop
           .users('get', {
             behavior: 'visit'
           })
-          .then(function () {})
-          .catch(function (err) {});
+          .then(function (response) {
+            if (typeof response !== 'boolean') {
+              state.showBecomeDistributor = true;
+            }
+          })
+          .catch(function (err) {
+          });
       }
     },
-    getOrderTotal: function ({ commit }) {
+    getOrderTotal: function ({commit}) {
       let $heshop = this._vm.$heshop;
       $heshop
         .order('get', {
@@ -156,13 +162,10 @@ const user = {
         })
         .then(function (res) {
           commit('orderTotal', res);
-        })
-        .catch(function (err) {
-          console.error(err);
         });
     },
     // #ifdef H5
-    weChatLogin: function ({ commit, dispatch }, options) {
+    weChatLogin: function ({commit, dispatch}, options) {
       if (!options.code) return;
       let $heshop = this._vm.$heshop;
       return new Promise(function (resolve, reject) {
@@ -190,41 +193,40 @@ const user = {
       });
     },
     // #endif
-    getAddress: function ({ commit, state }) {
+    getAddress: function ({commit, state}) {
       let $heshop = this._vm.$heshop;
       let $h = this._vm.$h;
       if ($h.test.isEmpty(state.shippingAddress)) {
-        $heshop
-          .address('get')
-          .then(function (res) {
-            let data = res;
-            data.forEach(function (item) {
-              item.is_select = false;
-            });
-            commit('shippingAddress', data);
-          })
-          .catch(function (err) {
-            console.error(err);
+        $heshop.address('get').then(function (res) {
+          let data = res;
+          data.forEach(function (item) {
+            item.is_select = false;
           });
+          commit('shippingAddress', data);
+        });
       }
     },
     // #ifndef H5
     authLogin: function () {
       uni.checkSession({
-        success: function () {},
+        success: function () {
+        },
         fail: function () {
           uni.login({
             provider: 'weixin',
             scopes: 'auth_base',
-            success: function () {},
-            fail: function () {}
+            success: function () {
+            },
+            fail: function () {
+            }
           });
         },
-        complete: function () {}
+        complete: function () {
+        }
       });
     },
     // #endif
-    getCouponTotal: function ({ commit }) {
+    getCouponTotal: function ({commit}) {
       let $heshop = this._vm.$heshop;
       $heshop
         .coupon('get', {
@@ -232,12 +234,31 @@ const user = {
         })
         .then(function (res) {
           commit('couponTotal', res.can_use_coupon_num);
-        })
-        .catch(function (err) {
-          console.error(err);
         });
     },
-    bindPhone: function ({}) {}
+    bindPhone: function ({}) {
+    },
+    getUserInfo({rootState, commit }) {
+      if (!uni.getStorageSync('token')) return;
+      let $heshop = this._vm.$heshop;
+      return new Promise((resolve, reject) => {
+        $heshop
+          .users('get', {
+            behavior: 'info'
+          })
+          .then(response => {
+            let userInfo = JSON.parse(JSON.stringify(rootState.apply.userInfo));
+            userInfo = Object.assign(userInfo, response);
+            commit('apply/setInfo', userInfo, {
+              root: true
+            });
+            resolve();
+          })
+          .catch(() => {
+            reject();
+          });
+      });
+    }
   }
 };
 

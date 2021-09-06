@@ -44,6 +44,7 @@ export default {
     // #ifndef H5
     this.$store.dispatch('user/authLogin');
     // #endif
+    this.$store.dispatch('user/getUserInfo');
     //用于延时测试数据
     setTimeout(() => {
       this.$manifest('task', 'status');

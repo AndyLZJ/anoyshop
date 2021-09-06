@@ -123,6 +123,12 @@
       }
     },
     {
+      "path": "pages/other/time-period",
+      "style": {
+        "navigationBarTitleText": "选择日期"
+      }
+    },
+    {
       "path": "pages/order/index",
       "style": {
         "navigationBarTitleText": "我的订单"
@@ -314,7 +320,96 @@
           }
         }
       ]
-    }
+    },
     // #endif
+    {
+      "root": "promoter",
+      "pages": [
+        {
+          "path": "pages/index"
+        },
+        {
+          "path": "pages/dynamic",
+          "style": {
+            "navigationBarTitleText": "动态",
+            "navigationStyle": "custom",
+            "disableScroll": true
+          }
+        },
+        {
+          "path": "pages/leaderboard",
+          "style": {
+            "navigationBarTitleText": "排行榜",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "pages/grade",
+          "style": {
+            "navigationBarTitleText": "等级中心",
+            "disableScroll": true
+          }
+        },
+        {
+          "path": "pages/order",
+          "style": {
+            "navigationBarTitleText": "分销订单",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "pages/offline",
+          "style": {
+            "navigationBarTitleText": "分销下线",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "pages/goods",
+          "style": {
+            "navigationBarTitleText": "分销商品"
+          }
+        },
+        {
+          "path": "pages/withdraw",
+          "style": {
+            "navigationBarTitleText": "提现"
+          }
+        },
+        {
+          "path": "pages/withdraw-list",
+          "style": {
+            "navigationBarTitleText": "提现明细"
+          }
+        },
+        {
+          "path": "pages/material",
+          "style": {
+            "navigationBarTitleText": "素材中心"
+          }
+        },
+        {
+          "path": "pages/create-dynamic",
+          "style": {
+            "navigationBarTitleText": "发布动态"
+          }
+        },
+        {
+          "path": "pages/dynamic-goods",
+          "style": {
+            "navigationBarTitleText": "添加商品"
+          }
+        },
+        {
+          "path": "pages/recruit"
+        },
+        {
+          "path": "pages/apply"
+        },
+        {
+          "path": "pages/protocol"
+        }
+      ]
+    }
   ]
 }

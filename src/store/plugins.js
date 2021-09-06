@@ -14,7 +14,6 @@ const plugins = {
      * @param {[type]} data  [description]
      */
     setPlugins(state, data) {
-      console.log('获取插件所有配置信息', data);
       state.pluginsList = data;
     }
   },
@@ -63,9 +62,7 @@ const plugins = {
           commit('setPlugins', res);
           // uni.setStorageSync($storageKey.plugins, res);
         })
-        .catch(function (err) {
-          console.log('插件获取配置错误');
-          console.error(err);
+        .catch(function () {
         });
       // if (uni.getStorageSync($storageKey.plugins)) {
       //   commit('setPlugins', uni.getStorageSync($storageKey.plugins));
@@ -74,7 +71,6 @@ const plugins = {
       //     commit('setPlugins', res);
       //     uni.setStorageSync($storageKey.plugins, res);
       //   }).catch(function(err) {
-      //     console.error(err);
       //   });
       // }
     },
@@ -96,7 +92,6 @@ const plugins = {
             }
           )
           .then(res => {
-            console.log('转发结果', res);
             resolve(res);
           })
           .catch(err => {
@@ -111,7 +106,6 @@ const plugins = {
      * @return {[type]}                [description]
      */
     onInvite: function ({ state, commit }, { UID }) {
-      console.log('拿到用户ID', UID);
       let config = state.pluginsList['task']['share'];
       let $heshop = this._vm.$heshop;
       return new Promise((resolve, reject) => {
@@ -125,7 +119,6 @@ const plugins = {
             }
           )
           .then(res => {
-            console.log('邀请结果', res);
             resolve(res);
           })
           .catch(err => {
@@ -161,6 +154,17 @@ const plugins = {
           .catch(err => {
             reject(err);
           });
+      });
+    },
+    // 分销商绑定上级
+    bindPromoterSuperior({}, {parent_id}) {
+      let $heshop = this._vm.$heshop;
+      return new Promise((resolve, reject) => {
+        $heshop.promoter('get', {
+          behavior: 'bind',
+          parent_id: parent_id
+        }).then(() => {
+        }).catch(reject);
       });
     }
   }

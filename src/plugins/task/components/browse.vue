@@ -111,9 +111,6 @@ export default {
           } else {
             this.taskGoods = {};
           }
-        })
-        .catch(err => {
-          console.log('err', err);
         });
     },
     /**
@@ -124,12 +121,10 @@ export default {
       this.$heshop
         .plugin('get', { include: 'task', model: 'task', keyword: 'browse' })
         .then(res => {
-          console.log('加载获取浏览商品信息数据', res);
           if (res.status) {
             this.taskGoods = res;
             this.timeoutID = setTimeout(res => {
               this.onTaskBrowse();
-              console.log('不管3721就是执行了');
               this.taskGoods.log++;
               if (this.taskGoods.log == this.taskGoods.total) {
                 this.isComplete = true;
@@ -143,7 +138,6 @@ export default {
           }
         })
         .catch(err => {
-          console.log('err', err);
         });
     },
     onTaskBrowse() {
@@ -152,7 +146,6 @@ export default {
       let task_status = this.$manifest('task', 'status');
       let that = this;
 
-      console.log('查看浏览商品的VM', this, this.goods_id);
 
       let goods_id = this.goods_id;
 
@@ -175,9 +168,6 @@ export default {
                 });
               });
             }
-          })
-          .catch(() => {
-            console.log('获取错误信息');
           });
       }
     }

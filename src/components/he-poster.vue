@@ -14,7 +14,7 @@
           <text class="iconfont iconpopup_close"></text>
         </view>
         <view>
-          <image class="he-wechat__image" :src="path" :style="[boxSize]"></image>
+          <image class="he-wechat__image" v-if="path" :src="path" :style="[boxSize]"></image>
           <!-- #ifndef H5 -->
           <button class="he-poster__save cu-btn" @click="saveImage">保存图片</button>
           <!-- #endif -->
@@ -58,6 +58,10 @@ export default {
   watch: {
     showModal(value) {
       if (value) {
+        uni.showLoading({
+          title: '生成中……'
+        });
+        this.loading = true;
         this.onLoadImage();
       }
     }
@@ -81,6 +85,10 @@ export default {
         return {
           height: '613rpx'
         };
+      } else if (this.couponType === 'store') {
+        return {
+          height: '545rpx'
+        };
       } else {
         return {
           height: '784rpx'
@@ -95,14 +103,6 @@ export default {
       // #ifndef H5
       type = 2;
       // #endif
-      uni.showLoading({
-        title: '生成中……'
-      });
-      this.loading = true;
-      if (this.path) {
-        uni.hideLoading();
-        this.loading = false;
-      }
       let data = {
         type: type,
         is_task: this.is_task,

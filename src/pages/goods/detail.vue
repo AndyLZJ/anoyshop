@@ -46,6 +46,8 @@
         :virtual_sales="detail.virtual_sales"
         :line-price="detail.line_price"
         :goods-introduce="detail.body.goods_introduce"
+        :is-promoter="detail.is_promoter"
+        :commission="detail.commission"
       ></detail-basic-information>
       <detail-parameter
         :unit="detail.unit"
@@ -109,9 +111,10 @@
       <taskbrowse :display="is_browse" :goods_id="goods_id" ref="taskbrowse"></taskbrowse>
     </template>
     <HeLoginModel />
-    <he-float-window  :bottom="95" pages-url="goods-detail"></he-float-window>
+    <he-float-window :bottom="95" pages-url="goods-detail"></he-float-window>
   </view>
 </template>
+
 <script>
 import detailBanner from './components/detail-banner.vue';
 import detailBasicInformation from './components/detail-basic-information.vue';
@@ -157,7 +160,7 @@ export default {
     ...mapGetters('setting', {
       goodsSetting: 'goodsSetting',
       navbarHeight: 'getNavBarHeight',
-      statusBarHeight: 'statusBarHeight',
+      statusBarHeight: 'statusBarHeight'
     }),
     isProductsFeatured: function () {
       return this.goodsSetting.recommend_showpage.goodsinfo.value;
@@ -194,7 +197,6 @@ export default {
     }
   },
   onShow() {
-    console.log(this.$store.state.apply.is_login)
     if (this.$store.state.apply.is_login) {
       this.handleTaskBrowseLog();
     }
@@ -218,7 +220,8 @@ export default {
       isTouch: false,
       detail: {
         slideshow: [],
-        goods_args: []
+        goods_args: [],
+        is_promoter: 0
       },
       /**
        * 判断是否从积分任务过来
@@ -230,8 +233,8 @@ export default {
       is_task: 0,
       is_browse: 0,
       popupsList: [],
-      taskShare: false,
       copy_task_browse: 0,
+      shareOpen: true
     };
   },
   onHide() {
@@ -340,27 +343,8 @@ export default {
           _this.isScroll = false;
         }
       });
-    },
-    // #endif
-    toTaskonShare() {
-      this.taskShare = true;
-      //用于延时测试数据
-      setTimeout(res => {
-        let task_status = this.$manifest('task', 'status');
-        let that = this;
-        if (task_status) {
-          this.$store
-            .dispatch('plugins/onShare')
-            .then(res => {
-              console.log('执行了商品详情也分享');
-              setTimeout(res => {
-                this.taskShare = false;
-              }, 5000);
-            })
-            .catch(error => {});
-        }
-      }, 1000);
     }
+    // #endif
   },
   onLoad(options) {
     this.task_browse = options.task_browse ? options.task_browse : null;

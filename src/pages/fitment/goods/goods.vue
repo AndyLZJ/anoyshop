@@ -130,7 +130,6 @@ export default {
    */
   async mounted() {
     this.handleCheck();
-    console.count('goods');
   },
   methods: {
     /**
@@ -184,9 +183,6 @@ export default {
             if (res.length > 0) {
               _this.goodsData = res;
             }
-          })
-          .catch(error => {
-            console.error('获取错误信息', error);
           });
       }
     },
@@ -211,9 +207,6 @@ export default {
           .page(1, limit)
           .then(function (res) {
             _this.goodsData = res.data.length > 0 ? res.data : _this.goods;
-          })
-          .catch(error => {
-            console.error('获取错误信息', error);
           });
       }
     },

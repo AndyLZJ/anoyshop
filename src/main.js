@@ -56,9 +56,6 @@ Vue.prototype.$heshop = Heshop.connect({
     loginReset: '/app/leadmall/reset'
   },
   redLoadFun: function () {
-    console.log('执行回调');
-    console.log(Vue);
-    console.log(Vue.prototype);
     // #ifdef H5
     const { origin, pathname } = window.location;
     window.location.href = origin + pathname + `?r=wechat#/pages/user/index`;
@@ -68,9 +65,7 @@ Vue.prototype.$heshop = Heshop.connect({
     try {
       Vue.prototype.$store.commit('apply/logout');
     } catch (e) {
-      console.log(e);
     }
-    console.log('执行');
     this.$store.commit('apply/setLoginModel', true);
     // #endif
   },

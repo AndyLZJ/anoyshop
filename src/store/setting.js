@@ -106,9 +106,11 @@ const setting = {
       return index;
     },
     getPicLimit: function (state) {
-      console.log(state.setting.storage_limit);
       let limit = state.setting.storage_limit?.pic_limit || 2;
-      console.log(limit);
+      return limit * 1024 * 1024;
+    },
+    getVideoLimit: function(state) {
+      let limit = state.setting.storage_limit?.video_limit || 2;
       return limit * 1024 * 1024;
     },
     shareSetting: function (state) {
@@ -120,18 +122,31 @@ const setting = {
     getOpeningad: function (state) {
       return state.setting.openingad;
     },
+    // 获取分销设置
+    getPromoter: function (state) {
+      return state.setting.promoter_setting;
+    },
     getCopyright(state) {
       return state.setting.copyright_information;
     },
+    getPromoterPage(state) {
+      return state.setting.promoter_page_setting;
+    },
     getMapSdk(state) {
       return state.setting.kb_express_setting.map_sdk;
+    },
+    getPromoterRank(state) {
+      return state.setting.promoter_rank;
+    },
+    getCommissionSetting(state) {
+      return state.setting.commission_setting;
     },
     getFloatWindow(state) {
       return state.setting.float_window;
     }
   },
   actions: {
-    getSetting: function ({ commit }) {
+    getSetting: function ({commit}) {
       let $heshop = this._vm.$heshop;
       let $storageKey = this._vm.$storageKey;
       if (uni.getStorageSync($storageKey.setting)) {
@@ -141,23 +156,16 @@ const setting = {
         .setting('get')
         .then(function (res) {
           commit('setting', res);
-          console.log(res);
           uni.setStorageSync($storageKey.setting, res);
-        })
-        .catch(function (err) {
-          console.error(err);
         });
     },
-    resetting: function ({ dispatch }) {
+    resetting: function ({dispatch}) {
       let $storageKey = this._vm.$storageKey;
       uni.removeStorageSync($storageKey.setting);
       dispatch('getSetting');
     },
-    getLocation: function ({ commit, getters, state }) {
-      console.log(state.setting.setting_collection?.location_setting.tencent_key);
-      console.log(arguments);
+    getLocation: function ({state}) {
       let $wechat = this._vm.$wechat;
-      console.log(getters);
       return new Promise((resolve, reject) => {
         //  #ifdef MP-WEIXIN
         const qqmapsdk = new QQMapWX({
@@ -175,13 +183,11 @@ const setting = {
               success(res) {
                 resolve(res);
               },
-              fail(error) {
-                console.log(error);
+              fail() {
               }
             });
           },
-          fail(error) {
-            console.log(error);
+          fail() {
           }
         });
         //  #endif
@@ -196,23 +202,20 @@ const setting = {
             )
               .then(response => {
                 resolve(response);
-              })
-              .catch(error => {
-                console.log(error);
               });
           }
         });
         // #endif
       });
     },
-    getSys: function ({ commit }) {
+    getSys: function ({commit}) {
       uni.getSystemInfo({
         success: function (res) {
           commit('setSys', res);
         }
       });
     },
-    getTheme: function ({ commit }) {
+    getTheme: function ({commit}) {
       let $heshop = this._vm.$heshop;
       let $storageKey = this._vm.$storageKey;
       if (uni.getStorageSync($storageKey.theme_color)) {
@@ -225,13 +228,10 @@ const setting = {
           .then(function (res) {
             commit('theme', res.content);
             uni.setStorageSync($storageKey.theme_color, res.content);
-          })
-          .catch(function (err) {
-            console.error(err);
           });
       }
     },
-    getTabBar: function ({ commit }) {
+    getTabBar: function ({commit}) {
       return new Promise((resolve, reject) => {
         let $heshop = this._vm.$heshop;
         let $storageKey = this._vm.$storageKey;
@@ -249,14 +249,13 @@ const setting = {
               uni.setStorageSync($storageKey.tab_bar, data);
               resolve();
             })
-            .catch(function (err) {
-              console.error(err);
+            .catch(function () {
               reject();
             });
         }
       });
     },
-    getAddress: function ({ commit }) {
+    getAddress: function ({commit}) {
       let $heshop = this._vm.$heshop;
       let $storageKey = this._vm.$storageKey;
       if (uni.getStorageSync($storageKey.address_json)) {
@@ -265,7 +264,7 @@ const setting = {
         $heshop
           .search(
             'post',
-            { include: 'setting' },
+            {include: 'setting'},
             {
               keyword: 'addressjson',
               content_key: ''
@@ -274,20 +273,16 @@ const setting = {
           .then(function (res) {
             commit('addressJson', res);
             uni.setStorageSync($storageKey.address_json, res);
-          })
-          .catch(function (err) {
-            console.error(err);
           });
       }
     },
-    subscribe: function ({ commit }) {
+    subscribe: function ({commit}) {
       let $heshop = this._vm.$heshop;
       $heshop.subscribe('get').then(function (response) {
-        console.log('response-subscribe', response);
         commit('subscribe', response);
       });
     },
-    getAuth({ commit }) {
+    getAuth({commit}) {
       let $heshop = this._vm.$heshop;
       $heshop.cloud('get').then(response => {
         commit('setAuth', response);

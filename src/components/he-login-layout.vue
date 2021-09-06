@@ -41,11 +41,9 @@ export default {
   computed: {
     showModal: {
       get({ $store }) {
-        console.log($store.state.apply.showLoginModel);
         return $store.state.apply.showLoginModel;
       },
       set(value) {
-        console.log(arguments);
         this.$store.commit('apply/setLoginModel', value);
       }
     },
@@ -73,7 +71,6 @@ export default {
             this.isNewuser = true;
           } else {
           }
-          console.log(getCurrentPages());
           setTimeout(() => {
             let index = this.$store.getters['setting/getCartIndex'];
             this.$store.dispatch('cart/getCartNumber').then(response => {
@@ -90,10 +87,10 @@ export default {
             });
           }, 1000);
           this.$store.commit('apply/setLoginModel', false);
-          // console.log()
           if (this.$parent.__route__ === 'pages/user/index' || this.$parent.__route__ === 'pages/cart/index') {
             this.$parent.getShowData();
           }
+          // this.$meit
         });
       } else {
         this.decryptUserInfo().then(() => {
@@ -123,9 +120,6 @@ export default {
         });
       }
     }
-  },
-  mounted() {
-    console.log(this.$parent);
   }
 };
 </script>

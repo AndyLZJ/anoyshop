@@ -124,7 +124,6 @@
       :key="index"
     ></taskpopups>
     <!-- 测试使用 -->
-    <!--     <cartoon :score="100" title="测试" v-model="is_cartoon"></cartoon> -->
     <HeLoginModel />
     <!-- #ifdef H5 -->
     <he-float-window :bottom="100" pages-url="index"></he-float-window>
@@ -132,6 +131,15 @@
     <!-- #ifndef H5 -->
     <he-float-window pages-url="index"></he-float-window>
     <!--#endif-->
+    <he-become-distributor
+      v-if="
+        getPromoter.status === 1 &&
+        !getPromoter.need_check &&
+        !getPromoter.need_apply &&
+        getPromoter.conditions.type === 1 &&
+        isLogin
+      "
+    ></he-become-distributor>
   </view>
 </template>
 
@@ -171,6 +179,7 @@ import cartoon from '@/plugins/task/components/cartoon.vue';
 import taskpopups from '@/plugins/task/components/popups.vue';
 import HeLoginModel from '../../components/he-login-layout.vue';
 import heFloatWindow from '../../components/layout/he-float-window.vue';
+import heBecomeDistributor from '../../components/he-become-distributor';
 
 export default {
   components: {
@@ -201,7 +210,8 @@ export default {
     taskpopups,
     cartoon,
     HeLoginModel,
-    heFloatWindow
+    heFloatWindow,
+    heBecomeDistributor
   },
   data() {
     return {
@@ -229,8 +239,7 @@ export default {
       isNewuser: false,
       wechatUrl: '/',
       // #endif
-      taskShare: false,
-      isShareCount: null,
+      isShareCount: null
     };
   },
   // #ifdef H5
@@ -279,6 +288,7 @@ export default {
       searchHeight: 'components/getSearchHeight',
       navbarHeight: 'setting/getNavBarHeight',
       statusBarHeight: 'setting/statusBarHeight',
+      getPromoter: 'setting/getPromoter'
     }),
     is_ad() {
       return uni.getStorageSync('openingad') || false;
@@ -318,7 +328,6 @@ export default {
           this.handlePageLoading();
         }, 1000);
       } else {
-        console.log('1');
         uni.showTabBar();
         this.handlePageLoading();
       }
@@ -332,9 +341,7 @@ export default {
     }
   },
   methods: {
-    handler() {
-      console.log('show');
-    },
+    handler() {},
     ...mapActions({
       setCartNumber: 'cart/setCartNumber'
     }),
@@ -363,7 +370,6 @@ export default {
         .then(res => {
           if (res && res.status === 0) {
             this.$nextTick(() => {
-              console.log('展示分享转发数据信息');
               this.popupsList.push({
                 display: true,
                 remark: res.remark
@@ -372,9 +378,6 @@ export default {
               uni.setStorageSync('handleTaskShare', 1);
             });
           }
-        })
-        .catch(err => {
-          console.log('查看错误信息');
         });
     },
     /**
@@ -444,27 +447,6 @@ export default {
       uni.navigateTo({
         url: '/pages/goods/search'
       });
-    },
-    toTaskonShare() {
-      this.taskShare = true;
-      //用于延时测试数据
-      setTimeout(res => {
-        let task_status = this.$manifest('task', 'status');
-        let that = this;
-        if (task_status) {
-          this.$store
-            .dispatch('plugins/onShare')
-            .then(res => {
-              console.log('执行分享数据接口', res);
-              if (Object.prototype.toString.call(res) == '[object Object]') {
-                that.$nextTick(() => {
-                  that.taskShare = false;
-                });
-              }
-            })
-            .catch(error => {});
-        }
-      }, 1000);
     }
   },
   onLoad() {

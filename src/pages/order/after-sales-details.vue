@@ -257,7 +257,7 @@
         ></after-sales-detail-application>
       </template>
     </template>
-    <he-float-window :bottom="isBottom ? 96 : 0"  pages-url="after-detail"></he-float-window>
+    <he-float-window :bottom="isBottom ? 96 : 0" pages-url="after-detail"></he-float-window>
   </view>
 </template>
 <script>
@@ -283,7 +283,7 @@ export default {
       },
       exchangeFlow: {
         status: 0
-      },
+      }
     };
   },
   computed: {

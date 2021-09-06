@@ -145,16 +145,10 @@ export default {
             //判断用户的创建时间必须大于缓存时间
             if (this.$store.state.apply.userInfo.created_time > data['task_time']) {
               this.$store
-                .dispatch('plugins/onInvite', { UID: data['task_uid'] })
-                .then(res => {
-                  console.log('统计邀请好友积分', res);
-                })
-                .catch(error => {
-                  console.log('统计邀请好友积分错误信息', error);
-                });
+                .dispatch('plugins/onInvite', { UID: data['task_uid'] });
             }
           } catch (err) {
-            console.log('查看邀请输出的错误', err);
+          //  Don't do
           }
         }
       }
@@ -219,14 +213,8 @@ export default {
                 } else {
                   that.signNumber = res.acquire;
                 }
-              })
-              .catch(() => {
-                console.log('查看错误信息');
               });
           }
-        })
-        .catch(err => {
-          console.log('err', err);
         });
     },
     /**
@@ -252,7 +240,7 @@ export default {
         //处理积分领取
         this.popupsList = [];
         this.handleTaskSign();
-
+        this.$store.dispatch('user/getUserInfo');
         //延时执行数据
         setTimeout(() => {
           this.$refs['features'].handleLoad();

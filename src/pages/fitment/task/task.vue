@@ -216,7 +216,6 @@ export default {
       this.$heshop
         .plugin('get', { include: 'task', model: 'task', keyword: keyword })
         .then(res => {
-          console.log('获取功能信息', res);
           if (res) {
             this.content.task = res;
             if (!res.status) {
@@ -225,9 +224,6 @@ export default {
           } else {
             this.is_show = false;
           }
-        })
-        .catch(err => {
-          console.log('err', err);
         });
     },
     /**
@@ -280,9 +276,6 @@ export default {
             if (res.length > 0) {
               _this.goodsData = res;
             }
-          })
-          .catch(error => {
-            console.error('获取错误信息', error);
           });
       }
     },
@@ -298,9 +291,6 @@ export default {
           if (res.length > 0) {
             _this.goodsData = res;
           }
-        })
-        .catch(error => {
-          console.error('获取错误信息', error);
         });
     },
     /**
@@ -324,9 +314,6 @@ export default {
           .page(1, limit)
           .then(function (res) {
             _this.goodsData = res.data.length > 0 ? res.data : _this.goods;
-          })
-          .catch(error => {
-            console.error('获取错误信息', error);
           });
       }
     },

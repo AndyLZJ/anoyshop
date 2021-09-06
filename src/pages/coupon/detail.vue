@@ -127,7 +127,8 @@ export default {
       shareReceive: true,
       detail: {},
       id: null,
-      behavior: null
+      behavior: null,
+      shareOpen: true
     };
   },
   computed: {

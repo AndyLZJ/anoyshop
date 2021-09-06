@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     showModal: {
-      get({value}) {
+      get({ value }) {
         return value;
       },
       set(val) {

@@ -74,7 +74,6 @@ export default {
                 code: this.freight[i].code
               })
               .then(res => {
-                console.log(res);
                 this.$set(this.freight[i], 'state', res.state);
                 if (parseInt(res.state) !== 0) {
                   this.$set(this.freight[i], 'message', res.message);
@@ -89,7 +88,6 @@ export default {
               });
           }
         }
-        console.log(this.freight);
         return true;
       });
     },
@@ -103,7 +101,6 @@ export default {
     }
   },
   onLoad(options) {
-    console.log(options);
     this.getPackages(parseInt(options.id));
   }
 };
