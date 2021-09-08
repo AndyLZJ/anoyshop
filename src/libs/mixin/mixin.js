@@ -69,6 +69,19 @@ module.exports = {
         } else {
         }
       }
+    } else {
+      if (options.scene || options.spu) {
+        let promoterUid;
+        if (options.spu) {
+          promoterUid = options.spu;
+        } else if (options.scene) {
+          const scene = decodeURIComponent(options.scene);
+          promoterUid = this.$h.getSceneVariable(scene, 'spu');
+        }
+        if (id != promoterUid) {
+          uni.setStorageSync('promoterUid', promoterUid);
+        }
+      }
     }
 
     //判断是否有用户要求记录

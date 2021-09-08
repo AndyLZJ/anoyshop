@@ -164,6 +164,7 @@ const plugins = {
           behavior: 'bind',
           parent_id: parent_id
         }).then(() => {
+          resolve();
         }).catch(reject);
       });
     }

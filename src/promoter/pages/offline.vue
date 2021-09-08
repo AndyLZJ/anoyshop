@@ -40,7 +40,7 @@
             </view>
             <view>
               <view class="he-user--name">{{ item.nickname }}</view>
-              <view class="he-user--create_time">加入时间：{{ item.join_time | timeFormat('yyyy.mm.dd') }}</view>
+              <view class="he-user--create_time">加入时间：{{ item.bind_time | timeFormat('yyyy.mm.dd') }}</view>
             </view>
           </view>
           <view class="he-item--footer flex">

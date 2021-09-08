@@ -24,7 +24,7 @@
 
 <script>
 import hePopup from './he-popup.vue';
-import { mapActions } from 'vuex';
+import {mapActions} from 'vuex';
 import userNewuserCoupon from './user-newuser-coupon.vue';
 
 export default {
@@ -40,7 +40,7 @@ export default {
   },
   computed: {
     showModal: {
-      get({ $store }) {
+      get({$store}) {
         return $store.state.apply.showLoginModel;
       },
       set(value) {
@@ -90,7 +90,12 @@ export default {
           if (this.$parent.__route__ === 'pages/user/index' || this.$parent.__route__ === 'pages/cart/index') {
             this.$parent.getShowData();
           }
-          // this.$meit
+          const promoterUid = uni.getStorageSync('promoterUid');
+          if (promoterUid) {
+            this.$store.dispatch('plugins/bindPromoterSuperior', {parent_id: promoterUid}).then(() => {
+              uni.removeStorageSync('promoterUid');
+            });
+          }
         });
       } else {
         this.decryptUserInfo().then(() => {
@@ -116,6 +121,12 @@ export default {
           this.$store.commit('apply/setLoginModel', false);
           if (this.$parent.__route__ === 'pages/user/index' || this.$parent.__route__ === 'pages/cart/index') {
             this.$parent.getShowData();
+          }
+          const promoterUid = uni.getStorageSync('promoterUid');
+          if (promoterUid) {
+            this.$store.dispatch('plugins/bindPromoterSuperior', {parent_id: promoterUid}).then(() => {
+              uni.removeStorageSync('promoterUid');
+            });
           }
         });
       }

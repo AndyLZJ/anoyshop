@@ -116,34 +116,37 @@
           </view>
         </view>
         <template v-if="detail.status === 2">
+
           <!-- 分销商品 -->
-          <view class="he-card he-goods">
-            <view class="he-card--head flex justify-between">
-              <text class="he-title">{{ promoterPage.distributor_center.goods }}</text>
-              <button class="he-more cu-btn flex align-center" @click="routerGoods">
-                <text>更多商品</text>
-                <text class="iconfont iconbtn_arrow"></text>
-              </button>
-            </view>
-            <view class="he-good flex" @click="routerGoodsDetail">
-              <he-image
-                :image-style="{ borderRadius: '16px 0px 0px 16px' }"
-                width="240"
-                height="240"
-                :src="good.slideshow[0]"
-              ></he-image>
-              <view class="he-good--content flex-sub flex flex-direction justify-between">
-                <view class="he-good--name he-line-2">{{ good.name }}</view>
-                <view class="">
-                  <view class="he-good--price">￥{{ good.price }}</view>
-                  <view class="he-good--share" @click.stop="shareGood">
-                    <text class="iconfont iconproductdetails_share"/>
-                    <text class="he-good--commission">预计赚¥{{ good.commission }}</text>
+          <template v-if="!$h.test.isEmpty(good)">
+            <view class="he-card he-goods">
+              <view class="he-card--head flex justify-between">
+                <text class="he-title">{{ promoterPage.distributor_center.goods }}</text>
+                <button class="he-more cu-btn flex align-center" @click="routerGoods">
+                  <text>更多商品</text>
+                  <text class="iconfont iconbtn_arrow"></text>
+                </button>
+              </view>
+              <view class="he-good flex" @click="routerGoodsDetail">
+                <he-image
+                  :image-style="{ borderRadius: '16px 0px 0px 16px' }"
+                  width="240"
+                  height="240"
+                  :src="good.slideshow[0]"
+                ></he-image>
+                <view class="he-good--content flex-sub flex flex-direction justify-between">
+                  <view class="he-good--name he-line-2">{{ good.name }}</view>
+                  <view class="">
+                    <view class="he-good--price">￥{{ good.price }}</view>
+                    <view class="he-good--share" @click.stop="shareGood">
+                      <text class="iconfont iconproductdetails_share"/>
+                      <text class="he-good--commission">预计赚¥{{ good.commission }}</text>
+                    </view>
                   </view>
                 </view>
               </view>
             </view>
-          </view>
+          </template>
           <!-- 推广赚钱 -->
           <view class="he-card he-promote">
             <view class="he-card--head">
