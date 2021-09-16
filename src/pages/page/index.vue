@@ -220,11 +220,8 @@ export default {
     }
   },
   onLoad(options) {
-    console.log(options);
     if (options.scene) {
-      console.log();
       let {id} = JSON.parse(decodeURIComponent(options.scene));
-      console.log(id);
       this.handlePageLoading(parseInt(id));
     }
   }

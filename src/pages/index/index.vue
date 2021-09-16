@@ -140,6 +140,7 @@
         isLogin
       "
     ></he-become-distributor>
+<!--    <float></float>-->
   </view>
 </template>
 
@@ -180,6 +181,7 @@ import taskpopups from '@/plugins/task/components/popups.vue';
 import HeLoginModel from '../../components/he-login-layout.vue';
 import heFloatWindow from '../../components/layout/he-float-window.vue';
 import heBecomeDistributor from '../../components/he-become-distributor';
+import float from "./../../components/layout/float";
 
 export default {
   components: {
@@ -211,7 +213,8 @@ export default {
     cartoon,
     HeLoginModel,
     heFloatWindow,
-    heBecomeDistributor
+    heBecomeDistributor,
+    float
   },
   data() {
     return {

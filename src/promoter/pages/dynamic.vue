@@ -772,7 +772,7 @@ export default {
   height: 88px;
   position: fixed;
   border-radius: 50%;
-  bottom: 150px;
+  bottom: 80px;
   right: 24px;
   z-index: 100;
 }

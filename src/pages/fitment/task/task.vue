@@ -177,7 +177,9 @@ export default {
    */
   async mounted() {
     this.handleCheck();
-    //this.handleCheckTaak();
+    if (this.isLogin) {
+      this.handleCheckTaak();
+    }
   },
   methods: {
     getRemark(task) {
